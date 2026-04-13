@@ -1,0 +1,14 @@
+Language: Cpp
+BasedOnStyle: LLVM
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+IndentCaseLabels: true
+IndentAccessModifiers: false
+AccessModifierOffset: -4
+NamespaceIndentation: All
+BreakBeforeBinaryOperators: false
+BreakBeforeBraces: Attach
+ColumnLimit: 256
+SortIncludes: true
+PointerAlignment: Left

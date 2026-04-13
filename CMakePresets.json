@@ -1,0 +1,27 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "default-ninja",
+            "displayName": "Ninja Multi-Config",
+            "description": "Use Ninja as default generator for multi-configuration builds",
+            "generator": "Ninja Multi-Config",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "debug",
+            "configurePreset": "default-ninja",
+            "configuration": "Debug"
+        },
+        {
+            "name": "release",
+            "configurePreset": "default-ninja",
+            "configuration": "Release"
+        }
+    ]
+}

@@ -1,0 +1,53 @@
+# ==============================================================================
+# CMake Build Artifacts
+# ==============================================================================
+# It is highly recommended to use out-of-source builds (e.g., a build/ directory).
+build/
+build-*/
+out/
+bin/
+lib/
+*.build/
+
+# ==============================================================================
+# CMake Generated Files (if you accidentally run cmake in the source dir)
+# ==============================================================================
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+
+# CPack generated files
+CPackConfig.cmake
+CPackSourceConfig.cmake
+_CPack_Packages/
+
+# CMake Testing directory
+Testing/
+
+# ==============================================================================
+# IDEs and Editors
+# ==============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.suo
+*.user
+.cache/
+
+# ==============================================================================
+# OS Generated Files
+# ==============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
