@@ -131,6 +131,8 @@ enum class VnlTokenType {
     DOUBLE_OR,   // ||
     EXCLAMATION, // !
 
+    ARROW, // ->
+
     AND,                        // &
     OR,                         // |
     XOR,                        // ^
