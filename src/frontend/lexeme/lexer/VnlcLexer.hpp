@@ -1,13 +1,13 @@
 #pragma once
 
-#ifndef __VNL_LEXER_HPP__
-#define __VNL_LEXER_HPP__
+#ifndef __VNLC_LEXER_HPP__
+#define __VNLC_LEXER_HPP__
 
-#include "../token/VnlToken.hpp"
+#include "../token/VnlcToken.hpp"
 
 #include <istream>
 
-class VnlLexer {
+class VnlcLexer {
 private:
     std::istream& source;
     int currentCharIndex;
@@ -18,12 +18,12 @@ private:
     void advance();
 
 public:
-    VnlLexer(std::istream& input);
+    VnlcLexer(std::istream& input);
 
     inline int getCurrentLine() const;
     inline int getCurrentColumn() const;
 
-    VnlToken next();
+    VnlcToken next();
 };
 
-#endif // __VNL_LEXER_HPP__
+#endif // __VNLC_LEXER_HPP__

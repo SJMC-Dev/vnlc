@@ -1,9 +1,9 @@
 #pragma once
 
-#ifndef __VNL_TOKEN_TYPE_HPP__
-#define __VNL_TOKEN_TYPE_HPP__
+#ifndef __VNLC_TOKEN_TYPE_HPP__
+#define __VNLC_TOKEN_TYPE_HPP__
 
-enum class VnlTokenType {
+enum class VnlcTokenType {
     IDENTIFIER,
 
     INTEGER,
@@ -173,4 +173,4 @@ enum class VnlTokenType {
     END_OF_FILE,
 };
 
-#endif // __VNL_TOKEN_TYPE_HPP__
+#endif // __VNLC_TOKEN_TYPE_HPP__
