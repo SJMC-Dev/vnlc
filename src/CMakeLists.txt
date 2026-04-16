@@ -1,8 +1,8 @@
 add_executable(
     vnlc
     main.cpp
-    frontend/lexeme/lexer/VnlLexer.cpp
-    frontend/lexeme/token/VnlToken.cpp
+    frontend/lexeme/lexer/VnlcLexer.cpp
+    frontend/lexeme/token/VnlcToken.cpp
 )
 
 target_link_libraries(
