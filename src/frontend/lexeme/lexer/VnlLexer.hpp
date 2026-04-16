@@ -20,6 +20,9 @@ private:
 public:
     VnlLexer(std::istream& input);
 
+    inline int getCurrentLine() const;
+    inline int getCurrentColumn() const;
+
     VnlToken next();
 };
 
