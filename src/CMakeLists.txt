@@ -1,8 +1,8 @@
 add_executable(
     vnlc
     main.cpp
-    frontend/lexeme/lexer/VnlcLexer.cpp
-    frontend/lexeme/token/VnlcToken.cpp
+    lexeme/lexer/VnlcLexer.cpp
+    lexeme/token/VnlcToken.cpp
 )
 
 target_link_libraries(
@@ -11,4 +11,5 @@ target_link_libraries(
     fmt::fmt
     spdlog::spdlog
     nlohmann_json::nlohmann_json
+    CLI11::CLI11
 )
