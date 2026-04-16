@@ -9,7 +9,7 @@
 
 class VnlLexer {
 private:
-    std::istream source;
+    std::istream& source;
     int currentCharIndex;
 
     int line;
