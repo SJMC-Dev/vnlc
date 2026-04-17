@@ -7,7 +7,7 @@
 
 class VnlcSession {
 private:
-    VnlcConfig config;
+    const VnlcConfig config;
 
 public:
     VnlcSession(VnlcConfig&& config);
