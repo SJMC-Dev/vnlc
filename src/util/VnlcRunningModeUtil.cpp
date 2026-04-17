@@ -10,8 +10,6 @@ VnlcRunningMode VnlcRunningModeUtil::getRunningMode(std::string_view modeLiteral
         return VnlcRunningMode::LINT;
     } else if (modeLiteral == "format") {
         return VnlcRunningMode::FORMAT;
-    } else if (modeLiteral == "lsp-server") {
-        return VnlcRunningMode::LSP_SERVER;
     } else if (modeLiteral == "dump-ast") {
         return VnlcRunningMode::DUMP_AST;
     } else if (modeLiteral == "dump-ir") {

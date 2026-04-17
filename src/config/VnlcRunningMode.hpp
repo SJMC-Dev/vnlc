@@ -8,7 +8,6 @@ enum class VnlcRunningMode {
     CHECK,
     LINT,
     FORMAT,
-    LSP_SERVER,
     DUMP_AST,
     DUMP_IR,
 };
