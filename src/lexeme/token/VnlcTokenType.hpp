@@ -101,6 +101,8 @@ enum class VnlcTokenType {
     DEPRECATED,
     EXPERIMENTAL,
     NOWARNINGS,
+    GAMEVERSION,
+    GAMEVERSION_RANGE,
 
     PLUS,                  // +
     MINUS,                 // -
