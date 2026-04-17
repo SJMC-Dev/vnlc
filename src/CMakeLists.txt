@@ -5,6 +5,7 @@ add_executable(
     lexeme/token/VnlcToken.cpp
     session/VnlcSession.cpp
     app/VnlcApp.cpp
+    util/VnlcRunningModeUtil.cpp
 )
 
 target_link_libraries(
