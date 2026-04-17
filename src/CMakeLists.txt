@@ -3,6 +3,7 @@ add_executable(
     main.cpp
     lexeme/lexer/VnlcLexer.cpp
     lexeme/token/VnlcToken.cpp
+    session/VnlcSession.cpp
 )
 
 target_link_libraries(
