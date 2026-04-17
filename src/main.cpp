@@ -1,6 +1,7 @@
-#include <fmt/format.h>
+#include "app/VnlcApp.hpp"
 
 int main(int argc, char* argv[]) {
-    fmt::println("Hello, Vanillang!");
+    VnlcApp app{argc, argv};
+    app.run();
     return 0;
 }
