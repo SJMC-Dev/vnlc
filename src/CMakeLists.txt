@@ -12,7 +12,6 @@ target_link_libraries(
     vnlc
     PRIVATE
     fmt::fmt
-    spdlog::spdlog
     nlohmann_json::nlohmann_json
     CLI11::CLI11
 )
