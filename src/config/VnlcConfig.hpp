@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __VNLC_CONFIG_HPP__
-#define __VNLC_CONFIG_HPP__
+#ifndef VNLC_CONFIG_HPP
+#define VNLC_CONFIG_HPP
 
 #include "VnlcRunningMode.hpp"
 
@@ -25,4 +25,4 @@ struct VnlcConfig {
     std::optional<int> optimizationLevel;
 };
 
-#endif // __VNLC_CONFIG_HPP__
+#endif // VNLC_CONFIG_HPP

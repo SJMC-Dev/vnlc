@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __VNLC_SESSION_HPP__
-#define __VNLC_SESSION_HPP__
+#ifndef VNLC_SESSION_HPP
+#define VNLC_SESSION_HPP
 
 #include "../config/VnlcConfig.hpp"
 
@@ -15,4 +15,4 @@ public:
     void run();
 };
 
-#endif // __VNLC_SESSION_HPP__
+#endif // VNLC_SESSION_HPP

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __VNLC_RUNNING_MODE_HPP__
-#define __VNLC_RUNNING_MODE_HPP__
+#ifndef VNLC_RUNNING_MODE_HPP
+#define VNLC_RUNNING_MODE_HPP
 
 enum class VnlcRunningMode {
     COMPILE,
@@ -12,4 +12,4 @@ enum class VnlcRunningMode {
     DUMP_IR,
 };
 
-#endif //__VNLC_RUNNING_MODE_HPP__
+#endif // VNLC_RUNNING_MODE_HPP

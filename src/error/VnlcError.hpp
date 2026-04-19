@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __VNLC_ERROR_HPP__
-#define __VNLC_ERROR_HPP__
+#ifndef VNLC_ERROR_HPP
+#define VNLC_ERROR_HPP
 
 #include <exception>
 #include <string>
@@ -17,4 +17,4 @@ public:
     const char* what() const noexcept override { return message.c_str(); }
 };
 
-#endif // __VNLC_ERROR_HPP__
+#endif // VNLC_ERROR_HPP

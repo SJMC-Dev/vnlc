@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __VNLC_LOGGER_HPP__
-#define __VNLC_LOGGER_HPP__
+#ifndef VNLC_LOGGER_HPP
+#define VNLC_LOGGER_HPP
 
 #include <string_view>
 
@@ -32,4 +32,4 @@ public:
 #define VNLC_LOG_ERROR(message) VnlcLogger::error(message)
 #define VNLC_LOG_FATAL(message) VnlcLogger::fatal(message)
 
-#endif // __VNLC_LOGGER_HPP__
+#endif // VNLC_LOGGER_HPP

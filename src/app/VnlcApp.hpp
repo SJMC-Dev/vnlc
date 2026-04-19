@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __VNLC_APP_HPP__
-#define __VNLC_APP_HPP__
+#ifndef VNLC_APP_HPP
+#define VNLC_APP_HPP
 
 #include <CLI/App.hpp>
 #include <CLI/Config.hpp>
@@ -26,4 +26,4 @@ public:
     void run();
 };
 
-#endif // __VNLC_APP_HPP__
+#endif // VNLC_APP_HPP

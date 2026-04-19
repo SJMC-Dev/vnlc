@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __VNLC_MODUULE_NAME_CONFLICT_ERROR_HPP__
-#define __VNLC_MODUULE_NAME_CONFLICT_ERROR_HPP__
+#ifndef VNLC_MODUULE_NAME_CONFLICT_ERROR_HPP
+#define VNLC_MODUULE_NAME_CONFLICT_ERROR_HPP
 
 #include "VnlcError.hpp"
 
@@ -10,4 +10,4 @@ public:
     VnlcModuleNameConflictError(std::string_view moduleName) : VnlcError("Found two or more modules with the name: " + std::string(moduleName)) {}
 };
 
-#endif // __VNLC_MODUULE_NAME_CONFLICT_ERROR_HPP__
+#endif // VNLC_MODUULE_NAME_CONFLICT_ERROR_HPP

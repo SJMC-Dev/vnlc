@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __VNLC_LEXER_HPP__
-#define __VNLC_LEXER_HPP__
+#ifndef VNLC_LEXER_HPP
+#define VNLC_LEXER_HPP
 
 #include "../token/VnlcToken.hpp"
 
@@ -26,4 +26,4 @@ public:
     VnlcToken next();
 };
 
-#endif // __VNLC_LEXER_HPP__
+#endif // VNLC_LEXER_HPP

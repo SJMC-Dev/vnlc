@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __VNLC_TOKEN_HPP__
-#define __VNLC_TOKEN_HPP__
+#ifndef VNLC_TOKEN_HPP
+#define VNLC_TOKEN_HPP
 
 #include "VnlcTokenType.hpp"
 
@@ -23,4 +23,4 @@ public:
     inline std::string_view getValue() const;
 };
 
-#endif // __VNLC_TOKEN_HPP__
+#endif // VNLC_TOKEN_HPP
