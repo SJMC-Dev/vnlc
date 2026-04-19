@@ -23,7 +23,7 @@ private:
 public:
     VnlcApp(int argc, char** argv);
 
-    int run();
+    void run();
 };
 
 #endif // __VNLC_APP_HPP__
