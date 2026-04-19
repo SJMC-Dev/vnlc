@@ -1,6 +1,6 @@
 #include "VnlcApp.hpp"
 #include "../config/VnlcConfig.hpp"
-#include "../error/VnlcModuleNameConfictError.hpp"
+#include "../error/VnlcModuleNameConflictError.hpp"
 #include "../log/VnlcLogger.hpp"
 #include "../session/VnlcSession.hpp"
 #include "../util/VnlcRunningModeUtil.hpp"
