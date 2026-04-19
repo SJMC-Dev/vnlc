@@ -8,7 +8,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <vector>
 
 struct VnlcConfig {
     VnlcRunningMode mode;
@@ -18,15 +17,12 @@ struct VnlcConfig {
 
     std::string moduleRootPath;
 
-    std::vector<std::string> inputFilePaths;
+    std::string inputFilePath;
     std::optional<std::string> outputDirectory;
 
     std::unordered_map<std::string, std::string> dependencyModuleRootPaths;
 
-    int optimizationLevel;
-    bool warningsAsErrors;
-
-    bool verbose;
+    std::optional<int> optimizationLevel;
 };
 
 #endif // __VNLC_CONFIG_HPP__
