@@ -10,19 +10,27 @@
 class VnlcLexer {
 private:
     std::istream& source;
-    int currentCharIndex;
+    std::string currentLine;
 
     int line;
     int column;
 
+    bool exhausted;
+
     void advance();
+    bool readline();
+
+    inline bool blank() const;
+    inline bool number() const;
+    inline bool special() const;
+    inline bool newline() const;
+
+    inline int peek() const;
 
 public:
     VnlcLexer(std::istream& input);
 
-    inline int getCurrentLine() const;
-    inline int getCurrentColumn() const;
-
+    bool hasNext();
     VnlcToken next();
 };
 
