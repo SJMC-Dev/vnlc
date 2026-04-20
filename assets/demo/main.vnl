@@ -1,0 +1,7 @@
+func onLoad() {
+    world.print("Hello, Vanillang!", @a)
+}
+
+func onTick() {
+    world.print("tick", @a)
+}
