@@ -129,9 +129,10 @@ enum class VnlcTokenType {
     LESS,          // <
     LESS_EQUAL,    // <=
 
-    DOUBLE_AND,  // &&
-    DOUBLE_OR,   // ||
-    EXCLAMATION, // !
+    DOUBLE_AND,      // &&
+    DOUBLE_OR,       // ||
+    DOUBLE_QUESTION, // ??
+    EXCLAMATION,     // !
 
     ARROW, // ->
 
@@ -158,6 +159,7 @@ enum class VnlcTokenType {
     QUESTION_DOT,    // ?.
     EXCLAMATION_DOT, // !.
     DOUBLE_DOT,      // ..
+    TRIPLE_DOT,      // ...
 
     LEFT_PAREN,    // (
     RIGHT_PAREN,   // )
@@ -169,6 +171,7 @@ enum class VnlcTokenType {
     SINGLE_LINE_COMMENT, // # comment
     MULTI_LINE_COMMENT,  // #* comment *#
 
+    BLANK,
     NEWLINE,
 
     LEXICAL_ERROR,
