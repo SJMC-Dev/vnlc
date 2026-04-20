@@ -97,6 +97,9 @@ enum class VnlcTokenType {
     TYPEOF,
     DEFER,
 
+    ASSET,
+    DEFINE,
+
     METADATA,
     DEPRECATED,
     EXPERIMENTAL,
