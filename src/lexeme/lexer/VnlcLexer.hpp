@@ -24,6 +24,7 @@ private:
     inline bool number() const;
     inline bool special() const;
     inline bool newline() const;
+    inline bool eof() const;
 
     inline int peek() const;
 

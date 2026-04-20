@@ -11,34 +11,39 @@ inline int VnlcLexer::peek() const {
 }
 
 inline bool VnlcLexer::blank() const {
-    int ch = peek();
-    if (ch == std::char_traits<char>::eof())
+    if (eof()) {
         return false;
+    }
+    char ch = static_cast<char>(peek());
     return ch == ' ' || ch == '\t' || ch == '\r';
 }
 
 inline bool VnlcLexer::number() const {
-    int ch = peek();
-    if (ch == std::char_traits<char>::eof())
+    if (eof()) {
         return false;
+    }
+    char ch = static_cast<char>(peek());
     return ch >= '0' && ch <= '9';
 }
 
 inline bool VnlcLexer::special() const {
-    int c = peek();
-    if (c == std::char_traits<char>::eof())
+    if (eof()) {
         return false;
-
+    }
+    char c = static_cast<char>(peek());
     constexpr std::string_view specialChars = "+-*/=!<>|&^%~?:.,;(){}[]#@$\\`\"'";
-    return specialChars.find(static_cast<char>(c)) != std::string_view::npos;
+    return specialChars.find(c) != std::string_view::npos;
 }
 
 inline bool VnlcLexer::newline() const {
-    int ch = peek();
-    if (ch == std::char_traits<char>::eof())
+    if (eof()) {
         return false;
+    }
+    char ch = static_cast<char>(peek());
     return ch == '\n';
 }
+
+inline bool VnlcLexer::eof() const { return peek() == std::char_traits<char>::eof(); }
 
 bool VnlcLexer::readline() {
     if (!std::getline(source, currentLine)) {
@@ -59,7 +64,7 @@ void VnlcLexer::advance() {
         throw VnlcOutOfRangeError("No more tokens to read.");
     }
 
-    if (peek() == std::char_traits<char>::eof()) {
+    if (eof()) {
         exhausted = true;
         return;
     }
@@ -89,7 +94,7 @@ VnlcToken VnlcLexer::next() {
     int currentLine = line + 1;
     int currentColumn = column + 1;
 
-    if (peek() == std::char_traits<char>::eof()) {
+    if (eof()) {
         advance();
         return VnlcToken(VnlcTokenType::END_OF_FILE, "", currentLine, currentColumn);
     }
