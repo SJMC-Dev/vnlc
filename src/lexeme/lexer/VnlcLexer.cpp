@@ -346,6 +346,34 @@ VnlcToken VnlcLexer::next() {
             return VnlcToken(VnlcTokenType::LEFT_BRACKET, std::move(tokenValue), currentLine, currentColumn);
         } else if (currentChar == ']') {
             return VnlcToken(VnlcTokenType::RIGHT_BRACKET, std::move(tokenValue), currentLine, currentColumn);
+        } else if (currentChar == '#') {
+            if (nextChar == '*') {
+                tokenValue.push_back(nextChar);
+                advance();
+                while (true) {
+                    if (eof()) {
+                        return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
+                    }
+
+                    char c = static_cast<char>(peek());
+                    tokenValue.push_back(c);
+                    advance();
+
+                    if (c == '*' && peek() == '#') {
+                        tokenValue.push_back(static_cast<char>(peek()));
+                        advance();
+                        break;
+                    }
+                }
+
+                return VnlcToken(VnlcTokenType::MULTI_LINE_COMMENT, std::move(tokenValue), currentLine, currentColumn);
+            } else {
+                while (!eof() && !newline()) {
+                    tokenValue.push_back(static_cast<char>(peek()));
+                    advance();
+                }
+                return VnlcToken(VnlcTokenType::SINGLE_LINE_COMMENT, std::move(tokenValue), currentLine, currentColumn);
+            }
         }
     }
 
