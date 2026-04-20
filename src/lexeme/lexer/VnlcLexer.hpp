@@ -28,6 +28,13 @@ private:
 
     inline int peek() const;
 
+    VnlcToken processStartsWithBlank(std::string& tokenValue, int currentLine, int currentColumn);
+    VnlcToken processStartsWithNumber(std::string& tokenValue, int currentLine, int currentColumn);
+    VnlcToken processStartsWithSpecial(std::string& tokenValue, int currentLine, int currentColumn);
+    VnlcToken processStartsWithNewline(std::string& tokenValue, int currentLine, int currentColumn);
+    VnlcToken processStartsWithEof(std::string& tokenValue, int currentLine, int currentColumn);
+    VnlcToken processStartsWithIdentifier(std::string& tokenValue, int currentLine, int currentColumn);
+
 public:
     VnlcLexer(std::istream& input);
 
