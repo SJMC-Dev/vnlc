@@ -18,6 +18,7 @@ private:
 public:
     VnlcToken(VnlcTokenType type, const std::string& value, int line, int column);
 
+    inline VnlcTokenType getType() const;
     inline int getLine() const;
     inline int getColumn() const;
     inline std::string_view getValue() const;

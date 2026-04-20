@@ -166,11 +166,12 @@ enum class VnlcTokenType {
     LEFT_BRACKET,  // [
     RIGHT_BRACKET, // ]
 
-    HASHTAG,          // #
-    HASHTAG_ASTERISK, // #*
-    ASTERISK_HASHTAG, // *#
+    SINGLE_LINE_COMMENT, // # comment
+    MULTI_LINE_COMMENT,  // #* comment *#
 
     NEWLINE,
+
+    LEXICAL_ERROR,
 
     END_OF_FILE,
 };
