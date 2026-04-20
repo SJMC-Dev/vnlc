@@ -122,33 +122,33 @@ enum class VnlcTokenType {
     EQUAL,                 // =
     DOUBLE_QUESTION_EQUAL, // ??=
 
-    DOUBLE_EQUAL,  // ==
-    NOT_EQUAL,     // !=
-    GREATER,       // >
-    GREATER_EQUAL, // >=
-    LESS,          // <
-    LESS_EQUAL,    // <=
+    DOUBLE_EQUAL,      // ==
+    EXCLAMATION_EQUAL, // !=
+    RIGHT_ANGLE,       // >
+    RIGHT_ANGLE_EQUAL, // >=
+    LEFT_ANGLE,        // <
+    LEFT_ANGLE_EQUAL,  // <=
 
-    DOUBLE_AND,      // &&
-    DOUBLE_OR,       // ||
-    DOUBLE_QUESTION, // ??
-    EXCLAMATION,     // !
+    DOUBLE_AMPERSAND, // &&
+    DOUBLE_PIPE,      // ||
+    DOUBLE_QUESTION,  // ??
+    EXCLAMATION,      // !
 
     ARROW, // ->
 
-    AND,                        // &
-    OR,                         // |
-    XOR,                        // ^
-    BITWISE_NOT,                // ~
-    LEFT_SHIFT,                 // <<
-    RIGHT_SHIFT,                // >>
-    UNSIGNED_RIGHT_SHIFT,       // >>>
-    AND_EQUAL,                  // &=
-    OR_EQUAL,                   // |=
-    XOR_EQUAL,                  // ^=
-    LEFT_SHIFT_EQUAL,           // <<=
-    RIGHT_SHIFT_EQUAL,          // >>=
-    UNSIGNED_RIGHT_SHIFT_EQUAL, // >>>=
+    AMPERSAND,                // &
+    PIPE,                     // |
+    CARET,                    // ^
+    TILDE,                    // ~
+    DOUBLE_LEFT_ANGLE,        // <<
+    DOUBLE_RIGHT_ANGLE,       // >>
+    TRIPLE_RIGHT_ANGLE,       // >>>
+    AMPERSAND_EQUAL,          // &=
+    PIPE_EQUAL,               // |=
+    CARET_EQUAL,              // ^=
+    DOUBLE_LEFT_ANGLE_EQUAL,  // <<=
+    DOUBLE_RIGHT_ANGLE_EQUAL, // >>=
+    TRIPLE_RIGHT_ANGLE_EQUAL, // >>>=
 
     DOT,             // .
     COMMA,           // ,
@@ -161,12 +161,12 @@ enum class VnlcTokenType {
     DOUBLE_DOT,      // ..
     TRIPLE_DOT,      // ...
 
-    LEFT_PAREN,    // (
-    RIGHT_PAREN,   // )
-    LEFT_BRACE,    // {
-    RIGHT_BRACE,   // }
-    LEFT_BRACKET,  // [
-    RIGHT_BRACKET, // ]
+    LEFT_PARENTHESIS,  // (
+    RIGHT_PARENTHESIS, // )
+    LEFT_BRACE,        // {
+    RIGHT_BRACE,       // }
+    LEFT_BRACKET,      // [
+    RIGHT_BRACKET,     // ]
 
     SINGLE_LINE_COMMENT, // # comment
     MULTI_LINE_COMMENT,  // #* comment *#
