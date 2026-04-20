@@ -21,6 +21,7 @@ public:
     inline VnlcTokenType getType() const;
     inline int getLine() const;
     inline int getColumn() const;
+    inline int getLength() const;
     inline std::string_view getValue() const;
 };
 
