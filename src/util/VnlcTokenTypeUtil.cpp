@@ -5,26 +5,10 @@ std::string_view VnlcTokenTypeUtil::toString(VnlcTokenType type) {
     switch (type) {
         case VnlcTokenType::IDENTIFIER:
             return "VnlcTokenType::IDENTIFIER";
-        case VnlcTokenType::INTEGER:
-            return "VnlcTokenType::INTEGER";
-        case VnlcTokenType::BYTE:
-            return "VnlcTokenType::BYTE";
+        case VnlcTokenType::NUMBER:
+            return "VnlcTokenType::NUMBER";
         case VnlcTokenType::CHAR:
             return "VnlcTokenType::CHAR";
-        case VnlcTokenType::SHORT:
-            return "VnlcTokenType::SHORT";
-        case VnlcTokenType::LONG:
-            return "VnlcTokenType::LONG";
-        case VnlcTokenType::FLOAT:
-            return "VnlcTokenType::FLOAT";
-        case VnlcTokenType::DOUBLE:
-            return "VnlcTokenType::DOUBLE";
-        case VnlcTokenType::BINARY:
-            return "VnlcTokenType::BINARY";
-        case VnlcTokenType::OCTAL:
-            return "VnlcTokenType::OCTAL";
-        case VnlcTokenType::HEXADECIMAL:
-            return "VnlcTokenType::HEXADECIMAL";
         case VnlcTokenType::STRING:
             return "VnlcTokenType::STRING";
         case VnlcTokenType::VAR:
@@ -285,12 +269,8 @@ std::string_view VnlcTokenTypeUtil::toString(VnlcTokenType type) {
             return "VnlcTokenType::RIGHT_BRACKET";
         case VnlcTokenType::SELECTOR_PREFIX:
             return "VnlcTokenType::SELECTOR_PREFIX";
-        case VnlcTokenType::FORMAT_STRING_START:
-            return "VnlcTokenType::FORMAT_STRING_START";
         case VnlcTokenType::INTERPOLATION_START:
             return "VnlcTokenType::INTERPOLATION_START";
-        case VnlcTokenType::RAW_STRING_START:
-            return "VnlcTokenType::RAW_STRING_START";
         case VnlcTokenType::SINGLE_LINE_COMMENT:
             return "VnlcTokenType::SINGLE_LINE_COMMENT";
         case VnlcTokenType::MULTI_LINE_COMMENT:

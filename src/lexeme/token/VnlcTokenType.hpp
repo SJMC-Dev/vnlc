@@ -6,17 +6,8 @@
 enum class VnlcTokenType {
     IDENTIFIER,
 
-    INTEGER,
-    BYTE,
+    NUMBER,
     CHAR,
-    SHORT,
-    LONG,
-    FLOAT,
-    DOUBLE,
-    BINARY,
-    OCTAL,
-    HEXADECIMAL,
-
     STRING,
 
     VAR,
@@ -71,6 +62,7 @@ enum class VnlcTokenType {
     AS,
     MODULE,
     PARENT,
+    SELF,
 
     LAMBDA,
     COMMAND,
@@ -165,10 +157,7 @@ enum class VnlcTokenType {
 
     SELECTOR_PREFIX, // @p, @r, @a, @e, @s, @n
 
-    FORMAT_STRING_START, // f", F"
     INTERPOLATION_START, // $(
-
-    RAW_STRING_START, // r", R"
 
     SINGLE_LINE_COMMENT, // # comment
     MULTI_LINE_COMMENT,  // #* comment *#
