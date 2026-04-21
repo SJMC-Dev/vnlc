@@ -7,6 +7,7 @@ add_executable(
     app/VnlcApp.cpp
     util/VnlcRunningModeUtil.cpp
     log/VnlcLogger.cpp
+    util/VnlcTokenTypeUtil.cpp
 )
 
 target_link_libraries(
