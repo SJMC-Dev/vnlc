@@ -7,6 +7,7 @@ enum class VnlcLexerMode {
     DEFAULT,
     STRING,
     FORMAT_STRING,
+    RAW_STRING,
     INTERPOLATION_BEGIN,
     NUMBER_STARTS_WITH_DOT,
 };

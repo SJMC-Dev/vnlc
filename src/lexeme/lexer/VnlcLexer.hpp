@@ -36,6 +36,7 @@ private:
     inline bool special() const;
     inline bool newline() const;
     inline bool eof() const;
+    inline bool separator() const;
 
     inline int peek() const;
     inline int peek(int offset) const;
@@ -49,6 +50,7 @@ private:
 
     VnlcToken scanStringLiteral(std::string& tokenValue, int currentLine, int currentColumn);
     VnlcToken scanFormatStringLiteral(std::string& tokenValue, int currentLine, int currentColumn);
+    VnlcToken scanRawStringLiteral(std::string& tokenValue, int currentLine, int currentColumn);
 
 public:
     VnlcLexer(std::istream& input);

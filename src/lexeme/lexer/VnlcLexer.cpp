@@ -132,6 +132,10 @@ inline bool VnlcLexer::eof() const {
     return peek() == std::char_traits<char>::eof();
 }
 
+inline bool VnlcLexer::separator() const {
+    return eof() || blank() || special() || newline();
+}
+
 bool VnlcLexer::readline() {
     if (!std::getline(source, currentLine)) {
         return false;
@@ -228,8 +232,11 @@ VnlcToken VnlcLexer::processStartsWithNumber(std::string& tokenValue, int curren
             }
 
             if (nonDecimal || existE) {
-                tokenValue.push_back(currentChar);
-                advance();
+                while (!separator()) {
+                    tokenValue.push_back(currentChar);
+                    advance();
+                    currentChar = static_cast<char>(peek());
+                }
                 return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
             }
 
@@ -237,37 +244,73 @@ VnlcToken VnlcLexer::processStartsWithNumber(std::string& tokenValue, int curren
         }
 
         if (!nonDecimal && (currentChar == 'e' || currentChar == 'E')) {
+            tokenValue.push_back(currentChar);
+            advance();
+            currentChar = static_cast<char>(peek());
+
             if (existE || dotCount > 1) {
+                while (!separator()) {
+                    tokenValue.push_back(currentChar);
+                    advance();
+                    currentChar = static_cast<char>(peek());
+                }
+                return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
+            }
+
+            if (currentChar == '+' || currentChar == '-') {
                 tokenValue.push_back(currentChar);
                 advance();
+                currentChar = static_cast<char>(peek());
+
+                if (!number()) {
+                    while (!separator()) {
+                        tokenValue.push_back(currentChar);
+                        advance();
+                        currentChar = static_cast<char>(peek());
+                    }
+                    return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
+                }
+            } else if (!number()) {
+                while (!separator()) {
+                    tokenValue.push_back(currentChar);
+                    advance();
+                    currentChar = static_cast<char>(peek());
+                }
                 return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
             }
 
             existE = true;
+            continue;
         }
 
-        if (nonDecimal && !blank() && !special() && !newline() && !eof()) {
+        if (nonDecimal) {
             bool error = false;
             error |= baseFlags == BIN && binaryDigits.find(currentChar) == std::string_view::npos;
             error |= baseFlags == OCT && octalDigits.find(currentChar) == std::string_view::npos;
             error |= baseFlags == HEX && hexDigits.find(currentChar) == std::string_view::npos;
 
             if (error) {
-                tokenValue.push_back(currentChar);
-                advance();
+                while (!separator()) {
+                    tokenValue.push_back(currentChar);
+                    advance();
+                    currentChar = static_cast<char>(peek());
+                }
                 return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
             }
         };
 
-        if (!nonDecimal && !number() && !blank() && !special() && !newline() && !eof()) {
+        if (!nonDecimal && !number()) {
             if (dotCount == 1 || existE) {
                 if (floatSuffixes.find(currentChar) != std::string_view::npos) {
                     tokenValue.push_back(currentChar);
                     advance();
                     break;
                 } else {
-                    tokenValue.push_back(currentChar);
-                    advance();
+                    while (!separator()) {
+                        tokenValue.push_back(currentChar);
+                        advance();
+                        currentChar = static_cast<char>(peek());
+                    }
                     return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
                 }
             } else if (dotCount == 0 && !existE) {
@@ -276,21 +319,26 @@ VnlcToken VnlcLexer::processStartsWithNumber(std::string& tokenValue, int curren
                     advance();
                     break;
                 } else {
-                    tokenValue.push_back(currentChar);
-                    advance();
+                    while (!separator()) {
+                        tokenValue.push_back(currentChar);
+                        advance();
+                        currentChar = static_cast<char>(peek());
+                    }
                     return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
                 }
             } else {
-                tokenValue.push_back(currentChar);
-                advance();
+                while (!separator()) {
+                    tokenValue.push_back(currentChar);
+                    advance();
+                    currentChar = static_cast<char>(peek());
+                }
                 return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
             }
         }
 
         bool isDot = (currentChar == '.');
-        bool isExp = (currentChar == 'e' || currentChar == 'E');
 
-        if (!isDot && !isExp && (blank() || special() || newline() || eof())) {
+        if (!isDot && separator()) {
             break;
         }
     }
@@ -581,6 +629,11 @@ VnlcToken VnlcLexer::processStartsWithSpecial(std::string& tokenValue, int curre
             advance();
             return VnlcToken(VnlcTokenType::SELECTOR_PREFIX, std::move(tokenValue), currentLine, currentColumn);
         } else {
+            while (!separator()) {
+                tokenValue.push_back(nextChar);
+                advance();
+                nextChar = static_cast<char>(peek());
+            }
             return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
         }
     } else if (currentChar == '$') {
@@ -594,6 +647,11 @@ VnlcToken VnlcLexer::processStartsWithSpecial(std::string& tokenValue, int curre
 
             return VnlcToken(VnlcTokenType::INTERPOLATION_START, std::move(tokenValue), currentLine, currentColumn);
         } else {
+            while (!separator()) {
+                tokenValue.push_back(nextChar);
+                advance();
+                nextChar = static_cast<char>(peek());
+            }
             return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
         }
     } else if (currentChar == '\'') {
@@ -611,7 +669,7 @@ VnlcToken VnlcLexer::processStartsWithSpecial(std::string& tokenValue, int curre
 
             if (c == '\\') {
                 c = static_cast<char>(peek());
-                std::string_view escapeChars = "bfnrst\\\"'";
+                std::string_view escapeChars = "0bfnrst\\\"'";
                 tokenValue.push_back(c);
                 advance();
                 if (escapeChars.find(c) == std::string_view::npos) {
@@ -629,7 +687,7 @@ VnlcToken VnlcLexer::processStartsWithSpecial(std::string& tokenValue, int curre
             charCount++;
         }
 
-        error |= (charCount == 1);
+        error |= (charCount != 1);
         if (error) {
             return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
         }
@@ -672,8 +730,8 @@ VnlcToken VnlcLexer::processStartsWithIdentifier(std::string& tokenValue, int cu
         tokenValue.push_back(static_cast<char>(peek()));
         advance();
 
-        mode = VnlcLexerMode::STRING;
-        return scanStringLiteral(tokenValue, currentLine, currentColumn);
+        mode = VnlcLexerMode::RAW_STRING;
+        return scanRawStringLiteral(tokenValue, currentLine, currentColumn);
     }
 
     while (!eof() && !blank() && !special() && !newline()) {
@@ -688,6 +746,12 @@ VnlcToken VnlcLexer::processStartsWithIdentifier(std::string& tokenValue, int cu
     }
 
     if (error) {
+        char c = static_cast<char>(peek());
+        while (!separator()) {
+            tokenValue.push_back(c);
+            advance();
+            c = static_cast<char>(peek());
+        }
         return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
     } else if (keywords.find(tokenValue) != keywords.end()) {
         return VnlcToken(keywords[tokenValue], std::move(tokenValue), currentLine, currentColumn);
@@ -773,6 +837,25 @@ VnlcToken VnlcLexer::scanFormatStringLiteral(std::string& tokenValue, int curren
     return VnlcToken(VnlcTokenType::STRING, std::move(tokenValue), currentLine, currentColumn);
 }
 
+VnlcToken VnlcLexer::scanRawStringLiteral(std::string& tokenValue, int currentLine, int currentColumn) {
+    while (true) {
+        if (eof() || newline()) {
+            return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
+        }
+
+        char currentChar = static_cast<char>(peek());
+        tokenValue.push_back(currentChar);
+        advance();
+
+        if (currentChar == '"') {
+            break;
+        }
+    }
+
+    mode = VnlcLexerMode::DEFAULT;
+    return VnlcToken(VnlcTokenType::STRING, std::move(tokenValue), currentLine, currentColumn);
+}
+
 VnlcToken VnlcLexer::next() {
     if (!hasNext()) {
         throw VnlcOutOfRangeError("No more tokens to read.");
@@ -797,8 +880,12 @@ VnlcToken VnlcLexer::next() {
             return processStartsWithNumber(tokenValue, currentLine, currentColumn);
         } else {
             if (peek() >= 0 && peek() < 32) {
-                tokenValue.push_back(static_cast<char>(peek()));
-                advance();
+                char c = static_cast<char>(peek());
+                while (!separator()) {
+                    tokenValue.push_back(c);
+                    advance();
+                    c = static_cast<char>(peek());
+                }
                 return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
             }
             return processStartsWithIdentifier(tokenValue, currentLine, currentColumn);
