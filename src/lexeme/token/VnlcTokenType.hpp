@@ -18,14 +18,6 @@ enum class VnlcTokenType {
     HEXADECIMAL,
 
     STRING,
-    ARRAY_LIST,
-    SNBT_INTEGER_ARRAY,
-    SNBT_BYTE_ARRAY,
-    SNBT_LONG_ARRAY,
-    SNBT_COMPOUND,
-    SELECTOR,
-    RANGE,
-    REGEX,
 
     VAR,
     LET,
@@ -105,7 +97,6 @@ enum class VnlcTokenType {
     EXPERIMENTAL,
     NOWARNINGS,
     GAMEVERSION,
-    GAMEVERSION_RANGE,
 
     PLUS,                  // +
     MINUS,                 // -
@@ -170,6 +161,13 @@ enum class VnlcTokenType {
     RIGHT_BRACE,       // }
     LEFT_BRACKET,      // [
     RIGHT_BRACKET,     // ]
+
+    SELECTOR_PREFIX, // @p, @r, @a, @e, @s, @n
+
+    FORMAT_STRING_START, // f", F"
+    INTERPOLATION_START, // $(
+
+    RAW_STRING_START, // r", R"
 
     SINGLE_LINE_COMMENT, // # comment
     MULTI_LINE_COMMENT,  // #* comment *#
