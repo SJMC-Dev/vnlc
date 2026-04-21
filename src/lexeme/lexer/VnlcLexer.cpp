@@ -1,7 +1,7 @@
 #include "VnlcLexer.hpp"
 #include "../../error/VnlcOutOfRangeError.hpp"
 
-VnlcLexer::VnlcLexer(std::istream& input) : source(input), currentLine(""), line(-1), column(0), exhausted(false) { readline(); }
+VnlcLexer::VnlcLexer(std::istream& input) : mode(VnlcLexerMode::DEFAULT), modeStack(), parenthesisCounterStack(), parenthesisCounter(0), source(input), currentLine(""), line(-1), column(0), exhausted(false) { readline(); }
 
 inline int VnlcLexer::peek() const {
     if (column < static_cast<int>(currentLine.length())) {

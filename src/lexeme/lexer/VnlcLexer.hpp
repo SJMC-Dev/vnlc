@@ -4,11 +4,18 @@
 #define VNLC_LEXER_HPP
 
 #include "../token/VnlcToken.hpp"
+#include "VnlcLexerMode.hpp"
 
 #include <istream>
+#include <stack>
 
 class VnlcLexer {
 private:
+    VnlcLexerMode mode;
+    std::stack<VnlcLexerMode> modeStack;
+    std::stack<int> parenthesisCounterStack;
+    int parenthesisCounter;
+
     std::istream& source;
     std::string currentLine;
 
