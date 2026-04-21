@@ -9,7 +9,7 @@
 #include <fmt/core.h>
 #include <vector>
 
-VnlcApp::VnlcApp(int argc, char** argv) : argc{argc}, argv{argv}, app{"Vanillang Compiler"} {}
+VnlcApp::VnlcApp(int argc, char** argv) : argc{ argc }, argv{ argv }, app{ "Vanillang Compiler" } {}
 
 void VnlcApp::run() {
     std::string_view mode;
@@ -59,7 +59,7 @@ void VnlcApp::run() {
     };
 
     addCommonOptions(compileApp, true);
-    compileApp->add_option("--optimization-level", optimizationLevel, "Optimization level that compiler uses, including 0, 1, 2 and 3")->default_val(0)->check(CLI::IsMember({0, 1, 2, 3}));
+    compileApp->add_option("--optimization-level", optimizationLevel, "Optimization level that compiler uses, including 0, 1, 2 and 3")->default_val(0)->check(CLI::IsMember({ 0, 1, 2, 3 }));
 
     addCommonOptions(checkApp);
     addCommonOptions(lintApp);
@@ -85,11 +85,11 @@ void VnlcApp::run() {
 
     VnlcConfig config{
         .mode = VnlcRunningModeUtil::getRunningMode(mode),
-        .vanillangVersion{std::move(vanillangVersion)},
-        .minecraftVersion{std::move(minecraftVersion)},
-        .moduleRootPath{std::move(moduleRootPath)},
-        .inputFilePath{std::move(inputFilePath)},
-        .outputDirectory{outputDirectory.empty() ? std::nullopt : std::make_optional(std::move(outputDirectory))},
+        .vanillangVersion{ std::move(vanillangVersion) },
+        .minecraftVersion{ std::move(minecraftVersion) },
+        .moduleRootPath{ std::move(moduleRootPath) },
+        .inputFilePath{ std::move(inputFilePath) },
+        .outputDirectory{ outputDirectory.empty() ? std::nullopt : std::make_optional(std::move(outputDirectory)) },
         .dependencyModuleRootPaths{},
         .optimizationLevel = (mode == "compile") ? std::make_optional(optimizationLevel) : std::nullopt,
     };
@@ -105,6 +105,6 @@ void VnlcApp::run() {
         config.dependencyModuleRootPaths.emplace(std::move(dependencyName), std::move(dependencyModuleRootPath));
     }
 
-    VnlcSession session{std::move(config)};
+    VnlcSession session{ std::move(config) };
     session.run();
 }

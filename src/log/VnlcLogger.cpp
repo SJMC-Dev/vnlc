@@ -23,9 +23,13 @@ void VnlcLogger::info(std::string_view message) {
     std::clog << COLOR_INFO << "[INFO] " << message << COLOR_RESET << std::endl;
 }
 
-void VnlcLogger::warn(std::string_view message) { std::clog << COLOR_WARN << "[WARN] " << message << COLOR_RESET << std::endl; }
+void VnlcLogger::warn(std::string_view message) {
+    std::clog << COLOR_WARN << "[WARN] " << message << COLOR_RESET << std::endl;
+}
 
-void VnlcLogger::error(std::string_view message) { std::cerr << COLOR_ERROR << "[ERROR] " << message << COLOR_RESET << std::endl; }
+void VnlcLogger::error(std::string_view message) {
+    std::cerr << COLOR_ERROR << "[ERROR] " << message << COLOR_RESET << std::endl;
+}
 
 void VnlcLogger::fatal(std::string_view message) {
     std::cerr << COLOR_FATAL << "[FATAL] " << message << COLOR_RESET << std::endl;

@@ -3,7 +3,7 @@
 
 int main(int argc, char** argv) {
     try {
-        VnlcApp app{argc, argv};
+        VnlcApp app{ argc, argv };
         app.run();
     } catch (const std::exception& e) {
         VNLC_LOG_FATAL(e.what());

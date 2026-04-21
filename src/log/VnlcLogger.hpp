@@ -10,7 +10,9 @@ private:
     inline static bool verbose = false;
 
 public:
-    static inline void setVerbose(bool isVerbose) { verbose = isVerbose; }
+    static inline void setVerbose(bool isVerbose) {
+        verbose = isVerbose;
+    }
 
     static void debug(std::string_view message);
     static void info(std::string_view message);
@@ -22,8 +24,8 @@ public:
 #ifndef NDEBUG
 #define VNLC_LOG_DEBUG(message) VnlcLogger::debug(message)
 #else
-#define VNLC_LOG_DEBUG(message)                                                                                                                                                                                                                                \
-    do {                                                                                                                                                                                                                                                       \
+#define VNLC_LOG_DEBUG(message) \
+    do {                        \
     } while (0)
 #endif
 

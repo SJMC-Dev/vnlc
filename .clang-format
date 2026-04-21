@@ -1,8 +1,6 @@
 Language: Cpp
 BasedOnStyle: LLVM
-IndentWidth: 4
-TabWidth: 4
-UseTab: Never
+
 IndentCaseLabels: true
 IndentAccessModifiers: false
 AccessModifierOffset: -4
@@ -12,3 +10,25 @@ BreakBeforeBraces: Attach
 ColumnLimit: 256
 SortIncludes: true
 PointerAlignment: Left
+
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+
+BinPackArguments: false
+BinPackParameters: false
+BinPackLongBracedList: false
+
+AlignEscapedNewlines: Left
+AlignAfterOpenBracket: false
+Cpp11BracedListStyle: false
+
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLoopsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortLambdasOnASingleLine: All
+
+IndentWidth: 4
+ContinuationIndentWidth: 4
+ConstructorInitializerIndentWidth: 4
+TabWidth: 4
+UseTab: Never

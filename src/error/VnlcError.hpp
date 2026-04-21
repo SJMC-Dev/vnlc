@@ -14,7 +14,9 @@ private:
 public:
     VnlcError(std::string_view message) : message(message) {}
 
-    const char* what() const noexcept override { return message.c_str(); }
+    const char* what() const noexcept override {
+        return message.c_str();
+    }
 };
 
 #endif // VNLC_ERROR_HPP
