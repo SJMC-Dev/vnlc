@@ -359,6 +359,57 @@ VnlcToken VnlcLexer::processStartsWithSpecial(std::string& tokenValue, int curre
             }
             return VnlcToken(VnlcTokenType::SINGLE_LINE_COMMENT, std::move(tokenValue), currentLine, currentColumn);
         }
+    } else if (currentChar == '@') {
+        if (nextChar == 'p' || nextChar == 'r' || nextChar == 'a' || nextChar == 'e' || nextChar == 's' || nextChar == 'n') {
+            tokenValue.push_back(nextChar);
+            advance();
+            return VnlcToken(VnlcTokenType::SELECTOR_PREFIX, std::move(tokenValue), currentLine, currentColumn);
+        } else {
+            return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
+        }
+    } else if (currentChar == '$') {
+        if (nextChar == '(') {
+            tokenValue.push_back(nextChar);
+            advance();
+            return VnlcToken(VnlcTokenType::INTERPOLATION_START, std::move(tokenValue), currentLine, currentColumn);
+        } else {
+            return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
+        }
+    } else if (currentChar == '\'') {
+        std::string_view asciiChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!\"#$%&()*+,-./:;<=>?@[\\]^_`{|}~ ";
+        if (nextChar == '\\') {
+            tokenValue.push_back(nextChar);
+            advance();
+            nextChar = static_cast<char>(peek());
+            std::string_view escapeChars = "bfnrst\\'";
+            if (escapeChars.find(nextChar) != std::string_view::npos) {
+                tokenValue.push_back(nextChar);
+                advance();
+                nextChar = static_cast<char>(peek());
+                if (nextChar == '\'') {
+                    tokenValue.push_back(nextChar);
+                    advance();
+                    return VnlcToken(VnlcTokenType::CHAR, std::move(tokenValue), currentLine, currentColumn);
+                } else {
+                    return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
+                }
+            } else {
+                return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
+            }
+        } else if (asciiChars.find(nextChar) != std::string_view::npos) {
+            tokenValue.push_back(nextChar);
+            advance();
+            nextChar = static_cast<char>(peek());
+            if (nextChar == '\'') {
+                tokenValue.push_back(nextChar);
+                advance();
+                return VnlcToken(VnlcTokenType::CHAR, std::move(tokenValue), currentLine, currentColumn);
+            } else {
+                return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
+            }
+        } else {
+            return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
+        }
     } else {
         return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
     }
