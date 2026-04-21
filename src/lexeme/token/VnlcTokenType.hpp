@@ -61,6 +61,7 @@ enum class VnlcTokenType {
     INSTANCEOF,
     FINAL,
     OVERRIDE,
+    NONE,
 
     TRUE,
     FALSE,

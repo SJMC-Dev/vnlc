@@ -107,6 +107,8 @@ std::string_view VnlcTokenTypeUtil::toString(VnlcTokenType type) {
             return "VnlcTokenType::FINAL";
         case VnlcTokenType::OVERRIDE:
             return "VnlcTokenType::OVERRIDE";
+        case VnlcTokenType::NONE:
+            return "VnlcTokenType::NONE";
         case VnlcTokenType::TRUE:
             return "VnlcTokenType::TRUE";
         case VnlcTokenType::FALSE:
