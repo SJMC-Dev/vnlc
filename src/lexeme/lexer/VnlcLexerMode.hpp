@@ -7,6 +7,8 @@ enum class VnlcLexerMode {
     DEFAULT,
     STRING,
     FORMAT_STRING,
+    INTERPOLATION_BEGIN,
+    NUMBER_STARTS_WITH_DOT,
 };
 
 #endif // VNLC_LEXER_MODE_HPP

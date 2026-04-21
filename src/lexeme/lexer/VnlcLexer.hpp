@@ -8,13 +8,17 @@
 
 #include <istream>
 #include <stack>
+#include <string>
+#include <string_view>
+#include <unordered_map>
 
 class VnlcLexer {
 private:
     VnlcLexerMode mode;
-    std::stack<VnlcLexerMode> modeStack;
     std::stack<int> parenthesisCounterStack;
     int parenthesisCounter;
+
+    std::unordered_map<std::string_view, VnlcTokenType> keywords;
 
     std::istream& source;
     std::string currentLine;
@@ -34,6 +38,7 @@ private:
     inline bool eof() const;
 
     inline int peek() const;
+    inline int peek(int offset) const;
 
     VnlcToken processStartsWithBlank(std::string& tokenValue, int currentLine, int currentColumn);
     VnlcToken processStartsWithNumber(std::string& tokenValue, int currentLine, int currentColumn);
@@ -41,6 +46,9 @@ private:
     VnlcToken processStartsWithNewline(std::string& tokenValue, int currentLine, int currentColumn);
     VnlcToken processStartsWithEof(std::string& tokenValue, int currentLine, int currentColumn);
     VnlcToken processStartsWithIdentifier(std::string& tokenValue, int currentLine, int currentColumn);
+
+    VnlcToken scanStringLiteral(std::string& tokenValue, int currentLine, int currentColumn);
+    VnlcToken scanFormatStringLiteral(std::string& tokenValue, int currentLine, int currentColumn);
 
 public:
     VnlcLexer(std::istream& input);
