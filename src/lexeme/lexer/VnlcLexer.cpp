@@ -198,8 +198,8 @@ VnlcToken VnlcLexer::processStartsWithNumber(std::string& tokenValue, int curren
     constexpr unsigned char HEX = 0b100;
 
     bool existE = false;
+    bool existDot = mode == VnlcLexerMode::NUMBER_STARTS_WITH_DOT;
     bool nonDecimal = false;
-    int dotCount = mode == VnlcLexerMode::NUMBER_STARTS_WITH_DOT ? 1 : 0;
     unsigned char baseFlags = 0;
 
     mode = VnlcLexerMode::DEFAULT;
@@ -217,6 +217,8 @@ VnlcToken VnlcLexer::processStartsWithNumber(std::string& tokenValue, int curren
         advance();
         currentChar = static_cast<char>(peek());
 
+        bool isDot = (currentChar == '.');
+
         if (tokenValue.size() == 1 && tokenValue.back() == '0' && nonDecimalFlags.find(currentChar) != std::string_view::npos) {
             nonDecimal = true;
             baseFlags = currentChar == 'b' ? BIN : currentChar == 'o' ? OCT : currentChar == 'x' ? HEX : 0;
@@ -225,12 +227,15 @@ VnlcToken VnlcLexer::processStartsWithNumber(std::string& tokenValue, int curren
             currentChar = static_cast<char>(peek());
         }
 
-        if (currentChar == '.') {
+        if (isDot) {
             if (peek(1) == '.') {
                 break;
             }
 
-            if (nonDecimal || existE) {
+            if (nonDecimal || existE || existDot) {
+                tokenValue.push_back(currentChar);
+                advance();
+                currentChar = static_cast<char>(peek());
                 while (!separator()) {
                     tokenValue.push_back(currentChar);
                     advance();
@@ -239,7 +244,7 @@ VnlcToken VnlcLexer::processStartsWithNumber(std::string& tokenValue, int curren
                 return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
             }
 
-            dotCount++;
+            existDot = true;
         }
 
         if (!nonDecimal && exponentFlags.find(currentChar) != std::string_view::npos) {
@@ -247,7 +252,7 @@ VnlcToken VnlcLexer::processStartsWithNumber(std::string& tokenValue, int curren
             advance();
             currentChar = static_cast<char>(peek());
 
-            if (existE || dotCount > 1) {
+            if (existE) {
                 while (!separator()) {
                     tokenValue.push_back(currentChar);
                     advance();
@@ -298,8 +303,8 @@ VnlcToken VnlcLexer::processStartsWithNumber(std::string& tokenValue, int curren
             }
         };
 
-        if (!nonDecimal && !number()) {
-            if (dotCount == 1 || existE) {
+        if (!nonDecimal && !number() && !isDot) {
+            if (existDot || existE) {
                 if (floatSuffixes.find(currentChar) != std::string_view::npos) {
                     tokenValue.push_back(currentChar);
                     advance();
@@ -312,7 +317,7 @@ VnlcToken VnlcLexer::processStartsWithNumber(std::string& tokenValue, int curren
                     }
                     return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
                 }
-            } else if (dotCount == 0 && !existE) {
+            } else {
                 if (integerSuffixes.find(currentChar) != std::string_view::npos) {
                     tokenValue.push_back(currentChar);
                     advance();
@@ -325,17 +330,8 @@ VnlcToken VnlcLexer::processStartsWithNumber(std::string& tokenValue, int curren
                     }
                     return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
                 }
-            } else {
-                while (!separator()) {
-                    tokenValue.push_back(currentChar);
-                    advance();
-                    currentChar = static_cast<char>(peek());
-                }
-                return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
             }
         }
-
-        bool isDot = (currentChar == '.');
 
         if (!isDot && separator()) {
             break;
