@@ -204,7 +204,6 @@ VnlcToken VnlcLexer::processStartsWithNumber(std::string& tokenValue, int curren
 
     mode = VnlcLexerMode::DEFAULT;
 
-    std::string_view decimalDigits = "0123456789";
     std::string_view hexDigits = "0123456789abcdefABCDEF";
     std::string_view octalDigits = "01234567";
     std::string_view binaryDigits = "01";
@@ -243,7 +242,7 @@ VnlcToken VnlcLexer::processStartsWithNumber(std::string& tokenValue, int curren
             dotCount++;
         }
 
-        if (!nonDecimal && (currentChar == 'e' || currentChar == 'E')) {
+        if (!nonDecimal && exponentFlags.find(currentChar) != std::string_view::npos) {
             tokenValue.push_back(currentChar);
             advance();
             currentChar = static_cast<char>(peek());
