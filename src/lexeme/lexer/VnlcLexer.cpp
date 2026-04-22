@@ -619,8 +619,19 @@ VnlcToken VnlcLexer::processStartsWithSpecial(std::string& tokenValue, int curre
     } else if (peek() == '@') {
         collect(tokenValue);
 
-        if (peek() == 'p' || peek() == 'r' || peek() == 'a' || peek() == 'e' || peek() == 's' || peek() == 'n') {
+        std::string_view selectorPrefixes = "praesn";
+
+        if (selectorPrefixes.find(peek()) != std::string_view::npos) {
             collect(tokenValue);
+
+            if (!separator()) {
+                while (!separator()) {
+                    collect(tokenValue);
+                }
+
+                return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
+            }
+
             return VnlcToken(VnlcTokenType::SELECTOR_PREFIX, std::move(tokenValue), currentLine, currentColumn);
         } else {
             while (!separator()) {
