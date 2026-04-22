@@ -30,6 +30,7 @@ private:
 
     void advance();
     bool readline();
+    void collect(std::string& tokenValue);
 
     inline bool blank() const;
     inline bool number() const;
