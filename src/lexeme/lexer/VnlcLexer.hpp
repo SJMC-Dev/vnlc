@@ -32,15 +32,15 @@ private:
     bool readline();
     void collect(std::string& tokenValue);
 
-    inline bool blank() const;
-    inline bool number() const;
-    inline bool special() const;
-    inline bool newline() const;
-    inline bool eof() const;
-    inline bool separator() const;
+    bool blank() const;
+    bool number() const;
+    bool special() const;
+    bool newline() const;
+    bool eof() const;
+    bool separator() const;
 
-    inline int peek() const;
-    inline int peek(int offset) const;
+    int peek() const;
+    int peek(int offset) const;
 
     VnlcToken processStartsWithBlank(std::string& tokenValue, int currentLine, int currentColumn);
     VnlcToken processStartsWithNumber(std::string& tokenValue, int currentLine, int currentColumn);

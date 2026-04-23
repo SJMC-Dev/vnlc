@@ -18,11 +18,11 @@ private:
 public:
     VnlcToken(VnlcTokenType type, const std::string& value, int line, int column);
 
-    inline VnlcTokenType getType() const;
-    inline int getLine() const;
-    inline int getColumn() const;
-    inline int getLength() const;
-    inline std::string_view getValue() const;
+    VnlcTokenType getType() const;
+    int getLine() const;
+    int getColumn() const;
+    int getLength() const;
+    std::string_view getValue() const;
 };
 
 #endif // VNLC_TOKEN_HPP

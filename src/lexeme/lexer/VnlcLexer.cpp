@@ -82,11 +82,11 @@ VnlcLexer::VnlcLexer(std::istream& input)
     readline();
 }
 
-inline int VnlcLexer::peek() const {
+int VnlcLexer::peek() const {
     return peek(0);
 }
 
-inline int VnlcLexer::peek(int offset) const {
+int VnlcLexer::peek(int offset) const {
     int targetColumn = column + offset;
     if (targetColumn < static_cast<int>(currentLine.length())) {
         return static_cast<char>(currentLine[targetColumn]);
@@ -95,7 +95,7 @@ inline int VnlcLexer::peek(int offset) const {
     return std::char_traits<char>::eof();
 }
 
-inline bool VnlcLexer::blank() const {
+bool VnlcLexer::blank() const {
     if (eof()) {
         return false;
     }
@@ -103,7 +103,7 @@ inline bool VnlcLexer::blank() const {
     return ch == ' ' || ch == '\t' || ch == '\r';
 }
 
-inline bool VnlcLexer::number() const {
+bool VnlcLexer::number() const {
     if (eof()) {
         return false;
     }
@@ -111,7 +111,7 @@ inline bool VnlcLexer::number() const {
     return ch >= '0' && ch <= '9';
 }
 
-inline bool VnlcLexer::special() const {
+bool VnlcLexer::special() const {
     if (eof()) {
         return false;
     }
@@ -120,7 +120,7 @@ inline bool VnlcLexer::special() const {
     return specialChars.find(c) != std::string_view::npos;
 }
 
-inline bool VnlcLexer::newline() const {
+bool VnlcLexer::newline() const {
     if (eof()) {
         return false;
     }
@@ -128,11 +128,11 @@ inline bool VnlcLexer::newline() const {
     return ch == '\n';
 }
 
-inline bool VnlcLexer::eof() const {
+bool VnlcLexer::eof() const {
     return peek() == std::char_traits<char>::eof();
 }
 
-inline bool VnlcLexer::separator() const {
+bool VnlcLexer::separator() const {
     return eof() || blank() || special() || newline();
 }
 
