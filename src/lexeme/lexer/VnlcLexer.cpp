@@ -783,6 +783,7 @@ VnlcToken VnlcLexer::scanStringLiteral(std::string& tokenValue, int currentLine,
 
     while (true) {
         if (eof() || newline()) {
+            mode = VnlcLexerMode::DEFAULT;
             return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
         }
 
@@ -820,6 +821,7 @@ VnlcToken VnlcLexer::scanFormatStringLiteral(std::string& tokenValue, int curren
 
     while (true) {
         if (eof() || newline()) {
+            mode = VnlcLexerMode::DEFAULT;
             return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
         }
 
@@ -858,6 +860,7 @@ VnlcToken VnlcLexer::scanFormatStringLiteral(std::string& tokenValue, int curren
 VnlcToken VnlcLexer::scanRawStringLiteral(std::string& tokenValue, int currentLine, int currentColumn) {
     while (true) {
         if (eof() || newline()) {
+            mode = VnlcLexerMode::DEFAULT;
             return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn);
         }
 
