@@ -426,7 +426,7 @@ TEST(VnlcLexerTest, RawStrings) {
 }
 
 TEST(VnlcLexerTest, FormatStrings) {
-    std::istringstream input("f\"This is a format string with an expression $(1 + 2)\"\nf\"Another format string with an expression $(player.name) and a nested expression $(world.print(f\"Hello, $(player.name)!\"))\"\nf\"Unterminated format string");
+    std::istringstream input("f\"This is a format string with an expression $(1 + 2)\"\nf\"Another format string with an expression $(player.name) and a nested expression $(world.print(f\"Hello, $(player.name)!\", @a))\"\nf\"Unterminated format string");
     VnlcLexer lexer(input);
 
     ASSERT_TRUE(lexer.hasNext());
@@ -487,6 +487,12 @@ TEST(VnlcLexerTest, FormatStrings) {
     ASSERT_EQ(lexer.next().getType(), VnlcTokenType::RIGHT_PARENTHESIS);
     ASSERT_TRUE(lexer.hasNext());
     ASSERT_EQ(lexer.next().getType(), VnlcTokenType::STRING);
+    ASSERT_TRUE(lexer.hasNext());
+    ASSERT_EQ(lexer.next().getType(), VnlcTokenType::COMMA);
+    ASSERT_TRUE(lexer.hasNext());
+    ASSERT_EQ(lexer.next().getType(), VnlcTokenType::BLANK);
+    ASSERT_TRUE(lexer.hasNext());
+    ASSERT_EQ(lexer.next().getType(), VnlcTokenType::SELECTOR_PREFIX);
     ASSERT_TRUE(lexer.hasNext());
     ASSERT_EQ(lexer.next().getType(), VnlcTokenType::RIGHT_PARENTHESIS);
     ASSERT_TRUE(lexer.hasNext());
