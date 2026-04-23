@@ -137,13 +137,25 @@ bool VnlcLexer::separator() const {
 }
 
 bool VnlcLexer::readline() {
-    if (!std::getline(source, currentLine)) {
+    currentLine.clear();
+
+    int ch = source.get();
+    if (ch == std::char_traits<char>::eof()) {
         return false;
     }
+
     line++;
 
-    if (source.peek() != std::char_traits<char>::eof()) {
-        currentLine += '\n';
+    while (true) {
+        currentLine.push_back(static_cast<char>(ch));
+        if (ch == '\n') {
+            break;
+        }
+
+        ch = source.get();
+        if (ch == std::char_traits<char>::eof()) {
+            break;
+        }
     }
 
     column = 0;
