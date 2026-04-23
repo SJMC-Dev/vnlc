@@ -31,3 +31,10 @@ FetchContent_MakeAvailable(json)
 FetchContent_MakeAvailable(CLI11)
 
 add_subdirectory(src)
+
+include(CTest)
+enable_testing()
+
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()
