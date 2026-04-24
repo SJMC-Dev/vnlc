@@ -1,8 +1,8 @@
 add_executable(
     vnlc
     main.cpp
-    lexeme/lexer/VnlcLexer.cpp
-    lexeme/token/VnlcToken.cpp
+    lexer/VnlcLexer.cpp
+    token/VnlcToken.cpp
     session/VnlcSession.cpp
     app/VnlcApp.cpp
     util/VnlcRunningModeUtil.cpp

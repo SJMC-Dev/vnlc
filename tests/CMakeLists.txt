@@ -10,8 +10,8 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(
     vnlctests
-    ${PROJECT_SOURCE_DIR}/src/lexeme/lexer/VnlcLexer.cpp
-    ${PROJECT_SOURCE_DIR}/src/lexeme/token/VnlcToken.cpp
+    ${PROJECT_SOURCE_DIR}/src/lexer/VnlcLexer.cpp
+    ${PROJECT_SOURCE_DIR}/src/token/VnlcToken.cpp
     VnlcLexerTest.cpp
 )
 
