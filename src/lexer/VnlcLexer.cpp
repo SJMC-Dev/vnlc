@@ -194,7 +194,7 @@ void VnlcLexer::collect(std::string& tokenValue) {
     advance();
 }
 
-bool VnlcLexer::hasNext() {
+bool VnlcLexer::hasNext() const {
     return !exhausted;
 }
 

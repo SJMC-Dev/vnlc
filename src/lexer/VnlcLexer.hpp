@@ -57,7 +57,7 @@ private:
 public:
     VnlcLexer(std::istream& input);
 
-    bool hasNext();
+    bool hasNext() const;
     VnlcToken next();
 };
 
