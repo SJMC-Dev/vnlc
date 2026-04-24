@@ -23,6 +23,7 @@ private:
     std::istream& source;
     std::string currentLine;
 
+    unsigned int offset;
     int line;
     int column;
 
@@ -42,16 +43,16 @@ private:
     int peek() const;
     int peek(int offset) const;
 
-    VnlcToken processStartsWithBlank(std::string& tokenValue, int currentLine, int currentColumn);
-    VnlcToken processStartsWithNumber(std::string& tokenValue, int currentLine, int currentColumn);
-    VnlcToken processStartsWithSpecial(std::string& tokenValue, int currentLine, int currentColumn);
-    VnlcToken processStartsWithNewline(std::string& tokenValue, int currentLine, int currentColumn);
-    VnlcToken processStartsWithEof(std::string& tokenValue, int currentLine, int currentColumn);
-    VnlcToken processStartsWithIdentifier(std::string& tokenValue, int currentLine, int currentColumn);
+    VnlcToken processStartsWithBlank(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
+    VnlcToken processStartsWithNumber(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
+    VnlcToken processStartsWithSpecial(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
+    VnlcToken processStartsWithNewline(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
+    VnlcToken processStartsWithEof(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
+    VnlcToken processStartsWithIdentifier(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
 
-    VnlcToken scanStringLiteral(std::string& tokenValue, int currentLine, int currentColumn);
-    VnlcToken scanFormatStringLiteral(std::string& tokenValue, int currentLine, int currentColumn);
-    VnlcToken scanRawStringLiteral(std::string& tokenValue, int currentLine, int currentColumn);
+    VnlcToken scanStringLiteral(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
+    VnlcToken scanFormatStringLiteral(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
+    VnlcToken scanRawStringLiteral(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
 
 public:
     VnlcLexer(std::istream& input);
