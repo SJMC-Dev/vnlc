@@ -17,6 +17,8 @@ protected:
     VnlcToken firstToken;
     VnlcToken lastToken;
 
+    VnlcAstNode(VnlcToken&& firstToken, VnlcToken&& lastToken) noexcept;
+
 public:
     std::pair<int, int> locate() const;
     unsigned int getOffset() const;
