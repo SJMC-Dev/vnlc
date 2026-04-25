@@ -7,7 +7,7 @@ AccessModifierOffset: -4
 NamespaceIndentation: All
 BreakBeforeBinaryOperators: false
 BreakBeforeBraces: Attach
-ColumnLimit: 256
+ColumnLimit: 192
 SortIncludes: true
 PointerAlignment: Left
 
@@ -17,9 +17,10 @@ AllowAllParametersOfDeclarationOnNextLine: false
 BinPackArguments: false
 BinPackParameters: false
 BinPackLongBracedList: false
+PackConstructorInitializers: CurrentLine
 
 AlignEscapedNewlines: Left
-AlignAfterOpenBracket: false
+AlignAfterOpenBracket: BlockIndent
 Cpp11BracedListStyle: false
 
 AllowShortIfStatementsOnASingleLine: WithoutElse

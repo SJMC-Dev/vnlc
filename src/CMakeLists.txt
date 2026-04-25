@@ -9,6 +9,7 @@ add_executable(
     log/VnlcLogger.cpp
     util/VnlcTokenTypeUtil.cpp
     ast/VnlcAstNode.cpp
+    ast/VnlcModule.cpp
 )
 
 target_link_libraries(

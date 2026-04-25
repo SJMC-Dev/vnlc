@@ -382,7 +382,9 @@ TEST(VnlcLexerTest, Comments) {
 }
 
 TEST(VnlcLexerTest, Strings) {
-    std::istringstream input("\"This is a string with a newline\\n and a tab\\t\"\n\"Another string with a single quote ' and a backslash\\\\\"\n\"Unterminated string\n'Another unterminated string'");
+    std::istringstream input(
+        "\"This is a string with a newline\\n and a tab\\t\"\n\"Another string with a single quote ' and a backslash\\\\\"\n\"Unterminated string\n'Another unterminated string'"
+    );
     VnlcLexer lexer(input);
 
     ASSERT_TRUE(lexer.hasNext());
@@ -426,7 +428,10 @@ TEST(VnlcLexerTest, RawStrings) {
 }
 
 TEST(VnlcLexerTest, FormatStrings) {
-    std::istringstream input("f\"This is a format string with an expression $(1 + 2)\"\nf\"Another format string with an expression $(player.name) and a nested expression $(world.print(f\"Hello, $(player.name)!\", @a))\"\nf\"Unterminated format string");
+    std::istringstream input(
+        "f\"This is a format string with an expression $(1 + 2)\"\nf\"Another format string with an expression $(player.name) and a nested expression "
+        "$(world.print(f\"Hello, $(player.name)!\", @a))\"\nf\"Unterminated format string"
+    );
     VnlcLexer lexer(input);
 
     ASSERT_TRUE(lexer.hasNext());

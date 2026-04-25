@@ -4,7 +4,16 @@
 #include <string_view>
 
 VnlcLexer::VnlcLexer(std::istream& input)
-    : mode(VnlcLexerMode::DEFAULT), parenthesisCounterStack(), parenthesisCounter(-1), source(input), currentLine(""), offset(0), line(-1), column(0), exhausted(false), keywords{
+    : mode(VnlcLexerMode::DEFAULT),
+      parenthesisCounterStack(),
+      parenthesisCounter(-1),
+      source(input),
+      currentLine(""),
+      offset(0),
+      line(-1),
+      column(0),
+      exhausted(false),
+      keywords{
           { "var", VnlcTokenType::VAR },
           { "let", VnlcTokenType::LET },
           { "const", VnlcTokenType::CONST },

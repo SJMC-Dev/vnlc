@@ -29,16 +29,24 @@ void VnlcApp::run() {
 
     app.add_option("-s,--standard", vanillangVersion, "Vanillang standard version")
         ->default_val("1.0")
-        ->check(CLI::IsMember({
-            "1.0",
-        }));
+        ->check(
+            CLI::IsMember(
+                {
+                    "1.0",
+                }
+            )
+        );
     app.add_option("-t,--target", minecraftVersion, "Target Minecraft version")
         ->default_val("26.1.2")
-        ->check(CLI::IsMember({
-            "26.1",
-            "26.1.1",
-            "26.1.2",
-        }));
+        ->check(
+            CLI::IsMember(
+                {
+                    "26.1",
+                    "26.1.1",
+                    "26.1.2",
+                }
+            )
+        );
     app.add_flag("--verbose", verbose, "Enable verbose output")->default_val(false);
 
     CLI::App* compileApp = app.add_subcommand("compile", "Compile a Vanillang source file to one or more mcfunction files");

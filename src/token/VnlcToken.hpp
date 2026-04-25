@@ -18,6 +18,7 @@ private:
 
 public:
     VnlcToken(VnlcTokenType type, const std::string& value, int offset, int line, int column);
+    VnlcToken(VnlcToken&& other) noexcept;
 
     VnlcTokenType getType() const;
     int getLine() const;
