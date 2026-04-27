@@ -364,6 +364,9 @@ VnlcToken VnlcLexer::processStartsWithSpecial(std::string& tokenValue, int curre
         if (peek() == '=') {
             collect(tokenValue);
             return VnlcToken(VnlcTokenType::PLUS_EQUAL, std::move(tokenValue), currentLine, currentColumn, currentOffset);
+        } else if (peek() == '+') {
+            collect(tokenValue);
+            return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn, currentOffset);
         } else {
             return VnlcToken(VnlcTokenType::PLUS, std::move(tokenValue), currentLine, currentColumn, currentOffset);
         }
@@ -373,6 +376,9 @@ VnlcToken VnlcLexer::processStartsWithSpecial(std::string& tokenValue, int curre
         if (peek() == '=') {
             collect(tokenValue);
             return VnlcToken(VnlcTokenType::MINUS_EQUAL, std::move(tokenValue), currentLine, currentColumn, currentOffset);
+        } else if (peek() == '-') {
+            collect(tokenValue);
+            return VnlcToken(VnlcTokenType::LEXICAL_ERROR, std::move(tokenValue), currentLine, currentColumn, currentOffset);
         } else if (peek() == '>') {
             collect(tokenValue);
             return VnlcToken(VnlcTokenType::ARROW, std::move(tokenValue), currentLine, currentColumn, currentOffset);
