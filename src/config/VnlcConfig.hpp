@@ -15,12 +15,11 @@ struct VnlcConfig {
     std::string vanillangVersion;
     std::string minecraftVersion;
 
-    std::string moduleRootPath;
-
+    std::string packageRootPath;
     std::string inputFilePath;
     std::optional<std::string> outputDirectory;
 
-    std::unordered_map<std::string, std::string> dependencyModuleRootPaths;
+    std::unordered_map<std::string, std::string> dependencyPackageRootPaths;
 
     std::optional<int> optimizationLevel;
 };

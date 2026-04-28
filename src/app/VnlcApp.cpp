@@ -1,6 +1,6 @@
 #include "VnlcApp.hpp"
 #include "../config/VnlcConfig.hpp"
-#include "../error/VnlcModuleNameConflictError.hpp"
+#include "../error/VnlcPackageNameConflictError.hpp"
 #include "../log/VnlcLogger.hpp"
 #include "../session/VnlcSession.hpp"
 #include "../util/VnlcRunningModeUtil.hpp"
@@ -18,10 +18,10 @@ void VnlcApp::run() {
 
     bool verbose = false;
 
-    std::string moduleRootPath = std::filesystem::current_path().string();
+    std::string packageRootPath = std::filesystem::current_path().string();
     std::string inputFilePath;
     std::string outputDirectory;
-    std::vector<std::string> dependencyModuleRootPaths;
+    std::vector<std::string> dependencyPackageRootPaths;
 
     int optimizationLevel = 0;
 
@@ -58,8 +58,8 @@ void VnlcApp::run() {
 
     auto addCommonOptions = [&](CLI::App* subApp, bool requireOutput = false) {
         subApp->add_option("-i,--input", inputFilePath, "Path to the input Vanillang source file")->required()->check(CLI::ExistingFile);
-        subApp->add_option("-m,--module", moduleRootPath, "Path to the root module")->default_val(std::filesystem::current_path().string())->check(CLI::ExistingDirectory);
-        subApp->add_option("-d,--dependencies", dependencyModuleRootPaths, "Paths to root modules of dependencies your source code require")->check(CLI::ExistingDirectory);
+        subApp->add_option("-p,--package", packageRootPath, "Path to the root package")->default_val(std::filesystem::current_path().string())->check(CLI::ExistingDirectory);
+        subApp->add_option("-d,--dependencies", dependencyPackageRootPaths, "Paths to root packages of dependencies your source code require")->check(CLI::ExistingDirectory);
 
         if (requireOutput) {
             subApp->add_option("-o,--output", outputDirectory, "Path to the output directory")->required()->check(CLI::ExistingDirectory);
@@ -95,22 +95,22 @@ void VnlcApp::run() {
         .mode = VnlcRunningModeUtil::getRunningMode(mode),
         .vanillangVersion{ std::move(vanillangVersion) },
         .minecraftVersion{ std::move(minecraftVersion) },
-        .moduleRootPath{ std::move(moduleRootPath) },
+        .packageRootPath{ std::move(packageRootPath) },
         .inputFilePath{ std::move(inputFilePath) },
         .outputDirectory{ outputDirectory.empty() ? std::nullopt : std::make_optional(std::move(outputDirectory)) },
-        .dependencyModuleRootPaths{},
+        .dependencyPackageRootPaths{},
         .optimizationLevel = (mode == "compile") ? std::make_optional(optimizationLevel) : std::nullopt,
     };
 
-    std::string moduleName = std::filesystem::path(config.moduleRootPath).filename().string();
-    for (auto& dependencyModuleRootPath : dependencyModuleRootPaths) {
-        std::string dependencyName = std::filesystem::path(dependencyModuleRootPath).filename().string();
+    std::string packageName = std::filesystem::path(config.packageRootPath).filename().string();
+    for (auto& dependencyPackageRootPath : dependencyPackageRootPaths) {
+        std::string dependencyName = std::filesystem::path(dependencyPackageRootPath).filename().string();
 
-        if (dependencyName == moduleName || config.dependencyModuleRootPaths.contains(dependencyName)) {
-            throw VnlcModuleNameConflictError(std::move(dependencyName));
+        if (dependencyName == packageName || config.dependencyPackageRootPaths.contains(dependencyName)) {
+            throw VnlcPackageNameConflictError(std::move(dependencyName));
         }
 
-        config.dependencyModuleRootPaths.emplace(std::move(dependencyName), std::move(dependencyModuleRootPath));
+        config.dependencyPackageRootPaths.emplace(std::move(dependencyName), std::move(dependencyPackageRootPath));
     }
 
     VnlcSession session{ std::move(config) };
