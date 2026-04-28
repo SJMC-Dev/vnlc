@@ -1,0 +1,23 @@
+#pragma once
+
+#ifndef VNLC_SIMPLE_LITERAL_TYPE_HPP
+#define VNLC_SIMPLE_LITERAL_TYPE_HPP
+
+enum class VnlcSimpleLiteralType {
+    DECIMAL_BYTE,
+    DECIMAL_SHORT,
+    DECIMAL_INTEGER,
+    DECIMAL_LONG,
+    DECIMAL_FLOAT,
+    DECIMAL_DOUBLE,
+
+    BINARY,
+    OCTAL,
+    HEXADECIMAL,
+
+    CHARACTER,
+
+    BOOLEAN,
+};
+
+#endif // VNLC_SIMPLE_LITERAL_TYPE_HPP

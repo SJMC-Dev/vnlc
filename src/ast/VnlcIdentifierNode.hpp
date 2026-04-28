@@ -3,9 +3,9 @@
 #ifndef VNLC_IDENTIFIER_NODE_HPP
 #define VNLC_IDENTIFIER_NODE_HPP
 
-#include "VnlcExpressionNode.hpp"
+#include "VnlcPrimaryExpressionNode.hpp"
 
-class VnlcIdentifierNode : public VnlcExpressionNode {
+class VnlcIdentifierNode : public VnlcPrimaryExpressionNode {
 private:
     VnlcIdentifierNode() = delete;
 
