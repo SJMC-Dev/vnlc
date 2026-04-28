@@ -1,8 +1,30 @@
-file(GLOB SOURCES "*.cpp")
-
 add_executable(
     vnlc
-    ${SOURCES}
+    main.cpp
+    app/VnlcApp.cpp
+    lexer/VnlcLexer.cpp
+    log/VnlcLogger.cpp
+    session/VnlcSession.cpp
+    token/VnlcToken.cpp
+    util/VnlcRunningModeUtil.cpp
+    util/VnlcTokenTypeUtil.cpp
+    ast/VnlcAstNode.cpp
+    ast/VnlcBinaryExpressionNode.cpp
+    ast/VnlcConditionalExpressionNode.cpp
+    ast/VnlcExpressionNode.cpp
+    ast/VnlcFunctionCallExpressionNode.cpp
+    ast/VnlcIdentifierNode.cpp
+    ast/VnlcLiteralNode.cpp
+    ast/VnlcMemberAccessExpressionNode.cpp
+    ast/VnlcPrimaryExpressionNode.cpp
+    ast/VnlcRangeExpressionNode.cpp
+    ast/VnlcSubscriptExpressionNode.cpp
+    ast/VnlcUnaryExpressionNode.cpp
+    ast/VnlcStringLiteralNode.cpp
+    ast/VnlcSimpleLiteralNode.cpp
+    ast/VnlcListLikeLiteralNode.cpp
+    ast/VnlcDictLiteralNode.cpp
+    ast/VnlcSelectorLiteralNode.cpp
 )
 
 target_link_libraries(
