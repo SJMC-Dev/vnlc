@@ -9,14 +9,14 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 add_executable(
-    vnlctests
+    vnlctest_lexer
     ${PROJECT_SOURCE_DIR}/src/lexer/VnlcLexer.cpp
     ${PROJECT_SOURCE_DIR}/src/token/VnlcToken.cpp
     VnlcLexerTest.cpp
 )
 
 target_link_libraries(
-    vnlctests
+    vnlctest_lexer
     PRIVATE
     GTest::gtest_main
     fmt::fmt
@@ -25,4 +25,4 @@ target_link_libraries(
 )
 
 include(GoogleTest)
-gtest_discover_tests(vnlctests)
+gtest_discover_tests(vnlctest_lexer)
