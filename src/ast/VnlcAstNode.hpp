@@ -14,15 +14,17 @@ protected:
     unsigned int offset;
     unsigned int length;
 
-    VnlcToken firstToken;
-    VnlcToken lastToken;
+    unsigned int line;
+    unsigned int column;
 
-    VnlcAstNode(VnlcToken&& firstToken, VnlcToken&& lastToken) noexcept;
+    VnlcAstNode(const VnlcToken& firstToken, const VnlcToken& lastToken);
 
 public:
-    std::pair<int, int> locate() const;
-    unsigned int getOffset() const;
-    unsigned int getLength() const;
+    std::pair<unsigned int, unsigned int> locate() const noexcept;
+    unsigned int getOffset() const noexcept;
+    unsigned int getLength() const noexcept;
+
+    virtual ~VnlcAstNode() = default;
 };
 
 #endif // VNLC_AST_NODE_HPP

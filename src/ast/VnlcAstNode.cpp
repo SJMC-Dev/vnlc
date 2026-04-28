@@ -1,18 +1,20 @@
 #include "VnlcAstNode.hpp"
 
-VnlcAstNode::VnlcAstNode(VnlcToken&& firstToken, VnlcToken&& lastToken) noexcept : firstToken(std::move(firstToken)), lastToken(std::move(lastToken)) {
-    offset = this->firstToken.getOffset();
-    length = this->lastToken.getOffset() + this->lastToken.getLength() - offset;
+VnlcAstNode::VnlcAstNode(const VnlcToken& firstToken, const VnlcToken& lastToken) {
+    offset = firstToken.getOffset();
+    length = lastToken.getOffset() + lastToken.getLength() - offset;
+    line = firstToken.getLine();
+    column = firstToken.getColumn();
 }
 
-std::pair<int, int> VnlcAstNode::locate() const {
-    return { firstToken.getLine(), firstToken.getColumn() };
+std::pair<unsigned int, unsigned int> VnlcAstNode::locate() const noexcept {
+    return { line, column };
 }
 
-unsigned int VnlcAstNode::getOffset() const {
+unsigned int VnlcAstNode::getOffset() const noexcept {
     return offset;
 }
 
-unsigned int VnlcAstNode::getLength() const {
+unsigned int VnlcAstNode::getLength() const noexcept {
     return length;
 }
