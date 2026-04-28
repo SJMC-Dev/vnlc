@@ -1,15 +1,8 @@
+file(GLOB SOURCES "*.cpp")
+
 add_executable(
     vnlc
-    main.cpp
-    lexer/VnlcLexer.cpp
-    token/VnlcToken.cpp
-    session/VnlcSession.cpp
-    app/VnlcApp.cpp
-    util/VnlcRunningModeUtil.cpp
-    log/VnlcLogger.cpp
-    util/VnlcTokenTypeUtil.cpp
-    ast/VnlcAstNode.cpp
-    ast/VnlcModule.cpp
+    ${SOURCES}
 )
 
 target_link_libraries(
