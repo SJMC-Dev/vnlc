@@ -1,0 +1,30 @@
+#pragma once
+
+#ifndef VNLC_FUNCTION_DECLARATION_TYPE_HPP
+#define VNLC_FUNCTION_DECLARATION_TYPE_HPP
+
+namespace VnlcFunctionDeclarationType {
+    enum class Type {
+        REGULAR,
+        NATIVE,
+    };
+
+    enum class Context {
+        TOP_LEVEL,
+        CLASS,
+        INTERFACE,
+    };
+
+    enum class AccessModifier {
+        PUBLIC,
+        PROTECTED,
+        PRIVATE,
+    };
+
+    enum class Binding {
+        INSTANCE,
+        STATIC,
+    };
+}; // namespace VnlcFunctionDeclarationType
+
+#endif // VNLC_FUNCTION_DECLARATION_TYPE_HPP

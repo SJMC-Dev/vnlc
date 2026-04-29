@@ -25,6 +25,7 @@ add_executable(
     ast/VnlcListLikeLiteralNode.cpp
     ast/VnlcDictLiteralNode.cpp
     ast/VnlcSelectorLiteralNode.cpp
+    ast/VnlcDeclarationNode.cpp
 )
 
 target_link_libraries(
