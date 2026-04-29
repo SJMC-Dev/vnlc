@@ -8,7 +8,7 @@
 
 class VnlcSyntaxError : public VnlcError {
 public:
-    VnlcSyntaxError(const std::string& message, int line, int column) : VnlcError(fmt::format("Syntax error at line {}, column {}: {}", line, column, message)) {}
+    VnlcSyntaxError(std::string_view message, int line, int column) : VnlcError(fmt::format("Syntax error at line {}, column {}: {}", line, column, message)) {}
 };
 
 #endif // VNLC_SYNTAX_ERROR_HPP

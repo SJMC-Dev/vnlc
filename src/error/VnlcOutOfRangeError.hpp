@@ -8,7 +8,7 @@
 
 class VnlcOutOfRangeError : public VnlcError {
 public:
-    VnlcOutOfRangeError(const std::string& message) : VnlcError(fmt::format("Out of range during iteration: {}", message)) {}
+    VnlcOutOfRangeError(std::string_view message) : VnlcError(fmt::format("Out of range during iteration: {}", message)) {}
 };
 
 #endif // VNLC_OUT_OF_RANGE_ERROR_HPP

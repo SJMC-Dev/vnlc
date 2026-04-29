@@ -1,6 +1,6 @@
 #include "VnlcToken.hpp"
 
-VnlcToken::VnlcToken(VnlcTokenType type, const std::string& value, unsigned int offset, unsigned int line, unsigned int column)
+VnlcToken::VnlcToken(VnlcTokenType type, std::string_view value, unsigned int offset, unsigned int line, unsigned int column)
     : type(type),
       value(value),
       offset(offset),
