@@ -4,7 +4,7 @@
 #define VNLC_FUNCTION_DECLARATION_TYPE_HPP
 
 namespace VnlcFunctionDeclarationType {
-    enum class Type {
+    enum class Kind {
         REGULAR,
         NATIVE,
     };

@@ -26,6 +26,11 @@ add_executable(
     ast/VnlcDictLiteralExpressionNode.cpp
     ast/VnlcSelectorLiteralExpressionNode.cpp
     ast/VnlcDeclarationNode.cpp
+    ast/VnlcQualifiedNameNode.cpp
+    ast/VnlcTypeAnnotationNode.cpp
+    ast/VnlcStatementNode.cpp
+    ast/VnlcBlockStatementNode.cpp
+    ast/VnlcFunctionDeclarationNode.cpp
 )
 
 target_link_libraries(
