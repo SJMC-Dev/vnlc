@@ -13,18 +13,18 @@ add_executable(
     ast/VnlcConditionalExpressionNode.cpp
     ast/VnlcExpressionNode.cpp
     ast/VnlcFunctionCallExpressionNode.cpp
-    ast/VnlcIdentifierNode.cpp
-    ast/VnlcLiteralNode.cpp
+    ast/VnlcIdentifierExpressionNode.cpp
+    ast/VnlcLiteralExpressionNode.cpp
     ast/VnlcMemberAccessExpressionNode.cpp
     ast/VnlcPrimaryExpressionNode.cpp
     ast/VnlcRangeExpressionNode.cpp
     ast/VnlcSubscriptExpressionNode.cpp
     ast/VnlcUnaryExpressionNode.cpp
-    ast/VnlcStringLiteralNode.cpp
-    ast/VnlcSimpleLiteralNode.cpp
-    ast/VnlcListLikeLiteralNode.cpp
-    ast/VnlcDictLiteralNode.cpp
-    ast/VnlcSelectorLiteralNode.cpp
+    ast/VnlcStringLiteralExpressionNode.cpp
+    ast/VnlcSimpleLiteralExpressionNode.cpp
+    ast/VnlcListLikeLiteralExpressionNode.cpp
+    ast/VnlcDictLiteralExpressionNode.cpp
+    ast/VnlcSelectorLiteralExpressionNode.cpp
     ast/VnlcDeclarationNode.cpp
 )
 

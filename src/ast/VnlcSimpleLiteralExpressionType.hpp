@@ -1,9 +1,9 @@
 #pragma once
 
-#ifndef VNLC_SIMPLE_LITERAL_TYPE_HPP
-#define VNLC_SIMPLE_LITERAL_TYPE_HPP
+#ifndef VNLC_SIMPLE_LITERAL_EXPRESSION_TYPE_HPP
+#define VNLC_SIMPLE_LITERAL_EXPRESSION_TYPE_HPP
 
-enum class VnlcSimpleLiteralType {
+enum class VnlcSimpleLiteralExpressionType {
     DECIMAL_BYTE,
     DECIMAL_SHORT,
     DECIMAL_INTEGER,
@@ -20,4 +20,4 @@ enum class VnlcSimpleLiteralType {
     BOOLEAN,
 };
 
-#endif // VNLC_SIMPLE_LITERAL_TYPE_HPP
+#endif // VNLC_SIMPLE_LITERAL_EXPRESSION_TYPE_HPP

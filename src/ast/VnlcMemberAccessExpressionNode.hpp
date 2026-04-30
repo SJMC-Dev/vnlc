@@ -4,7 +4,7 @@
 #define VNLC_MEMBER_ACCESS_EXPRESSION_NODE_HPP
 
 #include "VnlcExpressionNode.hpp"
-#include "VnlcIdentifierNode.hpp"
+#include "VnlcIdentifierExpressionNode.hpp"
 #include "VnlcMemberAccessExpressionType.hpp"
 #include <memory>
 
@@ -14,20 +14,20 @@ private:
 
     VnlcMemberAccessExpressionType type;
     std::unique_ptr<VnlcExpressionNode> object;
-    std::unique_ptr<VnlcIdentifierNode> member;
+    std::unique_ptr<VnlcIdentifierExpressionNode> member;
 
 public:
     VnlcMemberAccessExpressionNode(
         VnlcMemberAccessExpressionType type,
         std::unique_ptr<VnlcExpressionNode>&& object,
-        std::unique_ptr<VnlcIdentifierNode>&& member,
+        std::unique_ptr<VnlcIdentifierExpressionNode>&& member,
         const VnlcToken& firstToken,
         const VnlcToken& lastToken
     ) noexcept;
 
     const VnlcMemberAccessExpressionType getType() const noexcept;
     const VnlcExpressionNode& getObject() const noexcept;
-    const VnlcIdentifierNode& getMember() const noexcept;
+    const VnlcIdentifierExpressionNode& getMember() const noexcept;
 };
 
 #endif // VNLC_MEMBER_ACCESS_EXPRESSION_NODE_HPP

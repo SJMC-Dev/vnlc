@@ -3,7 +3,7 @@
 VnlcMemberAccessExpressionNode::VnlcMemberAccessExpressionNode(
     VnlcMemberAccessExpressionType type,
     std::unique_ptr<VnlcExpressionNode>&& object,
-    std::unique_ptr<VnlcIdentifierNode>&& member,
+    std::unique_ptr<VnlcIdentifierExpressionNode>&& member,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
 ) noexcept
@@ -20,6 +20,6 @@ const VnlcExpressionNode& VnlcMemberAccessExpressionNode::getObject() const noex
     return *object;
 }
 
-const VnlcIdentifierNode& VnlcMemberAccessExpressionNode::getMember() const noexcept {
+const VnlcIdentifierExpressionNode& VnlcMemberAccessExpressionNode::getMember() const noexcept {
     return *member;
 }
