@@ -31,6 +31,7 @@ add_executable(
     ast/VnlcStatementNode.cpp
     ast/VnlcBlockStatementNode.cpp
     ast/VnlcFunctionDeclarationNode.cpp
+    ast/VnlcVariableDeclarationNode.cpp
 )
 
 target_link_libraries(
