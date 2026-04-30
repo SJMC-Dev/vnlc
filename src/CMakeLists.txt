@@ -9,29 +9,28 @@ add_executable(
     util/VnlcRunningModeUtil.cpp
     util/VnlcTokenTypeUtil.cpp
     ast/VnlcAstNode.cpp
-    ast/VnlcBinaryExpressionNode.cpp
-    ast/VnlcConditionalExpressionNode.cpp
-    ast/VnlcExpressionNode.cpp
-    ast/VnlcFunctionCallExpressionNode.cpp
-    ast/VnlcIdentifierExpressionNode.cpp
-    ast/VnlcLiteralExpressionNode.cpp
-    ast/VnlcMemberAccessExpressionNode.cpp
-    ast/VnlcPrimaryExpressionNode.cpp
-    ast/VnlcRangeExpressionNode.cpp
-    ast/VnlcSubscriptExpressionNode.cpp
-    ast/VnlcUnaryExpressionNode.cpp
-    ast/VnlcStringLiteralExpressionNode.cpp
-    ast/VnlcSimpleLiteralExpressionNode.cpp
-    ast/VnlcListLikeLiteralExpressionNode.cpp
-    ast/VnlcDictLiteralExpressionNode.cpp
-    ast/VnlcSelectorLiteralExpressionNode.cpp
-    ast/VnlcDeclarationNode.cpp
-    ast/VnlcQualifiedNameNode.cpp
-    ast/VnlcTypeAnnotationNode.cpp
-    ast/VnlcStatementNode.cpp
-    ast/VnlcBlockStatementNode.cpp
-    ast/VnlcFunctionDeclarationNode.cpp
-    ast/VnlcVariableDeclarationNode.cpp
+    ast/expression/VnlcBinaryExpressionNode.cpp
+    ast/expression/VnlcConditionalExpressionNode.cpp
+    ast/expression/VnlcExpressionNode.cpp
+    ast/expression/VnlcFunctionCallExpressionNode.cpp
+    ast/expression/VnlcIdentifierExpressionNode.cpp
+    ast/expression/VnlcLiteralExpressionNode.cpp
+    ast/expression/VnlcMemberAccessExpressionNode.cpp
+    ast/expression/VnlcPrimaryExpressionNode.cpp
+    ast/expression/VnlcRangeExpressionNode.cpp
+    ast/expression/VnlcSubscriptExpressionNode.cpp
+    ast/expression/VnlcUnaryExpressionNode.cpp
+    ast/expression/VnlcStringLiteralExpressionNode.cpp
+    ast/expression/VnlcSimpleLiteralExpressionNode.cpp
+    ast/expression/VnlcListLikeLiteralExpressionNode.cpp
+    ast/expression/VnlcDictLiteralExpressionNode.cpp
+    ast/expression/VnlcSelectorLiteralExpressionNode.cpp
+    ast/declaration/VnlcDeclarationNode.cpp
+    ast/declaration/VnlcFunctionDeclarationNode.cpp
+    ast/declaration/VnlcVariableDeclarationNode.cpp
+    ast/statement/VnlcStatementNode.cpp
+    ast/statement/VnlcBlockStatementNode.cpp
+    ast/other/VnlcTypeAnnotationNode.cpp
 )
 
 target_link_libraries(

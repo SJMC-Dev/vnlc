@@ -3,10 +3,10 @@
 #ifndef VNLC_FUNCTION_DECLARATION_NODE_HPP
 #define VNLC_FUNCTION_DECLARATION_NODE_HPP
 
-#include "VnlcBlockStatementNode.hpp"
+#include "../statement/VnlcBlockStatementNode.hpp"
 #include "VnlcDeclarationNode.hpp"
 #include "VnlcFunctionDeclarationType.hpp"
-#include "VnlcTypeAnnotationNode.hpp"
+#include "../other/VnlcTypeAnnotationNode.hpp"
 #include <memory>
 #include <optional>
 #include <utility>

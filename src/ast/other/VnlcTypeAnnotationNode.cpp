@@ -1,7 +1,7 @@
 #include "VnlcTypeAnnotationNode.hpp"
 
 VnlcTypeAnnotationNode::VnlcTypeAnnotationNode(
-    std::unique_ptr<VnlcQualifiedNameNode>&& typeName,
+    std::vector<std::string>&& typeNameParts,
     bool readonly,
     bool optional,
     std::vector<std::unique_ptr<VnlcTypeAnnotationNode>>&& genericArguments,
@@ -9,13 +9,13 @@ VnlcTypeAnnotationNode::VnlcTypeAnnotationNode(
     const VnlcToken& lastToken
 ) noexcept
     : VnlcAstNode(firstToken, lastToken),
-      typeName(std::move(typeName)),
+      typeNameParts(std::move(typeNameParts)),
       readonly(readonly),
       optional(optional),
       genericArguments(std::move(genericArguments)) {}
 
-const VnlcQualifiedNameNode& VnlcTypeAnnotationNode::getTypeName() const noexcept {
-    return *typeName;
+const std::vector<std::string>& VnlcTypeAnnotationNode::getTypeNameParts() const noexcept {
+    return typeNameParts;
 }
 
 bool VnlcTypeAnnotationNode::isReadonly() const noexcept {

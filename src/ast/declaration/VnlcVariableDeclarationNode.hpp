@@ -4,8 +4,8 @@
 #define VNLC_VARIABLE_DECLARATION_NODE_HPP
 
 #include "VnlcDeclarationNode.hpp"
-#include "VnlcExpressionNode.hpp"
-#include "VnlcTypeAnnotationNode.hpp"
+#include "../expression/VnlcExpressionNode.hpp"
+#include "../other/VnlcTypeAnnotationNode.hpp"
 #include "VnlcVariableDeclarationType.hpp"
 #include <memory>
 

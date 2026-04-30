@@ -3,7 +3,7 @@
 #ifndef VNLC_DECLARATION_NODE_HPP
 #define VNLC_DECLARATION_NODE_HPP
 
-#include "VnlcAstNode.hpp"
+#include "../VnlcAstNode.hpp"
 #include <optional>
 
 class VnlcDeclarationNode : public VnlcAstNode {
