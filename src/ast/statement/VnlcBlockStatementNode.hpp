@@ -16,7 +16,7 @@ private:
 public:
     VnlcBlockStatementNode(std::vector<std::unique_ptr<VnlcStatementNode>>&& statements, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
 
-    const std::vector<std::unique_ptr<VnlcStatementNode>>& getStatements() const noexcept;
+    [[nodiscard]] const std::vector<std::unique_ptr<VnlcStatementNode>>& getStatements() const noexcept;
 };
 
 #endif // VNLC_BLOCK_STATEMENT_NODE_HPP

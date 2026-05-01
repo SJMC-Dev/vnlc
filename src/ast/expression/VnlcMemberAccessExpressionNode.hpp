@@ -25,9 +25,9 @@ public:
         const VnlcToken& lastToken
     ) noexcept;
 
-    const VnlcMemberAccessExpressionType getType() const noexcept;
-    const VnlcExpressionNode& getObject() const noexcept;
-    const VnlcIdentifierExpressionNode& getMember() const noexcept;
+    [[nodiscard]] const VnlcMemberAccessExpressionType getType() const noexcept;
+    [[nodiscard]] const VnlcExpressionNode& getObject() const noexcept;
+    [[nodiscard]] const VnlcIdentifierExpressionNode& getMember() const noexcept;
 };
 
 #endif // VNLC_MEMBER_ACCESS_EXPRESSION_NODE_HPP

@@ -3,9 +3,9 @@
 #ifndef VNLC_VARIABLE_DECLARATION_NODE_HPP
 #define VNLC_VARIABLE_DECLARATION_NODE_HPP
 
-#include "VnlcDeclarationNode.hpp"
 #include "../expression/VnlcExpressionNode.hpp"
 #include "../other/VnlcTypeAnnotationNode.hpp"
+#include "VnlcDeclarationNode.hpp"
 #include "VnlcVariableDeclarationType.hpp"
 #include <memory>
 
@@ -28,10 +28,10 @@ public:
         const VnlcToken& lastToken
     ) noexcept;
 
-    const VnlcVariableDeclarationType getType() const noexcept;
-    const std::string& getName() const noexcept;
-    const std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>& getTypeAnnotation() const noexcept;
-    const VnlcExpressionNode& getInitializer() const noexcept;
+    [[nodiscard]] const VnlcVariableDeclarationType getType() const noexcept;
+    [[nodiscard]] const std::string& getName() const noexcept;
+    [[nodiscard]] const std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>& getTypeAnnotation() const noexcept;
+    [[nodiscard]] const VnlcExpressionNode& getInitializer() const noexcept;
 };
 
 #endif // VNLC_VARIABLE_DECLARATION_NODE_HPP

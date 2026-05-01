@@ -29,6 +29,14 @@ protected:
         std::optional<std::string>&& minGameVersion,
         std::optional<std::string>&& maxGameVersion
     ) noexcept;
+
+public:
+    [[nodiscard]] bool doesIncludeMetadata() const noexcept;
+    [[nodiscard]] std::optional<bool> isDeprecated() const noexcept;
+    [[nodiscard]] std::optional<bool> isExperimental() const noexcept;
+    [[nodiscard]] std::optional<bool> isNowarnings() const noexcept;
+    [[nodiscard]] std::optional<std::string> getMinGameVersion() const noexcept;
+    [[nodiscard]] std::optional<std::string> getMaxGameVersion() const noexcept;
 };
 
 #endif // VNLC_DECLARATION_NODE_HPP

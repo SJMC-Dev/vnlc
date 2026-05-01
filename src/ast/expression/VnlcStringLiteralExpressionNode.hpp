@@ -24,8 +24,8 @@ public:
         const VnlcToken& lastToken
     ) noexcept;
 
-    const VnlcStringLiteralExpressionType getType() const noexcept;
-    const std::vector<std::variant<std::string, std::unique_ptr<VnlcExpressionNode>>>& getParts() const noexcept;
+    [[nodiscard]] const VnlcStringLiteralExpressionType getType() const noexcept;
+    [[nodiscard]] const std::vector<std::variant<std::string, std::unique_ptr<VnlcExpressionNode>>>& getParts() const noexcept;
 };
 
 #endif // VNLC_STRING_LITERAL_EXPRESSION_NODE_HPP

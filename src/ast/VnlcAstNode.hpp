@@ -20,9 +20,9 @@ protected:
     VnlcAstNode(const VnlcToken& firstToken, const VnlcToken& lastToken);
 
 public:
-    std::pair<unsigned int, unsigned int> locate() const noexcept;
-    unsigned int getOffset() const noexcept;
-    unsigned int getLength() const noexcept;
+    [[nodiscard]] std::pair<unsigned int, unsigned int> locate() const noexcept;
+    [[nodiscard]] unsigned int getOffset() const noexcept;
+    [[nodiscard]] unsigned int getLength() const noexcept;
 
     virtual ~VnlcAstNode() = default;
 };

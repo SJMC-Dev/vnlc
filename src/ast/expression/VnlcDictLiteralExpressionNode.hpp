@@ -16,7 +16,7 @@ private:
 public:
     VnlcDictLiteralExpressionNode(std::unordered_map<std::string, std::unique_ptr<VnlcExpressionNode>>&& entries, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
 
-    const std::unordered_map<std::string, std::unique_ptr<VnlcExpressionNode>>& getEntries() const noexcept;
+    [[nodiscard]] const std::unordered_map<std::string, std::unique_ptr<VnlcExpressionNode>>& getEntries() const noexcept;
 };
 
 #endif // VNLC_DICT_LITERAL_EXPRESSION_NODE_HPP

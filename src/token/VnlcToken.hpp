@@ -20,12 +20,12 @@ public:
     VnlcToken(VnlcTokenType type, std::string_view value, unsigned int offset, unsigned int line, unsigned int column);
     VnlcToken(VnlcToken&& other) noexcept;
 
-    VnlcTokenType getType() const noexcept;
-    unsigned int getLine() const noexcept;
-    unsigned int getColumn() const noexcept;
-    unsigned int getOffset() const noexcept;
-    unsigned int getLength() const noexcept;
-    std::string_view getValue() const noexcept;
+    [[nodiscard]] VnlcTokenType getType() const noexcept;
+    [[nodiscard]] unsigned int getLine() const noexcept;
+    [[nodiscard]] unsigned int getColumn() const noexcept;
+    [[nodiscard]] unsigned int getOffset() const noexcept;
+    [[nodiscard]] unsigned int getLength() const noexcept;
+    [[nodiscard]] std::string_view getValue() const noexcept;
 };
 
 #endif // VNLC_TOKEN_HPP

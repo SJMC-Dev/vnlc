@@ -24,9 +24,9 @@ public:
         const VnlcToken& lastToken
     ) noexcept;
 
-    const VnlcBinaryExpressionType getType() const noexcept;
-    const VnlcExpressionNode& getLeft() const noexcept;
-    const VnlcExpressionNode& getRight() const noexcept;
+    [[nodiscard]] const VnlcBinaryExpressionType getType() const noexcept;
+    [[nodiscard]] const VnlcExpressionNode& getLeft() const noexcept;
+    [[nodiscard]] const VnlcExpressionNode& getRight() const noexcept;
 };
 
 #endif // VNLC_BINARY_EXPRESSION_NODE_HPP

@@ -23,9 +23,9 @@ public:
         const VnlcToken& lastToken
     ) noexcept;
 
-    const VnlcExpressionNode& getCondition() const noexcept;
-    const VnlcExpressionNode& getThenExpression() const noexcept;
-    const VnlcExpressionNode& getElseExpression() const noexcept;
+    [[nodiscard]] const VnlcExpressionNode& getCondition() const noexcept;
+    [[nodiscard]] const VnlcExpressionNode& getThenExpression() const noexcept;
+    [[nodiscard]] const VnlcExpressionNode& getElseExpression() const noexcept;
 };
 
 #endif // VNLC_CONDITIONAL_EXPRESSION_NODE_HPP

@@ -16,8 +16,8 @@ private:
 public:
     VnlcSubscriptExpressionNode(std::unique_ptr<VnlcExpressionNode>&& object, std::unique_ptr<VnlcExpressionNode>&& index, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
 
-    const VnlcExpressionNode& getObject() const noexcept;
-    const VnlcExpressionNode& getIndex() const noexcept;
+    [[nodiscard]] const VnlcExpressionNode& getObject() const noexcept;
+    [[nodiscard]] const VnlcExpressionNode& getIndex() const noexcept;
 };
 
 #endif // VNLC_SUBSCRIPT_EXPRESSION_NODE_HPP

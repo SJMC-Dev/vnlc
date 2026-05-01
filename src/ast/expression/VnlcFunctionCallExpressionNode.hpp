@@ -22,8 +22,8 @@ public:
         const VnlcToken& lastToken
     ) noexcept;
 
-    const VnlcExpressionNode& getCallee() const noexcept;
-    const std::vector<std::unique_ptr<VnlcExpressionNode>>& getArguments() const noexcept;
+    [[nodiscard]] const VnlcExpressionNode& getCallee() const noexcept;
+    [[nodiscard]] const std::vector<std::unique_ptr<VnlcExpressionNode>>& getArguments() const noexcept;
 };
 
 #endif // VNLC_FUNCTION_CALL_EXPRESSION_NODE_HPP

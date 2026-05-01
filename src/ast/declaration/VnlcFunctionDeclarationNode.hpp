@@ -3,10 +3,10 @@
 #ifndef VNLC_FUNCTION_DECLARATION_NODE_HPP
 #define VNLC_FUNCTION_DECLARATION_NODE_HPP
 
+#include "../other/VnlcTypeAnnotationNode.hpp"
 #include "../statement/VnlcBlockStatementNode.hpp"
 #include "VnlcDeclarationNode.hpp"
 #include "VnlcFunctionDeclarationType.hpp"
-#include "../other/VnlcTypeAnnotationNode.hpp"
 #include <memory>
 #include <optional>
 #include <utility>
@@ -39,14 +39,14 @@ public:
         const VnlcToken& lastToken
     ) noexcept;
 
-    const VnlcFunctionDeclarationType::Kind getKind() const noexcept;
-    const VnlcFunctionDeclarationType::Context getContext() const noexcept;
-    const VnlcFunctionDeclarationType::AccessModifier getAccessModifier() const noexcept;
-    const VnlcFunctionDeclarationType::Binding getBinding() const noexcept;
-    const std::string& getName() const noexcept;
-    const std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>>& getParameters() const noexcept;
-    const std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>& getReturnType() const noexcept;
-    const std::optional<std::unique_ptr<VnlcBlockStatementNode>>& getBody() const noexcept;
+    [[nodiscard]] const VnlcFunctionDeclarationType::Kind getKind() const noexcept;
+    [[nodiscard]] const VnlcFunctionDeclarationType::Context getContext() const noexcept;
+    [[nodiscard]] const VnlcFunctionDeclarationType::AccessModifier getAccessModifier() const noexcept;
+    [[nodiscard]] const VnlcFunctionDeclarationType::Binding getBinding() const noexcept;
+    [[nodiscard]] const std::string& getName() const noexcept;
+    [[nodiscard]] const std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>>& getParameters() const noexcept;
+    [[nodiscard]] const std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>& getReturnType() const noexcept;
+    [[nodiscard]] const std::optional<std::unique_ptr<VnlcBlockStatementNode>>& getBody() const noexcept;
 };
 
 #endif // VNLC_FUNCTION_DECLARATION_NODE_HPP

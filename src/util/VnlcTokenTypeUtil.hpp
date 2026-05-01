@@ -7,7 +7,7 @@
 #include <string_view>
 
 namespace VnlcTokenTypeUtil {
-    std::string_view toString(VnlcTokenType type);
+    [[nodiscard]] std::string_view toString(VnlcTokenType type);
 }
 
 #endif // VNLC_TOKEN_TYPE_UTIL_HPP

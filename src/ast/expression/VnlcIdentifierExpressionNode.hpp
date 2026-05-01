@@ -14,7 +14,7 @@ private:
 public:
     VnlcIdentifierExpressionNode(std::string&& name, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
 
-    std::string_view getName() const noexcept;
+    [[nodiscard]] std::string_view getName() const noexcept;
 };
 
 #endif // VNLC_IDENTIFIER_EXPRESSION_NODE_HPP

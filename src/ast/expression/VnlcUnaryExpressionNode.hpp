@@ -17,8 +17,8 @@ private:
 public:
     VnlcUnaryExpressionNode(VnlcUnaryExpressionType type, std::unique_ptr<VnlcExpressionNode>&& operand, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
 
-    const VnlcUnaryExpressionType getType() const noexcept;
-    const VnlcExpressionNode& getOperand() const noexcept;
+    [[nodiscard]] const VnlcUnaryExpressionType getType() const noexcept;
+    [[nodiscard]] const VnlcExpressionNode& getOperand() const noexcept;
 };
 
 #endif // VNLC_UNARY_EXPRESSION_NODE_HPP

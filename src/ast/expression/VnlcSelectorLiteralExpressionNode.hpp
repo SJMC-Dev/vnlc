@@ -23,8 +23,8 @@ public:
         const VnlcToken& lastToken
     ) noexcept;
 
-    const VnlcSelectorLiteralExpressionType getType() const noexcept;
-    const std::unordered_map<std::string, std::unique_ptr<VnlcExpressionNode>>& getArguments() const noexcept;
+    [[nodiscard]] const VnlcSelectorLiteralExpressionType getType() const noexcept;
+    [[nodiscard]] const std::unordered_map<std::string, std::unique_ptr<VnlcExpressionNode>>& getArguments() const noexcept;
 };
 
 #endif // VNLC_SELECTOR_LITERAL_EXPRESSION_NODE_HPP

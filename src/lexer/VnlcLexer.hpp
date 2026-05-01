@@ -33,32 +33,32 @@ private:
     bool readline();
     void collect(std::string& tokenValue);
 
-    bool blank() const;
-    bool number() const;
-    bool special() const;
-    bool newline() const;
-    bool eof() const;
-    bool separator() const;
+    [[nodiscard]] bool blank() const;
+    [[nodiscard]] bool number() const;
+    [[nodiscard]] bool special() const;
+    [[nodiscard]] bool newline() const;
+    [[nodiscard]] bool eof() const;
+    [[nodiscard]] bool separator() const;
 
-    int peek() const;
-    int peek(int offset) const;
+    [[nodiscard]] int peek() const;
+    [[nodiscard]] int peek(int offset) const;
 
-    VnlcToken processStartsWithBlank(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
-    VnlcToken processStartsWithNumber(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
-    VnlcToken processStartsWithSpecial(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
-    VnlcToken processStartsWithNewline(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
-    VnlcToken processStartsWithEof(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
-    VnlcToken processStartsWithIdentifier(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
+    [[nodiscard]] VnlcToken processStartsWithBlank(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
+    [[nodiscard]] VnlcToken processStartsWithNumber(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
+    [[nodiscard]] VnlcToken processStartsWithSpecial(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
+    [[nodiscard]] VnlcToken processStartsWithNewline(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
+    [[nodiscard]] VnlcToken processStartsWithEof(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
+    [[nodiscard]] VnlcToken processStartsWithIdentifier(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
 
-    VnlcToken scanStringLiteral(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
-    VnlcToken scanFormatStringLiteral(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
-    VnlcToken scanRawStringLiteral(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
+    [[nodiscard]] VnlcToken scanStringLiteral(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
+    [[nodiscard]] VnlcToken scanFormatStringLiteral(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
+    [[nodiscard]] VnlcToken scanRawStringLiteral(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
 
 public:
     VnlcLexer(std::istream& input);
 
-    bool hasNext() const;
-    VnlcToken next();
+    [[nodiscard]] bool hasNext() const;
+    [[nodiscard]] VnlcToken next();
 };
 
 #endif // VNLC_LEXER_HPP

@@ -26,10 +26,10 @@ public:
         const VnlcToken& lastToken
     ) noexcept;
 
-    const std::vector<std::string>& getTypeNameParts() const noexcept;
-    bool isReadonly() const noexcept;
-    bool isOptional() const noexcept;
-    const std::vector<std::unique_ptr<VnlcTypeAnnotationNode>>& getGenericArguments() const noexcept;
+    [[nodiscard]] const std::vector<std::string>& getTypeNameParts() const noexcept;
+    [[nodiscard]] bool isReadonly() const noexcept;
+    [[nodiscard]] bool isOptional() const noexcept;
+    [[nodiscard]] const std::vector<std::unique_ptr<VnlcTypeAnnotationNode>>& getGenericArguments() const noexcept;
 };
 
 #endif // VNLC_TYPE_ANNOTATION_NODE_HPP

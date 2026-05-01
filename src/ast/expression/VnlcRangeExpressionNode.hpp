@@ -22,8 +22,8 @@ public:
         const VnlcToken& lastToken
     ) noexcept;
 
-    const std::optional<std::unique_ptr<VnlcExpressionNode>>& getStart() const noexcept;
-    const std::optional<std::unique_ptr<VnlcExpressionNode>>& getEnd() const noexcept;
+    [[nodiscard]] const std::optional<std::unique_ptr<VnlcExpressionNode>>& getStart() const noexcept;
+    [[nodiscard]] const std::optional<std::unique_ptr<VnlcExpressionNode>>& getEnd() const noexcept;
 };
 
 #endif // VNLC_RANGE_EXPRESSION_NODE_HPP

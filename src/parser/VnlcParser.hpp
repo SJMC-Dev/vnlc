@@ -16,8 +16,8 @@ private:
 public:
     VnlcParser(VnlcLexer&& lexer);
 
-    bool hasNext() const;
-    std::unique_ptr<VnlcAstNode> parse();
+    [[nodiscard]] bool hasNext() const;
+    [[nodiscard]] std::unique_ptr<VnlcAstNode> parse();
 };
 
 #endif // VNLC_PARSER_HPP

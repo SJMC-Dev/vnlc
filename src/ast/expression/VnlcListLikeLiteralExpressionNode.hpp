@@ -23,8 +23,8 @@ public:
         const VnlcToken& lastToken
     ) noexcept;
 
-    const VnlcListLikeLiteralExpressionType getType() const noexcept;
-    const std::vector<std::unique_ptr<VnlcExpressionNode>>& getElements() const noexcept;
+    [[nodiscard]] const VnlcListLikeLiteralExpressionType getType() const noexcept;
+    [[nodiscard]] const std::vector<std::unique_ptr<VnlcExpressionNode>>& getElements() const noexcept;
 };
 
 #endif // VNLC_LIST_LIKE_LITERAL_EXPRESSION_NODE_HPP
