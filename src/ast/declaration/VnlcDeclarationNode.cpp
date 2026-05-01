@@ -26,3 +26,27 @@ VnlcDeclarationNode::VnlcDeclarationNode(
       nowarnings(nowarnings),
       minGameVersion(std::move(minGameVersion)),
       maxGameVersion(std::move(maxGameVersion)) {}
+
+bool VnlcDeclarationNode::doesIncludeMetadata() const noexcept {
+    return includeMetadata;
+}
+
+std::optional<bool> VnlcDeclarationNode::isDeprecated() const noexcept {
+    return deprecated;
+}
+
+std::optional<bool> VnlcDeclarationNode::isExperimental() const noexcept {
+    return experimental;
+}
+
+std::optional<bool> VnlcDeclarationNode::isNowarnings() const noexcept {
+    return nowarnings;
+}
+
+std::optional<std::string> VnlcDeclarationNode::getMinGameVersion() const noexcept {
+    return minGameVersion;
+}
+
+std::optional<std::string> VnlcDeclarationNode::getMaxGameVersion() const noexcept {
+    return maxGameVersion;
+}
