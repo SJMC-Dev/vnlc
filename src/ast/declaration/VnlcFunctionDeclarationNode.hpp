@@ -62,7 +62,7 @@ public:
     [[nodiscard]] const VnlcFunctionDeclarationType::Context getContext() const noexcept;
     [[nodiscard]] const VnlcFunctionDeclarationType::AccessModifier getAccessModifier() const noexcept;
     [[nodiscard]] const VnlcFunctionDeclarationType::Binding getBinding() const noexcept;
-    [[nodiscard]] const std::string& getName() const noexcept;
+    [[nodiscard]] std::string_view getName() const noexcept;
     [[nodiscard]] const std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>>& getParameters() const noexcept;
     [[nodiscard]] const std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>& getReturnType() const noexcept;
     [[nodiscard]] const std::optional<std::unique_ptr<VnlcBlockStatementNode>>& getBody() const noexcept;

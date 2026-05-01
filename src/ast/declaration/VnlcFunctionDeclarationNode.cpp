@@ -66,7 +66,7 @@ const VnlcFunctionDeclarationType::Binding VnlcFunctionDeclarationNode::getBindi
     return binding;
 }
 
-const std::string& VnlcFunctionDeclarationNode::getName() const noexcept {
+std::string_view VnlcFunctionDeclarationNode::getName() const noexcept {
     return *name;
 }
 

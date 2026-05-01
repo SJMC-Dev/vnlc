@@ -39,7 +39,7 @@ const VnlcVariableDeclarationType VnlcVariableDeclarationNode::getType() const n
     return type;
 }
 
-const std::string& VnlcVariableDeclarationNode::getName() const noexcept {
+std::string_view VnlcVariableDeclarationNode::getName() const noexcept {
     return name;
 }
 

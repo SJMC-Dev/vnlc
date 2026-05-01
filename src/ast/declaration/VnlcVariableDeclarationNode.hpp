@@ -44,7 +44,7 @@ public:
     ) noexcept;
 
     [[nodiscard]] const VnlcVariableDeclarationType getType() const noexcept;
-    [[nodiscard]] const std::string& getName() const noexcept;
+    [[nodiscard]] std::string_view getName() const noexcept;
     [[nodiscard]] const std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>& getTypeAnnotation() const noexcept;
     [[nodiscard]] const VnlcExpressionNode& getInitializer() const noexcept;
 };
