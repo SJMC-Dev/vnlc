@@ -28,6 +28,21 @@ public:
         const VnlcToken& lastToken
     ) noexcept;
 
+    VnlcVariableDeclarationNode(
+        VnlcVariableDeclarationType type,
+        std::string&& name,
+        std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& typeAnnotation,
+        std::unique_ptr<VnlcExpressionNode>&& initializer,
+        const VnlcToken& firstToken,
+        const VnlcToken& lastToken,
+        bool includeMetadata,
+        std::optional<bool> deprecated,
+        std::optional<bool> experimental,
+        std::optional<bool> nowarnings,
+        std::optional<std::string>&& minGameVersion,
+        std::optional<std::string>&& maxGameVersion
+    ) noexcept;
+
     [[nodiscard]] const VnlcVariableDeclarationType getType() const noexcept;
     [[nodiscard]] const std::string& getName() const noexcept;
     [[nodiscard]] const std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>& getTypeAnnotation() const noexcept;

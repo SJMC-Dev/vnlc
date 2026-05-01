@@ -22,6 +22,34 @@ VnlcFunctionDeclarationNode::VnlcFunctionDeclarationNode(
       returnType(std::move(returnType)),
       body(std::move(body)) {}
 
+VnlcFunctionDeclarationNode::VnlcFunctionDeclarationNode(
+    VnlcFunctionDeclarationType::Kind kind,
+    VnlcFunctionDeclarationType::Context context,
+    VnlcFunctionDeclarationType::AccessModifier accessModifier,
+    VnlcFunctionDeclarationType::Binding binding,
+    std::unique_ptr<std::string>&& name,
+    std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>>&& parameters,
+    std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& returnType,
+    std::optional<std::unique_ptr<VnlcBlockStatementNode>>&& body,
+    const VnlcToken& firstToken,
+    const VnlcToken& lastToken,
+    bool includeMetadata,
+    std::optional<bool> deprecated,
+    std::optional<bool> experimental,
+    std::optional<bool> nowarnings,
+    std::optional<std::string>&& minGameVersion,
+    std::optional<std::string>&& maxGameVersion
+) noexcept
+    : VnlcDeclarationNode(firstToken, lastToken, includeMetadata, deprecated, experimental, nowarnings, std::move(minGameVersion), std::move(maxGameVersion)),
+      kind(kind),
+      context(context),
+      accessModifier(accessModifier),
+      binding(binding),
+      name(std::move(name)),
+      parameters(std::move(parameters)),
+      returnType(std::move(returnType)),
+      body(std::move(body)) {}
+
 const VnlcFunctionDeclarationType::Kind VnlcFunctionDeclarationNode::getKind() const noexcept {
     return kind;
 }

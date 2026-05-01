@@ -39,6 +39,25 @@ public:
         const VnlcToken& lastToken
     ) noexcept;
 
+    VnlcFunctionDeclarationNode(
+        VnlcFunctionDeclarationType::Kind kind,
+        VnlcFunctionDeclarationType::Context context,
+        VnlcFunctionDeclarationType::AccessModifier accessModifier,
+        VnlcFunctionDeclarationType::Binding binding,
+        std::unique_ptr<std::string>&& name,
+        std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>>&& parameters,
+        std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& returnType,
+        std::optional<std::unique_ptr<VnlcBlockStatementNode>>&& body,
+        const VnlcToken& firstToken,
+        const VnlcToken& lastToken,
+        bool includeMetadata,
+        std::optional<bool> deprecated,
+        std::optional<bool> experimental,
+        std::optional<bool> nowarnings,
+        std::optional<std::string>&& minGameVersion,
+        std::optional<std::string>&& maxGameVersion
+    ) noexcept;
+
     [[nodiscard]] const VnlcFunctionDeclarationType::Kind getKind() const noexcept;
     [[nodiscard]] const VnlcFunctionDeclarationType::Context getContext() const noexcept;
     [[nodiscard]] const VnlcFunctionDeclarationType::AccessModifier getAccessModifier() const noexcept;
