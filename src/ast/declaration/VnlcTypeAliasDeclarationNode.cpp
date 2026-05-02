@@ -6,7 +6,7 @@ VnlcTypeAliasDeclarationNode::VnlcTypeAliasDeclarationNode(
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
 ) noexcept
-    : VnlcDeclarationNode(firstToken, lastToken),
+    : VnlcTypeDeclarationNode(firstToken, lastToken),
       aliasName(std::move(aliasName)),
       originalNameParts(std::move(originalNameParts)) {}
 
@@ -22,7 +22,7 @@ VnlcTypeAliasDeclarationNode::VnlcTypeAliasDeclarationNode(
     std::optional<std::string>&& minGameVersion,
     std::optional<std::string>&& maxGameVersion
 ) noexcept
-    : VnlcDeclarationNode(firstToken, lastToken, includeMetadata, deprecated, experimental, nowarnings, std::move(minGameVersion), std::move(maxGameVersion)),
+    : VnlcTypeDeclarationNode(firstToken, lastToken, includeMetadata, deprecated, experimental, nowarnings, std::move(minGameVersion), std::move(maxGameVersion)),
       aliasName(std::move(aliasName)),
       originalNameParts(std::move(originalNameParts)) {}
 

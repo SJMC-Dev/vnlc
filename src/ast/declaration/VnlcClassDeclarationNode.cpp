@@ -10,7 +10,7 @@ VnlcClassDeclarationNode::VnlcClassDeclarationNode(
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
 ) noexcept
-    : VnlcDeclarationNode(firstToken, lastToken),
+    : VnlcTypeDeclarationNode(firstToken, lastToken),
       final(final),
       name(std::move(name)),
       baseClassNameParts(std::move(baseClassNameParts)),
@@ -34,7 +34,7 @@ VnlcClassDeclarationNode::VnlcClassDeclarationNode(
     std::optional<std::string>&& minGameVersion,
     std::optional<std::string>&& maxGameVersion
 ) noexcept
-    : VnlcDeclarationNode(firstToken, lastToken, includeMetadata, deprecated, experimental, nowarnings, std::move(minGameVersion), std::move(maxGameVersion)),
+    : VnlcTypeDeclarationNode(firstToken, lastToken, includeMetadata, deprecated, experimental, nowarnings, std::move(minGameVersion), std::move(maxGameVersion)),
       final(final),
       name(std::move(name)),
       baseClassNameParts(std::move(baseClassNameParts)),

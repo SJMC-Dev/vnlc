@@ -7,7 +7,7 @@ VnlcInterfaceDeclarationNode::VnlcInterfaceDeclarationNode(
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
 ) noexcept
-    : VnlcDeclarationNode(firstToken, lastToken),
+    : VnlcTypeDeclarationNode(firstToken, lastToken),
       name(std::move(name)),
       genericParameterNames(std::move(genericParameterNames)),
       methodDeclarations(std::move(methodDeclarations)) {}
@@ -25,7 +25,7 @@ VnlcInterfaceDeclarationNode::VnlcInterfaceDeclarationNode(
     std::optional<std::string>&& minGameVersion,
     std::optional<std::string>&& maxGameVersion
 ) noexcept
-    : VnlcDeclarationNode(firstToken, lastToken, includeMetadata, deprecated, experimental, nowarnings, std::move(minGameVersion), std::move(maxGameVersion)),
+    : VnlcTypeDeclarationNode(firstToken, lastToken, includeMetadata, deprecated, experimental, nowarnings, std::move(minGameVersion), std::move(maxGameVersion)),
       name(std::move(name)),
       genericParameterNames(std::move(genericParameterNames)),
       methodDeclarations(std::move(methodDeclarations)) {}

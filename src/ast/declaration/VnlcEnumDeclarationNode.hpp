@@ -3,10 +3,10 @@
 #ifndef VNLC_ENUM_DECLARATION_NODE_HPP
 #define VNLC_ENUM_DECLARATION_NODE_HPP
 
-#include "VnlcDeclarationNode.hpp"
 #include "VnlcEnumMemberDeclarationNode.hpp"
+#include "VnlcTypeDeclarationNode.hpp"
 
-class VnlcEnumDeclarationNode : public VnlcDeclarationNode {
+class VnlcEnumDeclarationNode : public VnlcTypeDeclarationNode {
 private:
     VnlcEnumDeclarationNode() = delete;
 

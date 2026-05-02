@@ -3,13 +3,13 @@
 #ifndef VNLC_INTERFACE_DECLARATION_NODE_HPP
 #define VNLC_INTERFACE_DECLARATION_NODE_HPP
 
-#include "VnlcDeclarationNode.hpp"
 #include "VnlcFunctionDeclarationNode.hpp"
+#include "VnlcTypeDeclarationNode.hpp"
 #include <memory>
 #include <string>
 #include <vector>
 
-class VnlcInterfaceDeclarationNode : public VnlcDeclarationNode {
+class VnlcInterfaceDeclarationNode : public VnlcTypeDeclarationNode {
 private:
     VnlcInterfaceDeclarationNode() = delete;
 

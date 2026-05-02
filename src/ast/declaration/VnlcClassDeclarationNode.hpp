@@ -3,12 +3,12 @@
 #ifndef VNLC_CLASS_DECLARATION_NODE_HPP
 #define VNLC_CLASS_DECLARATION_NODE_HPP
 
-#include "VnlcDeclarationNode.hpp"
+#include "VnlcTypeDeclarationNode.hpp"
 #include <memory>
 #include <string>
 #include <vector>
 
-class VnlcClassDeclarationNode : public VnlcDeclarationNode {
+class VnlcClassDeclarationNode : public VnlcTypeDeclarationNode {
 private:
     VnlcClassDeclarationNode() = delete;
 

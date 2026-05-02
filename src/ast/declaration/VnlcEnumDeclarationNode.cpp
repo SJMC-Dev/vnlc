@@ -6,7 +6,7 @@ VnlcEnumDeclarationNode::VnlcEnumDeclarationNode(
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
 ) noexcept
-    : VnlcDeclarationNode(firstToken, lastToken),
+    : VnlcTypeDeclarationNode(firstToken, lastToken),
       name(std::move(name)),
       memberDeclarations(std::move(memberDeclarations)) {}
 
@@ -22,7 +22,7 @@ VnlcEnumDeclarationNode::VnlcEnumDeclarationNode(
     std::optional<std::string>&& minGameVersion,
     std::optional<std::string>&& maxGameVersion
 ) noexcept
-    : VnlcDeclarationNode(firstToken, lastToken, includeMetadata, deprecated, experimental, nowarnings, std::move(minGameVersion), std::move(maxGameVersion)),
+    : VnlcTypeDeclarationNode(firstToken, lastToken, includeMetadata, deprecated, experimental, nowarnings, std::move(minGameVersion), std::move(maxGameVersion)),
       name(std::move(name)),
       memberDeclarations(std::move(memberDeclarations)) {}
 
