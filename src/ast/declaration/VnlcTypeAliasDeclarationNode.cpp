@@ -2,17 +2,17 @@
 
 VnlcTypeAliasDeclarationNode::VnlcTypeAliasDeclarationNode(
     std::string&& aliasName,
-    std::vector<std::string>&& originalNameParts,
+    std::unique_ptr<VnlcTypeNode>&& originalType,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
 ) noexcept
     : VnlcTypeDeclarationNode(firstToken, lastToken),
       aliasName(std::move(aliasName)),
-      originalNameParts(std::move(originalNameParts)) {}
+      originalType(std::move(originalType)) {}
 
 VnlcTypeAliasDeclarationNode::VnlcTypeAliasDeclarationNode(
     std::string&& aliasName,
-    std::vector<std::string>&& originalNameParts,
+    std::unique_ptr<VnlcTypeNode>&& originalType,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken,
     bool includeMetadata,
@@ -24,12 +24,12 @@ VnlcTypeAliasDeclarationNode::VnlcTypeAliasDeclarationNode(
 ) noexcept
     : VnlcTypeDeclarationNode(firstToken, lastToken, includeMetadata, deprecated, experimental, nowarnings, std::move(minGameVersion), std::move(maxGameVersion)),
       aliasName(std::move(aliasName)),
-      originalNameParts(std::move(originalNameParts)) {}
+      originalType(std::move(originalType)) {}
 
 std::string_view VnlcTypeAliasDeclarationNode::getAliasName() const noexcept {
     return aliasName;
 }
 
-const std::vector<std::string>& VnlcTypeAliasDeclarationNode::getOriginalNameParts() const noexcept {
-    return originalNameParts;
+const VnlcTypeNode& VnlcTypeAliasDeclarationNode::getOriginalType() const noexcept {
+    return *originalType;
 }
