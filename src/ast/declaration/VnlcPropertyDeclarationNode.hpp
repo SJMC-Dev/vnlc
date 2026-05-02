@@ -45,8 +45,8 @@ public:
         std::optional<std::string>&& maxGameVersion
     ) noexcept;
 
-    [[nodiscard]] VnlcPropertyDeclarationType::AccessModifier getAccessModifier() const noexcept;
-    [[nodiscard]] VnlcPropertyDeclarationType::Binding getBinding() const noexcept;
+    [[nodiscard]] const VnlcPropertyDeclarationType::AccessModifier getAccessModifier() const noexcept;
+    [[nodiscard]] const VnlcPropertyDeclarationType::Binding getBinding() const noexcept;
     [[nodiscard]] std::string_view getName() const noexcept;
     [[nodiscard]] const VnlcTypeAnnotationNode& getTypeAnnotation() const noexcept;
     [[nodiscard]] const std::optional<std::unique_ptr<VnlcExpressionNode>>& getInitializer() const noexcept;

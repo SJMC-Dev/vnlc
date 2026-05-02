@@ -38,11 +38,11 @@ VnlcPropertyDeclarationNode::VnlcPropertyDeclarationNode(
       typeAnnotation(std::move(typeAnnotation)),
       initializer(std::move(initializer)) {}
 
-VnlcPropertyDeclarationType::AccessModifier VnlcPropertyDeclarationNode::getAccessModifier() const noexcept {
+const VnlcPropertyDeclarationType::AccessModifier VnlcPropertyDeclarationNode::getAccessModifier() const noexcept {
     return accessModifier;
 }
 
-VnlcPropertyDeclarationType::Binding VnlcPropertyDeclarationNode::getBinding() const noexcept {
+const VnlcPropertyDeclarationType::Binding VnlcPropertyDeclarationNode::getBinding() const noexcept {
     return binding;
 }
 
