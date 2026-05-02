@@ -29,6 +29,13 @@ add_executable(
     ast/declaration/VnlcFunctionDeclarationNode.cpp
     ast/declaration/VnlcVariableDeclarationNode.cpp
     ast/declaration/VnlcTypeAliasDeclarationNode.cpp
+    ast/declaration/VnlcPropertyDeclarationNode.cpp
+    ast/declaration/VnlcClassDeclarationNode.cpp
+    ast/declaration/VnlcInterfaceDeclarationNode.cpp
+    ast/declaration/VnlcEnumMemberDeclarationNode.cpp
+    ast/declaration/VnlcEnumDeclarationNode.cpp
+    ast/declaration/VnlcImportDeclarationNode.cpp
+    ast/declaration/VnlcExportDeclarationNode.cpp
     ast/statement/VnlcStatementNode.cpp
     ast/statement/VnlcBlockStatementNode.cpp
     ast/other/VnlcTypeAnnotationNode.cpp
