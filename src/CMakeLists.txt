@@ -26,6 +26,7 @@ add_executable(
     ast/expression/VnlcDictLiteralExpressionNode.cpp
     ast/expression/VnlcSelectorLiteralExpressionNode.cpp
     ast/declaration/VnlcDeclarationNode.cpp
+    ast/declaration/VnlcTypeDeclarationNode.cpp
     ast/declaration/VnlcFunctionDeclarationNode.cpp
     ast/declaration/VnlcVariableDeclarationNode.cpp
     ast/declaration/VnlcTypeAliasDeclarationNode.cpp
@@ -38,6 +39,18 @@ add_executable(
     ast/declaration/VnlcExportDeclarationNode.cpp
     ast/statement/VnlcStatementNode.cpp
     ast/statement/VnlcBlockStatementNode.cpp
+    ast/statement/VnlcExpressionStatementNode.cpp
+    ast/statement/VnlcVariableDeclarationStatementNode.cpp
+    ast/statement/VnlcControlFlowStatementNode.cpp
+    ast/statement/VnlcIfStatementNode.cpp
+    ast/statement/VnlcLoopStatementNode.cpp
+    ast/statement/VnlcWhileStatementNode.cpp
+    ast/statement/VnlcForStatementNode.cpp
+    ast/statement/VnlcReturnStatementNode.cpp
+    ast/statement/VnlcBreakStatementNode.cpp
+    ast/statement/VnlcContinueStatementNode.cpp
+    ast/statement/VnlcReloadStatementNode.cpp
+    ast/statement/VnlcSwitchStatementNode.cpp
     ast/other/VnlcTypeAnnotationNode.cpp
 )
 
