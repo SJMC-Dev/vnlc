@@ -31,7 +31,7 @@ protected:
     ) noexcept;
 
 public:
-    [[nodiscard]] bool doesIncludeMetadata() const noexcept;
+    [[nodiscard]] const bool doesIncludeMetadata() const noexcept;
     [[nodiscard]] std::optional<bool> isDeprecated() const noexcept;
     [[nodiscard]] std::optional<bool> isExperimental() const noexcept;
     [[nodiscard]] std::optional<bool> isNowarnings() const noexcept;

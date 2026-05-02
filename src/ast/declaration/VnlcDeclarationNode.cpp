@@ -27,7 +27,7 @@ VnlcDeclarationNode::VnlcDeclarationNode(
       minGameVersion(std::move(minGameVersion)),
       maxGameVersion(std::move(maxGameVersion)) {}
 
-bool VnlcDeclarationNode::doesIncludeMetadata() const noexcept {
+const bool VnlcDeclarationNode::doesIncludeMetadata() const noexcept {
     return includeMetadata;
 }
 

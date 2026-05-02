@@ -12,7 +12,7 @@ VnlcImportDeclarationNode::VnlcImportDeclarationNode(
       namePartsListWithAliases(std::move(namePartsListWithAliases)),
       wildcardImportNamePartsList(std::move(wildcardImportNamePartsList)) {}
 
-bool VnlcImportDeclarationNode::isRelative() const noexcept {
+const bool VnlcImportDeclarationNode::isRelative() const noexcept {
     return relative;
 }
 

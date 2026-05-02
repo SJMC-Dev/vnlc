@@ -25,7 +25,7 @@ public:
         const VnlcToken& lastToken
     ) noexcept;
 
-    [[nodiscard]] bool isRelative() const noexcept;
+    [[nodiscard]] const bool isRelative() const noexcept;
     [[nodiscard]] const std::vector<VnlcImportDeclarationItem>& getNamePartsListWithAliases() const noexcept;
     [[nodiscard]] const std::vector<std::vector<std::string>>& getWildcardImportNamePartsList() const noexcept;
 };
