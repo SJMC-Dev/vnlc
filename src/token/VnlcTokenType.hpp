@@ -86,10 +86,6 @@ enum class VnlcTokenType {
     DEFINE,
 
     METADATA,
-    DEPRECATED,
-    EXPERIMENTAL,
-    NOWARNINGS,
-    GAMEVERSION,
 
     PLUS,                  // +
     MINUS,                 // -

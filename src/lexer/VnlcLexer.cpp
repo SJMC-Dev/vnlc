@@ -83,10 +83,6 @@ VnlcLexer::VnlcLexer(std::istream& input)
           { "asset", VnlcTokenType::ASSET },
           { "define", VnlcTokenType::DEFINE },
           { "metadata", VnlcTokenType::METADATA },
-          { "deprecated", VnlcTokenType::DEPRECATED },
-          { "experimental", VnlcTokenType::EXPERIMENTAL },
-          { "nowarnings", VnlcTokenType::NOWARNINGS },
-          { "gameversion", VnlcTokenType::GAMEVERSION },
       } {
     readline();
 }

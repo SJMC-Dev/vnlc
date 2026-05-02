@@ -147,14 +147,6 @@ std::string_view VnlcTokenTypeUtil::toString(VnlcTokenType type) {
             return "VnlcTokenType::DEFINE";
         case VnlcTokenType::METADATA:
             return "VnlcTokenType::METADATA";
-        case VnlcTokenType::DEPRECATED:
-            return "VnlcTokenType::DEPRECATED";
-        case VnlcTokenType::EXPERIMENTAL:
-            return "VnlcTokenType::EXPERIMENTAL";
-        case VnlcTokenType::NOWARNINGS:
-            return "VnlcTokenType::NOWARNINGS";
-        case VnlcTokenType::GAMEVERSION:
-            return "VnlcTokenType::GAMEVERSION";
         case VnlcTokenType::PLUS:
             return "VnlcTokenType::PLUS";
         case VnlcTokenType::MINUS:
