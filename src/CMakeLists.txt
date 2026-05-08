@@ -9,6 +9,7 @@ add_executable(
     util/VnlcRunningModeUtil.cpp
     util/VnlcTokenTypeUtil.cpp
     ast/VnlcAstNode.cpp
+    ast/module/VnlcModuleNode.cpp
     ast/expression/VnlcBinaryExpressionNode.cpp
     ast/expression/VnlcConditionalExpressionNode.cpp
     ast/expression/VnlcExpressionNode.cpp
