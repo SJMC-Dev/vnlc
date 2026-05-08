@@ -55,7 +55,7 @@ private:
     [[nodiscard]] VnlcToken scanRawStringLiteral(std::string& tokenValue, int currentLine, int currentColumn, unsigned int currentOffset);
 
 public:
-    VnlcLexer(std::istream& input);
+    explicit VnlcLexer(std::istream& input);
 
     [[nodiscard]] bool hasNext() const;
     [[nodiscard]] VnlcToken next();
