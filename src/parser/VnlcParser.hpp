@@ -11,6 +11,10 @@
 #include "../ast/declaration/VnlcPropertyDeclarationNode.hpp"
 #include "../ast/declaration/VnlcTypeDeclarationNode.hpp"
 #include "../ast/declaration/VnlcVariableDeclarationNode.hpp"
+#include "../ast/declaration/VnlcClassDeclarationNode.hpp"
+#include "../ast/declaration/VnlcInterfaceDeclarationNode.hpp"
+#include "../ast/declaration/VnlcEnumDeclarationNode.hpp"
+#include "../ast/declaration/VnlcTypeAliasDeclarationNode.hpp"
 #include "../ast/module/VnlcModuleNode.hpp"
 #include "../ast/other/VnlcTypeAnnotationNode.hpp"
 #include "../config/VnlcConfig.hpp"
@@ -49,10 +53,10 @@ private:
     [[nodiscard]] std::unique_ptr<VnlcFunctionDeclarationNode> parseNativeFunctionDeclaration();
     [[nodiscard]] std::unique_ptr<VnlcTypeAnnotationNode> parseTypeAnnotation();
     [[nodiscard]] std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>> parseParameterList();
-    void parseClassDeclaration();
-    void parseInterfaceDeclaration();
-    void parseEnumDeclaration();
-    void parseTypeAliasDeclaration();
+    [[nodiscard]] std::unique_ptr<VnlcClassDeclarationNode> parseClassDeclaration();
+    [[nodiscard]] std::unique_ptr<VnlcInterfaceDeclarationNode> parseInterfaceDeclaration();
+    [[nodiscard]] std::unique_ptr<VnlcEnumDeclarationNode> parseEnumDeclaration();
+    [[nodiscard]] std::unique_ptr<VnlcTypeAliasDeclarationNode> parseTypeAliasDeclaration();
     void parseImportPath();
     void parseExportList();
     void parseMetadataTerm();
