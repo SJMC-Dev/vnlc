@@ -42,12 +42,7 @@ public:
         std::vector<std::unique_ptr<VnlcDeclarationNode>>&& memberDeclarations,
         const VnlcToken& firstToken,
         const VnlcToken& lastToken,
-        bool includeMetadata,
-        std::optional<bool> deprecated,
-        std::optional<bool> experimental,
-        std::optional<bool> nowarnings,
-        std::optional<std::string>&& minGameVersion,
-        std::optional<std::string>&& maxGameVersion
+        std::vector<VnlcDeclarationItem::MetadataTerm>&& metadataTerms
     ) noexcept;
 
     [[nodiscard]] const bool isFinal() const noexcept;

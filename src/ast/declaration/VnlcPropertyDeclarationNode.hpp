@@ -37,12 +37,7 @@ public:
         std::optional<std::unique_ptr<VnlcExpressionNode>>&& initializer,
         const VnlcToken& firstToken,
         const VnlcToken& lastToken,
-        bool includeMetadata,
-        std::optional<bool> deprecated,
-        std::optional<bool> experimental,
-        std::optional<bool> nowarnings,
-        std::optional<std::string>&& minGameVersion,
-        std::optional<std::string>&& maxGameVersion
+        std::vector<VnlcDeclarationItem::MetadataTerm>&& metadataTerms
     ) noexcept;
 
     [[nodiscard]] const VnlcPropertyDeclarationType::AccessModifier getAccessModifier() const noexcept;

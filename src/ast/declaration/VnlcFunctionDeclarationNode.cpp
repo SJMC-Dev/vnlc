@@ -33,14 +33,9 @@ VnlcFunctionDeclarationNode::VnlcFunctionDeclarationNode(
     std::optional<std::unique_ptr<VnlcBlockStatementNode>>&& body,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken,
-    bool includeMetadata,
-    std::optional<bool> deprecated,
-    std::optional<bool> experimental,
-    std::optional<bool> nowarnings,
-    std::optional<std::string>&& minGameVersion,
-    std::optional<std::string>&& maxGameVersion
+    std::vector<VnlcDeclarationItem::MetadataTerm>&& metadataTerms
 ) noexcept
-    : VnlcDeclarationNode(firstToken, lastToken, includeMetadata, deprecated, experimental, nowarnings, std::move(minGameVersion), std::move(maxGameVersion)),
+    : VnlcDeclarationNode(firstToken, lastToken, std::move(metadataTerms)),
       kind(kind),
       context(context),
       accessModifier(accessModifier),

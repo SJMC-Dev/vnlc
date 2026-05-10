@@ -10,16 +10,7 @@ private:
 
 protected:
     VnlcTypeDeclarationNode(const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
-    VnlcTypeDeclarationNode(
-        const VnlcToken& firstToken,
-        const VnlcToken& lastToken,
-        bool includeMetadata,
-        std::optional<bool> deprecated,
-        std::optional<bool> experimental,
-        std::optional<bool> nowarnings,
-        std::optional<std::string>&& minGameVersion,
-        std::optional<std::string>&& maxGameVersion
-    ) noexcept;
+    VnlcTypeDeclarationNode(const VnlcToken& firstToken, const VnlcToken& lastToken, std::vector<VnlcDeclarationItem::MetadataTerm>&& metadataTerms) noexcept;
 };
 
 #endif // VNLC_TYPE_DECLARATION_NODE_HPP
