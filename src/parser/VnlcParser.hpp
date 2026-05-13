@@ -7,8 +7,8 @@
 #include "../config/VnlcConfig.hpp"
 #include "../lexer/VnlcLexer.hpp"
 #include "../token/VnlcToken.hpp"
-#include "inherited/VnlcParsingContexts.hpp" // IWYU pragma: keep
-#include "synthesized/VnlcParsingResults.hpp" // IWYU pragma: keep
+#include "inherited/VnlcParsingContexts.hpp"
+#include "synthesized/VnlcParsingResults.hpp"
 #include <memory>
 #include <span>
 #include <vector>
