@@ -18,7 +18,7 @@ private:
     std::stack<int> parenthesisCounterStack;
     int parenthesisCounter;
 
-    std::unordered_map<std::string_view, VnlcTokenType> keywords;
+    static const std::unordered_map<std::string_view, VnlcTokenType> keywords;
 
     std::istream& source;
     std::string currentLine;
