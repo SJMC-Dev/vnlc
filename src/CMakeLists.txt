@@ -54,6 +54,7 @@ add_executable(
     ast/statement/VnlcSwitchStatementNode.cpp
     ast/other/VnlcTypeAnnotationNode.cpp
     ast/other/VnlcTypeNode.cpp
+    parser/VnlcParser.cpp
 )
 
 target_link_libraries(
