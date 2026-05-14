@@ -93,15 +93,15 @@ void VnlcApp::run() {
 
     VNLC_LOG_INFO(fmt::format("Vanillang Compiler started in {} mode.", mode));
 
-    std::filesystem::path inputFilePath = std::filesystem::absolute(inputFilePathString);
-    std::filesystem::path outputDirectory = std::filesystem::absolute(outputDirectoryString);
-    std::filesystem::path packageRootPath = std::filesystem::absolute(packageRootPathString);
+    std::filesystem::path inputFilePath = std::filesystem::canonical(inputFilePathString);
+    std::filesystem::path outputDirectory = std::filesystem::canonical(outputDirectoryString);
+    std::filesystem::path packageRootPath = std::filesystem::canonical(packageRootPathString);
     std::vector<std::filesystem::path> dependencyPackageRootPaths;
     for (auto& dependencyPackageRootPathString : dependencyPackageRootPathStrings) {
-        dependencyPackageRootPaths.emplace_back(std::filesystem::absolute(dependencyPackageRootPathString));
+        dependencyPackageRootPaths.emplace_back(std::filesystem::canonical(dependencyPackageRootPathString));
     }
 
-    if (!std::filesystem::absolute(inputFilePath).string().starts_with(std::filesystem::absolute(packageRootPath).string())) {
+    if (!std::filesystem::canonical(inputFilePath).string().starts_with(std::filesystem::canonical(packageRootPath).string())) {
         throw VnlcIllegalInputError("Input file must be within the package root directory.");
     }
 
