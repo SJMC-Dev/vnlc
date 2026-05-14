@@ -19,16 +19,18 @@ private:
 
     std::vector<VnlcToken> tokenBuffer;
     unsigned int currentTokenIndex;
+    unsigned int bufferSize;
 
     [[nodiscard]] bool hasNextToken() const;
     [[nodiscard]] const VnlcToken& peek() const;
     [[nodiscard]] const VnlcToken& peek(unsigned int offset) const;
+
+    void fillBuffer();
     void advance();
 
     [[nodiscard]] bool match(VnlcTokenType expectedType) const;
     [[nodiscard]] bool match(std::span<VnlcTokenType> expectedTypes) const;
 
-    // TODO: specify parameters and return types for each parsing function, use void before we determine them
     [[nodiscard]] VnlcModuleParsingResult parseModule(VnlcModuleParsingContext context);
     [[nodiscard]] VnlcTopIdentifierDeclarationParsingResult parseTopIdentifierDeclaration();
     [[nodiscard]] VnlcImportDeclarationParsingResult parseImportDeclaration();
@@ -121,7 +123,7 @@ private:
     [[nodiscard]] VnlcSwitchCaseParsingResult parseSwitchCase();
 
 public:
-    explicit VnlcParser(VnlcLexer&& lexer, unsigned int bufferSize = 2);
+    explicit VnlcParser(VnlcLexer&& lexer, unsigned int maxBufferSize = 3);
 
     [[nodiscard]] std::unique_ptr<VnlcModuleNode> parse(const VnlcConfig& config);
 };
