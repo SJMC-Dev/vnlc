@@ -8,6 +8,7 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <filesystem>
 
 struct VnlcConfig {
     VnlcRunningMode mode;
@@ -15,11 +16,11 @@ struct VnlcConfig {
     std::string vanillangVersion;
     std::string minecraftVersion;
 
-    std::string packageRootPath;
-    std::string inputFilePath;
-    std::optional<std::string> outputDirectory;
+    std::filesystem::path packageRootPath;
+    std::filesystem::path inputFilePath;
+    std::optional<std::filesystem::path> outputDirectory;
 
-    std::unordered_map<std::string, std::string> dependencyPackageRootPaths;
+    std::unordered_map<std::string, std::filesystem::path> dependencyPackageRootPaths;
 
     std::optional<int> optimizationLevel;
 };

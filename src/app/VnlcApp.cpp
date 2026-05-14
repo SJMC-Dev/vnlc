@@ -1,5 +1,6 @@
 #include "VnlcApp.hpp"
 #include "../config/VnlcConfig.hpp"
+#include "../error/VnlcIllegalInputError.hpp"
 #include "../error/VnlcPackageNameConflictError.hpp"
 #include "../log/VnlcLogger.hpp"
 #include "../session/VnlcSession.hpp"
@@ -7,6 +8,7 @@
 #include <CLI/CLI.hpp>
 #include <filesystem>
 #include <fmt/core.h>
+#include <string>
 #include <vector>
 
 VnlcApp::VnlcApp(int argc, char** argv) : argc{ argc }, argv{ argv }, app{ "Vanillang Compiler" } {}
@@ -18,10 +20,10 @@ void VnlcApp::run() {
 
     bool verbose = false;
 
-    std::string packageRootPath = std::filesystem::current_path().string();
-    std::string inputFilePath;
-    std::string outputDirectory;
-    std::vector<std::string> dependencyPackageRootPaths;
+    std::string packageRootPathString;
+    std::string inputFilePathString;
+    std::string outputDirectoryString;
+    std::vector<std::string> dependencyPackageRootPathStrings;
 
     int optimizationLevel = 0;
 
@@ -57,12 +59,12 @@ void VnlcApp::run() {
     CLI::App* dumpIrApp = app.add_subcommand("dump-ir", "Compile a Vanillang source file and generate a file of intermediate representation");
 
     auto addCommonOptions = [&](CLI::App* subApp, bool requireOutput = false) {
-        subApp->add_option("-i,--input", inputFilePath, "Path to the input Vanillang source file")->required()->check(CLI::ExistingFile);
-        subApp->add_option("-p,--package", packageRootPath, "Path to the root package")->default_val(std::filesystem::current_path().string())->check(CLI::ExistingDirectory);
-        subApp->add_option("-d,--dependencies", dependencyPackageRootPaths, "Paths to root packages of dependencies your source code require")->check(CLI::ExistingDirectory);
+        subApp->add_option("-i,--input", inputFilePathString, "Path to the input Vanillang source file")->required()->check(CLI::ExistingFile);
+        subApp->add_option("-p,--package", packageRootPathString, "Path to the root package")->default_val(std::filesystem::current_path().string())->check(CLI::ExistingDirectory);
+        subApp->add_option("-d,--dependencies", dependencyPackageRootPathStrings, "Paths to root packages of dependencies your source code require")->check(CLI::ExistingDirectory);
 
         if (requireOutput) {
-            subApp->add_option("-o,--output", outputDirectory, "Path to the output directory")->required()->check(CLI::ExistingDirectory);
+            subApp->add_option("-o,--output", outputDirectoryString, "Path to the output directory")->required()->check(CLI::ExistingDirectory);
         }
     };
 
@@ -91,6 +93,18 @@ void VnlcApp::run() {
 
     VNLC_LOG_INFO(fmt::format("Vanillang Compiler started in {} mode.", mode));
 
+    std::filesystem::path inputFilePath = std::filesystem::absolute(inputFilePathString);
+    std::filesystem::path outputDirectory = std::filesystem::absolute(outputDirectoryString);
+    std::filesystem::path packageRootPath = std::filesystem::absolute(packageRootPathString);
+    std::vector<std::filesystem::path> dependencyPackageRootPaths;
+    for (auto& dependencyPackageRootPathString : dependencyPackageRootPathStrings) {
+        dependencyPackageRootPaths.emplace_back(std::filesystem::absolute(dependencyPackageRootPathString));
+    }
+
+    if (!std::filesystem::absolute(inputFilePath).string().starts_with(std::filesystem::absolute(packageRootPath).string())) {
+        throw VnlcIllegalInputError("Input file must be within the package root directory.");
+    }
+
     VnlcConfig config{
         .mode = VnlcRunningModeUtil::getRunningMode(mode),
         .vanillangVersion{ std::move(vanillangVersion) },
@@ -102,9 +116,9 @@ void VnlcApp::run() {
         .optimizationLevel = (mode == "compile") ? std::make_optional(optimizationLevel) : std::nullopt,
     };
 
-    std::string packageName = std::filesystem::path(config.packageRootPath).filename().string();
+    std::string packageName = config.packageRootPath.filename().string();
     for (auto& dependencyPackageRootPath : dependencyPackageRootPaths) {
-        std::string dependencyName = std::filesystem::path(dependencyPackageRootPath).filename().string();
+        std::string dependencyName = dependencyPackageRootPath.filename().string();
 
         if (dependencyName == packageName || config.dependencyPackageRootPaths.contains(dependencyName)) {
             throw VnlcPackageNameConflictError(std::move(dependencyName));
