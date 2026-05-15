@@ -26,6 +26,8 @@ add_executable(
     ast/expression/VnlcListLikeLiteralExpressionNode.cpp
     ast/expression/VnlcDictLiteralExpressionNode.cpp
     ast/expression/VnlcSelectorLiteralExpressionNode.cpp
+    ast/expression/VnlcThisExpressionNode.cpp
+    ast/expression/VnlcSuperExpressionNode.cpp
     ast/declaration/VnlcDeclarationNode.cpp
     ast/declaration/VnlcTypeDeclarationNode.cpp
     ast/declaration/VnlcFunctionDeclarationNode.cpp
