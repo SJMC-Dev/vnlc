@@ -1,5 +1,7 @@
 #pragma once
 
+#include "inherited/VnlcFunctionDeclarationParsingContext.hpp"
+#include "inherited/VnlcTypeDeclarationParsingContext.hpp"
 #ifndef VNLC_PARSER_HPP
 #define VNLC_PARSER_HPP
 
@@ -27,17 +29,20 @@ private:
 
     void fillBuffer();
     void advance();
+    void skipNewlines();
 
-    [[nodiscard]] bool match(VnlcTokenType expectedType) const;
-    [[nodiscard]] bool match(std::span<VnlcTokenType> expectedTypes) const;
+    [[nodiscard]] bool check(VnlcTokenType expectedType) const;
+    [[nodiscard]] bool check(std::span<VnlcTokenType> expectedTypes) const;
+    [[nodiscard]] bool match(VnlcTokenType expectedType);
+    [[nodiscard]] bool matchSeparatorEndOfLine();
 
     [[nodiscard]] VnlcModuleParsingResult parseModule(VnlcModuleParsingContext context);
     [[nodiscard]] VnlcTopIdentifierDeclarationParsingResult parseTopIdentifierDeclaration();
     [[nodiscard]] VnlcImportDeclarationParsingResult parseImportDeclaration();
     [[nodiscard]] VnlcExportDeclarationParsingResult parseExportDeclaration();
     [[nodiscard]] VnlcVariableDeclarationParsingResult parseVariableDeclaration(VnlcVariableDeclarationParsingContext context);
-    [[nodiscard]] VnlcFunctionDeclarationParsingResult parseFunctionDeclaration();
-    [[nodiscard]] VnlcTypeDeclarationParsingResult parseTypeDeclaration();
+    [[nodiscard]] VnlcFunctionDeclarationParsingResult parseFunctionDeclaration(VnlcFunctionDeclarationParsingContext context);
+    [[nodiscard]] VnlcTypeDeclarationParsingResult parseTypeDeclaration(VnlcTypeDeclarationParsingContext context);
     [[nodiscard]] VnlcPropertyDeclarationParsingResult parsePropertyDeclaration();
     [[nodiscard]] VnlcClassMethodDeclarationParsingResult parseClassMethodDeclaration();
     [[nodiscard]] VnlcInterfaceMethodDeclarationParsingResult parseInterfaceMethodDeclaration();

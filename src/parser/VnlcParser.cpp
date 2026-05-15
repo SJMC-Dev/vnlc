@@ -6,8 +6,13 @@
 #include "../error/VnlcIllegalModuleOrPackageNameError.hpp"
 #include "../error/VnlcInternalError.hpp"
 #include "../error/VnlcOutOfRangeError.hpp"
+#include "../error/VnlcSyntaxError.hpp"
 #include "inherited/VnlcModuleParsingContext.hpp"
+#include "inherited/VnlcTypeDeclarationParsingContext.hpp"
+#include "inherited/VnlcVariableDeclarationParsingContext.hpp"
+#include "synthesized/VnlcImportDeclarationParsingResult.hpp"
 #include "synthesized/VnlcModuleParsingResult.hpp"
+#include "synthesized/VnlcTopIdentifierDeclarationParsingResult.hpp"
 #include <memory>
 #include <sstream>
 
@@ -42,43 +47,71 @@ const VnlcToken& VnlcParser::peek() const {
 }
 
 void VnlcParser::fillBuffer() {
-    for (unsigned int i = 0; i < bufferSize; i++) {
-        while (lexer.hasNext() && lexer.next().getType() == VnlcTokenType::BLANK) {
-            // Skip blank tokens when filling the buffer
-        }
+    bool blank = false;
+    tokenBuffer.clear();
 
-        if (lexer.hasNext()) {
-            tokenBuffer.push_back(std::move(lexer.next()));
+    for (unsigned int i = 0; i < bufferSize && lexer.hasNext(); i = blank ? i : i + 1) {
+        VnlcToken token = lexer.next();
+        if (token.getType() == VnlcTokenType::BLANK) {
+            blank = true;
         } else {
-            bufferSize = tokenBuffer.size();
-            break;
+            blank = false;
+            tokenBuffer.push_back(std::move(token));
         }
     }
+
+    bufferSize = tokenBuffer.size();
 }
 
 void VnlcParser::advance() {
+    if (peek().getType() == VnlcTokenType::END_OF_FILE) {
+        return;
+    }
+
     if (currentTokenIndex < bufferSize) {
         currentTokenIndex++;
         if (currentTokenIndex == bufferSize && lexer.hasNext()) {
             fillBuffer();
             currentTokenIndex = 0;
         }
-    } else {
-        throw VnlcOutOfRangeError("Cannot advance beyond the end of the token buffer");
     }
 }
 
-bool VnlcParser::match(VnlcTokenType expectedType) const {
+void VnlcParser::skipNewlines() {
+    while (hasNextToken() && check(VnlcTokenType::NEWLINE)) {
+        advance();
+    }
+}
+
+bool VnlcParser::check(VnlcTokenType expectedType) const {
     return hasNextToken() && peek().getType() == expectedType;
 }
 
-bool VnlcParser::match(std::span<VnlcTokenType> expectedTypes) const {
+bool VnlcParser::check(std::span<VnlcTokenType> expectedTypes) const {
     for (unsigned int i = 0; i < expectedTypes.size(); i++) {
-        if (peek(i).getType() != expectedTypes[i]) {
+        if (!hasNextToken() || peek(i).getType() != expectedTypes[i]) {
             return false;
         }
     }
     return true;
+}
+
+bool VnlcParser::match(VnlcTokenType expectedType) {
+    if (check(expectedType)) {
+        advance();
+        return true;
+    }
+    return false;
+}
+
+bool VnlcParser::matchSeparatorEndOfLine() {
+    if (check(VnlcTokenType::NEWLINE)) {
+        skipNewlines();
+        return true;
+    } else if (check(VnlcTokenType::END_OF_FILE)) {
+        return true;
+    }
+    return false;
 }
 
 std::unique_ptr<VnlcModuleNode> VnlcParser::parse(const VnlcConfig& config) {
@@ -94,8 +127,6 @@ VnlcModuleParsingResult VnlcParser::parseModule(VnlcModuleParsingContext context
     std::vector<std::unique_ptr<VnlcExportDeclarationNode>> exportDeclarations;
     std::string name;
     std::string fullName;
-
-    const VnlcToken& firstToken = peek();
 
     std::string prefix = context.config.packageRootPath.filename().string();
     std::string fullPath = context.config.inputFilePath.string();
@@ -134,28 +165,131 @@ VnlcModuleParsingResult VnlcParser::parseModule(VnlcModuleParsingContext context
     }
     name = fullName.substr(fullName.find_last_of('.') + 1);
 
-    while (match(VnlcTokenType::IMPORT)) {
-        auto result = parseImportDeclaration();
+    skipNewlines();
 
+    VnlcToken firstToken = peek();
+
+    while (check(VnlcTokenType::IMPORT)) {
+        auto result = parseImportDeclaration();
         importDeclarations.push_back(std::move(result.declaration));
     }
 
-    while (!match(VnlcTokenType::EXPORT)) {
+    while (!check(VnlcTokenType::EXPORT)) {
         auto result = parseTopIdentifierDeclaration();
-
         declarations.push_back(std::move(result.declaration));
     }
 
-    while (match(VnlcTokenType::EXPORT)) {
+    while (check(VnlcTokenType::EXPORT)) {
         auto result = parseExportDeclaration();
-
         exportDeclarations.push_back(std::move(result.declaration));
     }
 
-    const VnlcToken& lastToken = peek();
+    VnlcToken lastToken = peek();
 
     std::unique_ptr<VnlcModuleNode> node =
         std::make_unique<VnlcModuleNode>(std::move(name), std::move(fullName), std::move(importDeclarations), std::move(declarations), std::move(exportDeclarations), firstToken, lastToken);
-    
-    return VnlcModuleParsingResult{ .moduleNode = std::move(node) };
+
+    return VnlcModuleParsingResult{
+        .moduleNode = std::move(node),
+    };
+}
+
+VnlcTopIdentifierDeclarationParsingResult VnlcParser::parseTopIdentifierDeclaration() {
+    bool hasMetadata = false;
+    std::vector<VnlcDeclarationItem::MetadataTerm> metadataTerms;
+
+    VnlcToken firstToken = peek();
+
+    if (check(VnlcTokenType::METADATA)) {
+        hasMetadata = true;
+
+        auto result = parseMetadata();
+        metadataTerms = std::move(result.metadata);
+    }
+
+    if (check(VnlcTokenType::VAR) || check(VnlcTokenType::LET) || check(VnlcTokenType::CONST)) {
+        VnlcVariableDeclarationParsingContext context{
+            .position = VnlcVariableDeclarationParsingContext::Position::TOP_LEVEL,
+            .hasMetadata = hasMetadata,
+            .metadataTerms = std::move(metadataTerms),
+        };
+        auto result = parseVariableDeclaration(context);
+
+        VnlcToken lastToken = peek();
+        result.declaration->resetPosition(firstToken, lastToken);
+
+        return VnlcTopIdentifierDeclarationParsingResult{
+            .declaration = std::move(result.declaration),
+        };
+    } else if (check(VnlcTokenType::FUNC) || check(VnlcTokenType::NATIVE)) {
+        VnlcFunctionDeclarationParsingContext context{
+            .kind = check(VnlcTokenType::FUNC) ? VnlcFunctionDeclarationType::Kind::REGULAR : VnlcFunctionDeclarationType::Kind::NATIVE,
+            .context = VnlcFunctionDeclarationType::Context::TOP_LEVEL,
+            .accessModifier = VnlcFunctionDeclarationType::AccessModifier::PUBLIC,
+            .binding = VnlcFunctionDeclarationType::Binding::STATIC,
+            .hasMetadata = hasMetadata,
+            .metadataTerms = std::move(metadataTerms),
+        };
+        auto result = parseFunctionDeclaration(context);
+
+        VnlcToken lastToken = peek();
+        result.declaration->resetPosition(firstToken, lastToken);
+
+        return VnlcTopIdentifierDeclarationParsingResult{
+            .declaration = std::move(result.declaration),
+        };
+    } else if (check(VnlcTokenType::CLASS) || check(VnlcTokenType::INTERFACE) || check(VnlcTokenType::ENUM) || check(VnlcTokenType::TYPE) || check(VnlcTokenType::FINAL)) {
+        VnlcTypeDeclarationParsingContext context{
+            .hasMetadata = hasMetadata,
+            .metadataTerms = std::move(metadataTerms),
+        };
+        auto result = parseTypeDeclaration(context);
+
+        VnlcToken lastToken = peek();
+        result.declaration->resetPosition(firstToken, lastToken);
+
+        return VnlcTopIdentifierDeclarationParsingResult{
+            .declaration = std::move(result.declaration),
+        };
+    } else {
+        throw VnlcSyntaxError("Expected variable, function or type declaration", peek().getLine(), peek().getColumn());
+    }
+}
+
+VnlcImportDeclarationParsingResult VnlcParser::parseImportDeclaration() {
+    VnlcToken firstToken = peek();
+
+    if (!match(VnlcTokenType::IMPORT)) {
+        throw VnlcSyntaxError("Expected 'import' keyword", peek().getLine(), peek().getColumn());
+    }
+    skipNewlines();
+
+    auto result = parseImportPath();
+
+    VnlcToken lastToken = peek();
+
+    std::unique_ptr<VnlcImportDeclarationNode> node = std::make_unique<VnlcImportDeclarationNode>(result.relative, std::move(result.paths), firstToken, lastToken);
+
+    return VnlcImportDeclarationParsingResult{
+        .declaration = std::move(node),
+    };
+}
+
+VnlcExportDeclarationParsingResult VnlcParser::parseExportDeclaration() {
+    VnlcToken firstToken = peek();
+
+    if (!match(VnlcTokenType::EXPORT)) {
+        throw VnlcSyntaxError("Expected 'export' keyword", peek().getLine(), peek().getColumn());
+    }
+    skipNewlines();
+
+    auto result = parseExportList();
+
+    VnlcToken lastToken = peek();
+
+    std::unique_ptr<VnlcExportDeclarationNode> node = std::make_unique<VnlcExportDeclarationNode>(std::move(result.items), firstToken, lastToken);
+
+    return VnlcExportDeclarationParsingResult{
+        .declaration = std::move(node),
+    };
 }
