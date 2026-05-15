@@ -17,3 +17,10 @@ unsigned int VnlcAstNode::getOffset() const noexcept {
 unsigned int VnlcAstNode::getLength() const noexcept {
     return length;
 }
+
+void VnlcAstNode::resetPosition(const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept {
+    offset = firstToken.getOffset();
+    length = lastToken.getOffset() - firstToken.getOffset();
+    line = firstToken.getLine();
+    column = firstToken.getColumn();
+}

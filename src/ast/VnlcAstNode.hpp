@@ -9,6 +9,7 @@
 class VnlcAstNode {
 private:
     VnlcAstNode() = delete;
+    void resetPosition(const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
 
 protected:
     unsigned int offset;
@@ -25,6 +26,7 @@ public:
     [[nodiscard]] unsigned int getLength() const noexcept;
 
     virtual ~VnlcAstNode() = default;
+    friend class VnlcParser;
 };
 
 #endif // VNLC_AST_NODE_HPP
