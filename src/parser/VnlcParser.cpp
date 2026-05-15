@@ -303,6 +303,7 @@ VnlcVariableDeclarationParsingResult VnlcParser::parseVariableDeclaration(VnlcVa
     if (!match(VnlcTokenType::EQUAL)) {
         throw VnlcSyntaxError("Expected '=' after variable declaration", peek().getLine(), peek().getColumn());
     }
+    skipNewlines();
 
     auto initializerResult = parseExpression();
 
