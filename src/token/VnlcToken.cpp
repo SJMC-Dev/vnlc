@@ -7,6 +7,7 @@ VnlcToken::VnlcToken(VnlcTokenType type, std::string_view value, unsigned int li
       line(line),
       column(column) {}
 VnlcToken::VnlcToken(VnlcToken&& other) noexcept : type(other.type), value(std::move(other.value)), offset(other.offset), line(other.line), column(other.column) {}
+VnlcToken::VnlcToken(const VnlcToken& other) : type(other.type), value(other.value), offset(other.offset), line(other.line), column(other.column) {}
 
 VnlcTokenType VnlcToken::getType() const noexcept {
     return type;

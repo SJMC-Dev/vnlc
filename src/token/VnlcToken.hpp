@@ -19,6 +19,7 @@ private:
 public:
     VnlcToken(VnlcTokenType type, std::string_view value, unsigned int line, unsigned int column, unsigned int offset);
     VnlcToken(VnlcToken&& other) noexcept;
+    VnlcToken(const VnlcToken& other);
 
     [[nodiscard]] VnlcTokenType getType() const noexcept;
     [[nodiscard]] unsigned int getLine() const noexcept;
