@@ -7,6 +7,7 @@
 #include <vector>
 
 struct VnlcImportPathParsingResult {
+    bool relative;
     std::vector<VnlcImportDeclarationItem> paths;
 };
 
