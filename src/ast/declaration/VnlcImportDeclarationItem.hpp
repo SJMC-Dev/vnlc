@@ -9,7 +9,7 @@
 
 struct VnlcImportDeclarationItem {
     std::vector<std::string> nameParts;
-    std::optional<std::string> alias; // nullopt if no alias
+    std::optional<std::string> alias; // nullopt if no alias or wildcard import
 };
 
 #endif // VNLC_IMPORT_DECLARATION_ITEM_HPP
