@@ -13,6 +13,7 @@
 #include "synthesized/VnlcImportDeclarationParsingResult.hpp"
 #include "synthesized/VnlcModuleParsingResult.hpp"
 #include "synthesized/VnlcTopIdentifierDeclarationParsingResult.hpp"
+#include "synthesized/VnlcVariableDeclarationParsingResult.hpp"
 #include <memory>
 #include <sstream>
 
@@ -290,6 +291,46 @@ VnlcExportDeclarationParsingResult VnlcParser::parseExportDeclaration() {
     std::unique_ptr<VnlcExportDeclarationNode> node = std::make_unique<VnlcExportDeclarationNode>(std::move(result.items), firstToken, lastToken);
 
     return VnlcExportDeclarationParsingResult{
+        .declaration = std::move(node),
+    };
+}
+
+VnlcVariableDeclarationParsingResult VnlcParser::parseVariableDeclaration(VnlcVariableDeclarationParsingContext context) {
+    VnlcToken firstToken = peek();
+
+    auto primaryResult = parseVariableDeclarationPrimary();
+
+    if (!match(VnlcTokenType::EQUAL)) {
+        throw VnlcSyntaxError("Expected '=' after variable declaration", peek().getLine(), peek().getColumn());
+    }
+
+    auto initializerResult = parseExpression();
+
+    VnlcToken lastToken = peek();
+
+    std::unique_ptr<VnlcVariableDeclarationNode> node = nullptr;
+    if (context.hasMetadata) {
+        node = std::make_unique<VnlcVariableDeclarationNode>(
+            primaryResult.type,
+            std::move(primaryResult.name),
+            std::move(primaryResult.typeAnnotation),
+            std::move(initializerResult.expression),
+            firstToken,
+            lastToken,
+            std::move(context.metadataTerms)
+        );
+    } else {
+        node = std::make_unique<VnlcVariableDeclarationNode>(
+            primaryResult.type,
+            std::move(primaryResult.name),
+            std::move(primaryResult.typeAnnotation),
+            std::move(initializerResult.expression),
+            firstToken,
+            lastToken
+        );
+    };
+
+    return VnlcVariableDeclarationParsingResult{
         .declaration = std::move(node),
     };
 }
