@@ -1,0 +1,20 @@
+#pragma once
+
+#ifndef VNLC_FUNCTION_DECLARATION_PARSING_CONTEXT_HPP
+#define VNLC_FUNCTION_DECLARATION_PARSING_CONTEXT_HPP
+
+#include "../../ast/declaration/VnlcFunctionDeclarationType.hpp"
+#include "../../ast/declaration/VnlcDeclarationItem.hpp"
+#include <vector>
+
+struct VnlcFunctionDeclarationParsingContext {
+    VnlcFunctionDeclarationType::Kind kind;
+    VnlcFunctionDeclarationType::Context context;
+    VnlcFunctionDeclarationType::AccessModifier accessModifier;
+    VnlcFunctionDeclarationType::Binding binding;
+
+    bool hasMetadata;
+    std::vector<VnlcDeclarationItem::MetadataTerm> metadataTerms;
+};
+
+#endif // VNLC_FUNCTION_DECLARATION_PARSING_CONTEXT_HPP
