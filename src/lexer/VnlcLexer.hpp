@@ -6,6 +6,7 @@
 #include "../token/VnlcToken.hpp"
 #include "VnlcLexerMode.hpp"
 
+#include "../util/VnlcTokenTypeUtil.hpp"
 #include <istream>
 #include <stack>
 #include <string>
@@ -59,6 +60,8 @@ public:
 
     [[nodiscard]] bool hasNext() const;
     [[nodiscard]] VnlcToken next();
+
+    friend bool VnlcTokenTypeUtil::isGeneralizedIdentifier(VnlcTokenType type);
 };
 
 #endif // VNLC_LEXER_HPP

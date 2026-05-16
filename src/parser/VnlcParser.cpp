@@ -7,6 +7,7 @@
 #include "../error/VnlcInternalError.hpp"
 #include "../error/VnlcOutOfRangeError.hpp"
 #include "../error/VnlcSyntaxError.hpp"
+#include "../util/VnlcTokenTypeUtil.hpp"
 #include "synthesized/VnlcClassMethodDeclarationParsingResult.hpp"
 #include <memory>
 #include <sstream>
@@ -89,6 +90,13 @@ bool VnlcParser::check(std::span<VnlcTokenType> expectedTypes) const {
         }
     }
     return true;
+}
+
+bool VnlcParser::checkGeneralizedIdentifier() {
+    if (VnlcTokenTypeUtil::isGeneralizedIdentifier(peek().getType())) {
+        return true;
+    }
+    return false;
 }
 
 bool VnlcParser::match(VnlcTokenType expectedType) {

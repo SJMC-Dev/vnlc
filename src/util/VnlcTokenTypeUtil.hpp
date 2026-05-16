@@ -8,6 +8,7 @@
 
 namespace VnlcTokenTypeUtil {
     [[nodiscard]] std::string_view toString(VnlcTokenType type);
+    bool isGeneralizedIdentifier(VnlcTokenType type);
 }
 
 #endif // VNLC_TOKEN_TYPE_UTIL_HPP

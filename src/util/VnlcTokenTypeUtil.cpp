@@ -1,4 +1,5 @@
 #include "VnlcTokenTypeUtil.hpp"
+#include "../lexer/VnlcLexer.hpp"
 #include <string_view>
 
 std::string_view VnlcTokenTypeUtil::toString(VnlcTokenType type) {
@@ -278,4 +279,21 @@ std::string_view VnlcTokenTypeUtil::toString(VnlcTokenType type) {
         default:
             return "Unknown VnlcTokenType";
     }
+}
+
+bool VnlcTokenTypeUtil::isGeneralizedIdentifier(VnlcTokenType type) {
+    if (type == VnlcTokenType::IDENTIFIER) {
+        return true;
+    }
+
+    bool isKeyword = false;
+
+    for (auto& [keyword, keywordType] : VnlcLexer::keywords) {
+        if (type == keywordType) {
+            isKeyword = true;
+            break;
+        }
+    }
+
+    return isKeyword;
 }
