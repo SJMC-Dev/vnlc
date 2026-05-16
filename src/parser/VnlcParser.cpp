@@ -572,8 +572,96 @@ VnlcClassMethodDeclarationParsingResult VnlcParser::parseClassMethodDeclaration(
     if (!matchSeparatorEndOfLine()) {
         throw VnlcSyntaxError("Expected newline after method declaration", peek().getLine(), peek().getColumn());
     }
-    
+
     return VnlcClassMethodDeclarationParsingResult{
         .declaration = std::move(result.declaration),
+    };
+}
+
+VnlcInterfaceMethodDeclarationParsingResult VnlcParser::parseInterfaceMethodDeclaration() {
+    VnlcToken firstToken = peek();
+
+    bool hasMetadata = false;
+    std::vector<VnlcDeclarationItem::MetadataTerm> metadataTerms;
+    if (check(VnlcTokenType::METADATA)) {
+        hasMetadata = true;
+        auto metadataResult = parseMetadata();
+        metadataTerms = std::move(metadataResult.metadata);
+    }
+
+    auto result = parseFunctionSignature();
+
+    VnlcToken lastToken = peek();
+
+    if (!matchSeparatorEndOfLine()) {
+        throw VnlcSyntaxError("Expected newline after interface method declaration", peek().getLine(), peek().getColumn());
+    }
+
+    std::unique_ptr<VnlcFunctionDeclarationNode> node;
+    if (hasMetadata) {
+        node = std::make_unique<VnlcFunctionDeclarationNode>(
+            VnlcFunctionDeclarationType::Kind::REGULAR,
+            VnlcFunctionDeclarationType::Context::INTERFACE,
+            VnlcFunctionDeclarationType::AccessModifier::PUBLIC,
+            VnlcFunctionDeclarationType::Binding::INSTANCE,
+            std::move(result.name),
+            std::move(result.parameters),
+            std::move(result.returnType),
+            std::nullopt,
+            firstToken,
+            lastToken,
+            std::move(metadataTerms)
+        );
+    } else {
+        node = std::make_unique<VnlcFunctionDeclarationNode>(
+            VnlcFunctionDeclarationType::Kind::REGULAR,
+            VnlcFunctionDeclarationType::Context::INTERFACE,
+            VnlcFunctionDeclarationType::AccessModifier::PUBLIC,
+            VnlcFunctionDeclarationType::Binding::INSTANCE,
+            std::move(result.name),
+            std::move(result.parameters),
+            std::move(result.returnType),
+            std::nullopt,
+            firstToken,
+            lastToken
+        );
+    }
+
+    return VnlcInterfaceMethodDeclarationParsingResult{
+        .declaration = std::move(node),
+    };
+}
+
+VnlcMetadataParsingResult VnlcParser::parseMetadata() {
+    VnlcToken firstToken = peek();
+
+    if (!match(VnlcTokenType::METADATA)) {
+        throw VnlcSyntaxError("Expected 'metadata' keyword", peek().getLine(), peek().getColumn());
+    }
+    skipNewlines();
+
+    if (!match(VnlcTokenType::LEFT_PARENTHESIS)) {
+        throw VnlcSyntaxError("Expected '(' after 'metadata' keyword", peek().getLine(), peek().getColumn());
+    }
+    skipNewlines();
+
+    std::vector<VnlcDeclarationItem::MetadataTerm> metadataTerms;
+
+    do {
+        skipNewlines();
+        auto result = parseMetadataTerm();
+        metadataTerms.push_back(std::move(result.term));
+
+    } while (match(VnlcTokenType::COMMA));
+
+    if (!match(VnlcTokenType::RIGHT_PARENTHESIS)) {
+        throw VnlcSyntaxError("Expected ')' after metadata terms", peek().getLine(), peek().getColumn());
+    }
+    skipNewlines();
+
+    VnlcToken lastToken = peek();
+
+    return VnlcMetadataParsingResult{
+        .metadata = std::move(metadataTerms),
     };
 }
