@@ -8,7 +8,6 @@
 #include <vector>
 
 struct VnlcFunctionDeclarationParsingContext {
-    VnlcFunctionDeclarationType::Kind kind;
     VnlcFunctionDeclarationType::Context context;
     VnlcFunctionDeclarationType::AccessModifier accessModifier;
     VnlcFunctionDeclarationType::Binding binding;

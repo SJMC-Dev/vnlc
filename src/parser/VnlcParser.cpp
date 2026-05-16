@@ -7,13 +7,7 @@
 #include "../error/VnlcInternalError.hpp"
 #include "../error/VnlcOutOfRangeError.hpp"
 #include "../error/VnlcSyntaxError.hpp"
-#include "inherited/VnlcModuleParsingContext.hpp"
-#include "inherited/VnlcTypeDeclarationParsingContext.hpp"
-#include "inherited/VnlcVariableDeclarationParsingContext.hpp"
-#include "synthesized/VnlcImportDeclarationParsingResult.hpp"
-#include "synthesized/VnlcModuleParsingResult.hpp"
-#include "synthesized/VnlcTopIdentifierDeclarationParsingResult.hpp"
-#include "synthesized/VnlcVariableDeclarationParsingResult.hpp"
+#include "synthesized/VnlcClassMethodDeclarationParsingResult.hpp"
 #include <memory>
 #include <sstream>
 
@@ -219,12 +213,16 @@ VnlcTopIdentifierDeclarationParsingResult VnlcParser::parseTopIdentifierDeclarat
         VnlcToken lastToken = peek();
         result.declaration->resetPosition(firstToken, lastToken);
 
+        if (!matchSeparatorEndOfLine()) {
+            throw VnlcSyntaxError("Expected newline after variable declaration", peek().getLine(), peek().getColumn());
+        }
+        skipNewlines();
+
         return VnlcTopIdentifierDeclarationParsingResult{
             .declaration = std::move(result.declaration),
         };
     } else if (check(VnlcTokenType::FUNC) || check(VnlcTokenType::NATIVE)) {
         VnlcFunctionDeclarationParsingContext context{
-            .kind = check(VnlcTokenType::FUNC) ? VnlcFunctionDeclarationType::Kind::REGULAR : VnlcFunctionDeclarationType::Kind::NATIVE,
             .context = VnlcFunctionDeclarationType::Context::TOP_LEVEL,
             .accessModifier = VnlcFunctionDeclarationType::AccessModifier::PUBLIC,
             .binding = VnlcFunctionDeclarationType::Binding::STATIC,
@@ -235,6 +233,11 @@ VnlcTopIdentifierDeclarationParsingResult VnlcParser::parseTopIdentifierDeclarat
 
         VnlcToken lastToken = peek();
         result.declaration->resetPosition(firstToken, lastToken);
+
+        if (!matchSeparatorEndOfLine()) {
+            throw VnlcSyntaxError("Expected newline after function declaration", peek().getLine(), peek().getColumn());
+        }
+        skipNewlines();
 
         return VnlcTopIdentifierDeclarationParsingResult{
             .declaration = std::move(result.declaration),
@@ -248,6 +251,11 @@ VnlcTopIdentifierDeclarationParsingResult VnlcParser::parseTopIdentifierDeclarat
 
         VnlcToken lastToken = peek();
         result.declaration->resetPosition(firstToken, lastToken);
+
+        if (!matchSeparatorEndOfLine()) {
+            throw VnlcSyntaxError("Expected newline after type declaration", peek().getLine(), peek().getColumn());
+        }
+        skipNewlines();
 
         return VnlcTopIdentifierDeclarationParsingResult{
             .declaration = std::move(result.declaration),
@@ -333,5 +341,237 @@ VnlcVariableDeclarationParsingResult VnlcParser::parseVariableDeclaration(VnlcVa
 
     return VnlcVariableDeclarationParsingResult{
         .declaration = std::move(node),
+    };
+}
+
+VnlcFunctionDeclarationParsingResult VnlcParser::parseFunctionDeclaration(VnlcFunctionDeclarationParsingContext context) {
+    VnlcToken firstToken = peek();
+
+    if (check(VnlcTokenType::FUNC)) {
+        VnlcRegularFunctionDeclarationParsingContext regularContext{
+            .context = context.context,
+            .hasMetadata = context.hasMetadata,
+            .metadataTerms = std::move(context.metadataTerms),
+        };
+        auto result = parseRegularFunctionDeclaration(regularContext);
+        result.declaration->resetPosition(firstToken, peek());
+
+        VnlcToken lastToken = peek();
+
+        return VnlcFunctionDeclarationParsingResult{
+            .declaration = std::move(result.declaration),
+        };
+    } else if (check(VnlcTokenType::NATIVE)) {
+        VnlcNativeFunctionDeclarationParsingContext nativeContext{
+            .context = context.context,
+            .hasMetadata = context.hasMetadata,
+            .metadataTerms = std::move(context.metadataTerms),
+        };
+        auto result = parseNativeFunctionDeclaration(nativeContext);
+
+        VnlcToken lastToken = peek();
+        result.declaration->resetPosition(firstToken, lastToken);
+
+        return VnlcFunctionDeclarationParsingResult{
+            .declaration = std::move(result.declaration),
+        };
+    } else {
+        throw VnlcSyntaxError("Expected 'func' or 'native' keyword", peek().getLine(), peek().getColumn());
+    }
+}
+
+VnlcTypeDeclarationParsingResult VnlcParser::parseTypeDeclaration(VnlcTypeDeclarationParsingContext context) {
+    VnlcToken firstToken = peek();
+
+    if (check(VnlcTokenType::CLASS) || check(VnlcTokenType::FINAL)) {
+        VnlcClassDeclarationParsingContext classContext{
+            .hasMetadata = context.hasMetadata,
+            .metadataTerms = std::move(context.metadataTerms),
+        };
+
+        auto result = parseClassDeclaration(classContext);
+
+        VnlcToken lastToken = peek();
+
+        return VnlcTypeDeclarationParsingResult{
+            .declaration = std::move(result.declaration),
+        };
+    } else if (check(VnlcTokenType::INTERFACE)) {
+        VnlcInterfaceDeclarationParsingContext interfaceContext{
+            .hasMetadata = context.hasMetadata,
+            .metadataTerms = std::move(context.metadataTerms),
+        };
+
+        auto result = parseInterfaceDeclaration(interfaceContext);
+
+        VnlcToken lastToken = peek();
+
+        return VnlcTypeDeclarationParsingResult{
+            .declaration = std::move(result.declaration),
+        };
+    } else if (check(VnlcTokenType::ENUM)) {
+        VnlcEnumDeclarationParsingContext enumContext{
+            .hasMetadata = context.hasMetadata,
+            .metadataTerms = std::move(context.metadataTerms),
+        };
+
+        auto result = parseEnumDeclaration(enumContext);
+
+        VnlcToken lastToken = peek();
+
+        return VnlcTypeDeclarationParsingResult{
+            .declaration = std::move(result.declaration),
+        };
+    } else if (check(VnlcTokenType::TYPE)) {
+        VnlcTypeAliasDeclarationParsingContext typeAliasContext{
+            .hasMetadata = context.hasMetadata,
+            .metadataTerms = std::move(context.metadataTerms),
+        };
+
+        auto result = parseTypeAliasDeclaration(typeAliasContext);
+
+        VnlcToken lastToken = peek();
+
+        return VnlcTypeDeclarationParsingResult{
+            .declaration = std::move(result.declaration),
+        };
+    } else {
+        throw VnlcSyntaxError("Expected 'class', 'interface', 'enum' or 'type' keyword", peek().getLine(), peek().getColumn());
+    }
+}
+
+VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPropertyDeclarationParsingContext context) {
+    VnlcPropertyDeclarationType::AccessModifier accessModifier = VnlcPropertyDeclarationType::AccessModifier::PUBLIC;
+    VnlcPropertyDeclarationType::Binding binding = VnlcPropertyDeclarationType::Binding::INSTANCE;
+
+    VnlcToken firstToken = peek();
+
+    if (match(VnlcTokenType::PRIVATE)) {
+        accessModifier = VnlcPropertyDeclarationType::AccessModifier::PRIVATE;
+        skipNewlines();
+    } else if (match(VnlcTokenType::PUBLIC)) {
+        accessModifier = VnlcPropertyDeclarationType::AccessModifier::PUBLIC;
+        skipNewlines();
+    }
+
+    if (match(VnlcTokenType::STATIC)) {
+        binding = VnlcPropertyDeclarationType::Binding::STATIC;
+        skipNewlines();
+    }
+
+    std::string name;
+    if (!check(VnlcTokenType::IDENTIFIER)) {
+        throw VnlcSyntaxError("Expected property name", peek().getLine(), peek().getColumn());
+    } else {
+        name = peek().getValue();
+        advance();
+    }
+    skipNewlines();
+
+    if (!match(VnlcTokenType::COLON)) {
+        throw VnlcSyntaxError("Expected ':' after property name", peek().getLine(), peek().getColumn());
+    }
+    skipNewlines();
+
+    auto typeAnnotationResult = parseTypeAnnotation();
+
+    if (match(VnlcTokenType::EQUAL)) {
+        skipNewlines();
+
+        auto initializerResult = parseExpression();
+
+        VnlcToken lastToken = peek();
+
+        if (!matchSeparatorEndOfLine()) {
+            throw VnlcSyntaxError("Expected newline after property declaration", peek().getLine(), peek().getColumn());
+        }
+        skipNewlines();
+
+        std::unique_ptr<VnlcPropertyDeclarationNode> node;
+
+        if (context.hasMetadata) {
+            node = std::make_unique<VnlcPropertyDeclarationNode>(
+                accessModifier,
+                binding,
+                std::move(name),
+                std::move(typeAnnotationResult.typeAnnotation),
+                std::make_optional<std::unique_ptr<VnlcExpressionNode>>(std::move(initializerResult.expression)),
+                firstToken,
+                lastToken,
+                std::move(context.metadataTerms)
+            );
+        } else {
+            node = std::make_unique<VnlcPropertyDeclarationNode>(
+                accessModifier,
+                binding,
+                std::move(name),
+                std::move(typeAnnotationResult.typeAnnotation),
+                std::make_optional<std::unique_ptr<VnlcExpressionNode>>(std::move(initializerResult.expression)),
+                firstToken,
+                lastToken
+            );
+        }
+
+        return VnlcPropertyDeclarationParsingResult{
+            .declaration = std::move(node),
+        };
+    } else {
+        VnlcToken lastToken = peek();
+
+        if (!matchSeparatorEndOfLine()) {
+            throw VnlcSyntaxError("Expected newline after property declaration", peek().getLine(), peek().getColumn());
+        }
+        skipNewlines();
+
+        std::unique_ptr<VnlcPropertyDeclarationNode> node =
+            std::make_unique<VnlcPropertyDeclarationNode>(accessModifier, binding, std::move(name), std::move(typeAnnotationResult.typeAnnotation), std::nullopt, firstToken, lastToken);
+
+        return VnlcPropertyDeclarationParsingResult{
+            .declaration = std::move(node),
+        };
+    }
+}
+
+VnlcClassMethodDeclarationParsingResult VnlcParser::parseClassMethodDeclaration(VnlcClassMethodDeclarationParsingContext context) {
+    VnlcFunctionDeclarationType::AccessModifier accessModifier = VnlcFunctionDeclarationType::AccessModifier::PUBLIC;
+    VnlcFunctionDeclarationType::Binding binding = VnlcFunctionDeclarationType::Binding::INSTANCE;
+
+    VnlcToken firstToken = peek();
+
+    if (match(VnlcTokenType::PRIVATE)) {
+        accessModifier = VnlcFunctionDeclarationType::AccessModifier::PRIVATE;
+        skipNewlines();
+    } else if (match(VnlcTokenType::PUBLIC)) {
+        accessModifier = VnlcFunctionDeclarationType::AccessModifier::PUBLIC;
+        skipNewlines();
+    }
+
+    if (match(VnlcTokenType::STATIC)) {
+        binding = VnlcFunctionDeclarationType::Binding::STATIC;
+        skipNewlines();
+    } else if (match(VnlcTokenType::OVERRIDE)) {
+        binding = VnlcFunctionDeclarationType::Binding::INSTANCE;
+        skipNewlines();
+    }
+
+    VnlcFunctionDeclarationParsingContext functionDeclarationContext{
+        .context = VnlcFunctionDeclarationType::Context::CLASS,
+        .accessModifier = accessModifier,
+        .binding = binding,
+        .hasMetadata = context.hasMetadata,
+        .metadataTerms = std::move(context.metadataTerms),
+    };
+
+    auto result = parseFunctionDeclaration(functionDeclarationContext);
+
+    VnlcToken lastToken = peek();
+
+    if (!matchSeparatorEndOfLine()) {
+        throw VnlcSyntaxError("Expected newline after method declaration", peek().getLine(), peek().getColumn());
+    }
+    skipNewlines();
+    
+    return VnlcClassMethodDeclarationParsingResult{
+        .declaration = std::move(result.declaration),
     };
 }

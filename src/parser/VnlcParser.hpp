@@ -1,7 +1,5 @@
 #pragma once
 
-#include "inherited/VnlcFunctionDeclarationParsingContext.hpp"
-#include "inherited/VnlcTypeDeclarationParsingContext.hpp"
 #ifndef VNLC_PARSER_HPP
 #define VNLC_PARSER_HPP
 
@@ -43,19 +41,19 @@ private:
     [[nodiscard]] VnlcVariableDeclarationParsingResult parseVariableDeclaration(VnlcVariableDeclarationParsingContext context);
     [[nodiscard]] VnlcFunctionDeclarationParsingResult parseFunctionDeclaration(VnlcFunctionDeclarationParsingContext context);
     [[nodiscard]] VnlcTypeDeclarationParsingResult parseTypeDeclaration(VnlcTypeDeclarationParsingContext context);
-    [[nodiscard]] VnlcPropertyDeclarationParsingResult parsePropertyDeclaration();
-    [[nodiscard]] VnlcClassMethodDeclarationParsingResult parseClassMethodDeclaration();
+    [[nodiscard]] VnlcPropertyDeclarationParsingResult parsePropertyDeclaration(VnlcPropertyDeclarationParsingContext context);
+    [[nodiscard]] VnlcClassMethodDeclarationParsingResult parseClassMethodDeclaration(VnlcClassMethodDeclarationParsingContext context);
     [[nodiscard]] VnlcInterfaceMethodDeclarationParsingResult parseInterfaceMethodDeclaration();
     [[nodiscard]] VnlcMetadataParsingResult parseMetadata();
     [[nodiscard]] VnlcVariableDeclarationPrimaryParsingResult parseVariableDeclarationPrimary();
-    [[nodiscard]] VnlcRegularFunctionDeclarationParsingResult parseRegularFunctionDeclaration();
-    [[nodiscard]] VnlcNativeFunctionDeclarationParsingResult parseNativeFunctionDeclaration();
+    [[nodiscard]] VnlcRegularFunctionDeclarationParsingResult parseRegularFunctionDeclaration(VnlcRegularFunctionDeclarationParsingContext context);
+    [[nodiscard]] VnlcNativeFunctionDeclarationParsingResult parseNativeFunctionDeclaration(VnlcNativeFunctionDeclarationParsingContext context);
     [[nodiscard]] VnlcTypeAnnotationParsingResult parseTypeAnnotation();
     [[nodiscard]] VnlcParameterListParsingResult parseParameterList();
-    [[nodiscard]] VnlcClassDeclarationParsingResult parseClassDeclaration();
-    [[nodiscard]] VnlcInterfaceDeclarationParsingResult parseInterfaceDeclaration();
-    [[nodiscard]] VnlcEnumDeclarationParsingResult parseEnumDeclaration();
-    [[nodiscard]] VnlcTypeAliasDeclarationParsingResult parseTypeAliasDeclaration();
+    [[nodiscard]] VnlcClassDeclarationParsingResult parseClassDeclaration(VnlcClassDeclarationParsingContext context);
+    [[nodiscard]] VnlcInterfaceDeclarationParsingResult parseInterfaceDeclaration(VnlcInterfaceDeclarationParsingContext context);
+    [[nodiscard]] VnlcEnumDeclarationParsingResult parseEnumDeclaration(VnlcEnumDeclarationParsingContext context);
+    [[nodiscard]] VnlcTypeAliasDeclarationParsingResult parseTypeAliasDeclaration(VnlcTypeAliasDeclarationParsingContext context);
     [[nodiscard]] VnlcImportPathParsingResult parseImportPath();
     [[nodiscard]] VnlcExportListParsingResult parseExportList();
     [[nodiscard]] VnlcMetadataTermParsingResult parseMetadataTerm();
