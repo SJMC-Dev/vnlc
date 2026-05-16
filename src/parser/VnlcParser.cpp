@@ -224,7 +224,6 @@ VnlcTopIdentifierDeclarationParsingResult VnlcParser::parseTopIdentifierDeclarat
         if (!matchSeparatorEndOfLine()) {
             throw VnlcSyntaxError("Expected newline after variable declaration", peek().getLine(), peek().getColumn());
         }
-        skipNewlines();
 
         return VnlcTopIdentifierDeclarationParsingResult{
             .declaration = std::move(result.declaration),
@@ -245,7 +244,6 @@ VnlcTopIdentifierDeclarationParsingResult VnlcParser::parseTopIdentifierDeclarat
         if (!matchSeparatorEndOfLine()) {
             throw VnlcSyntaxError("Expected newline after function declaration", peek().getLine(), peek().getColumn());
         }
-        skipNewlines();
 
         return VnlcTopIdentifierDeclarationParsingResult{
             .declaration = std::move(result.declaration),
@@ -263,7 +261,6 @@ VnlcTopIdentifierDeclarationParsingResult VnlcParser::parseTopIdentifierDeclarat
         if (!matchSeparatorEndOfLine()) {
             throw VnlcSyntaxError("Expected newline after type declaration", peek().getLine(), peek().getColumn());
         }
-        skipNewlines();
 
         return VnlcTopIdentifierDeclarationParsingResult{
             .declaration = std::move(result.declaration),
@@ -493,7 +490,6 @@ VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPr
         if (!matchSeparatorEndOfLine()) {
             throw VnlcSyntaxError("Expected newline after property declaration", peek().getLine(), peek().getColumn());
         }
-        skipNewlines();
 
         std::unique_ptr<VnlcPropertyDeclarationNode> node;
 
@@ -529,7 +525,6 @@ VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPr
         if (!matchSeparatorEndOfLine()) {
             throw VnlcSyntaxError("Expected newline after property declaration", peek().getLine(), peek().getColumn());
         }
-        skipNewlines();
 
         std::unique_ptr<VnlcPropertyDeclarationNode> node =
             std::make_unique<VnlcPropertyDeclarationNode>(accessModifier, binding, std::move(name), std::move(typeAnnotationResult.typeAnnotation), std::nullopt, firstToken, lastToken);
@@ -577,7 +572,6 @@ VnlcClassMethodDeclarationParsingResult VnlcParser::parseClassMethodDeclaration(
     if (!matchSeparatorEndOfLine()) {
         throw VnlcSyntaxError("Expected newline after method declaration", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
     
     return VnlcClassMethodDeclarationParsingResult{
         .declaration = std::move(result.declaration),
