@@ -147,7 +147,7 @@ VnlcModuleParsingResult VnlcParser::parseModule(VnlcModuleParsingContext context
 
     std::stringstream ss(fullPath);
     std::string namePart;
-    while (std::getline(ss, namePart, std::filesystem::path::preferred_separator)) {
+    while (std::getline(ss, namePart, static_cast<char>(std::filesystem::path::preferred_separator))) {
         if (namePart.empty()) {
             throw VnlcIllegalModuleOrPackageNameError("Module name contains empty part");
         }
