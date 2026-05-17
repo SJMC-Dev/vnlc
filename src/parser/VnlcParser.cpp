@@ -487,10 +487,6 @@ VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPr
 
         VnlcToken lastToken = peek();
 
-        if (!matchSeparatorEndOfLine()) {
-            throw VnlcSyntaxError("Expected newline after property declaration", peek().getLine(), peek().getColumn());
-        }
-
         std::unique_ptr<VnlcPropertyDeclarationNode> node;
 
         if (context.hasMetadata) {
@@ -521,10 +517,6 @@ VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPr
         };
     } else {
         VnlcToken lastToken = peek();
-
-        if (!matchSeparatorEndOfLine()) {
-            throw VnlcSyntaxError("Expected newline after property declaration", peek().getLine(), peek().getColumn());
-        }
 
         std::unique_ptr<VnlcPropertyDeclarationNode> node =
             std::make_unique<VnlcPropertyDeclarationNode>(accessModifier, binding, std::move(name), std::move(typeAnnotationResult.typeAnnotation), std::nullopt, firstToken, lastToken);
