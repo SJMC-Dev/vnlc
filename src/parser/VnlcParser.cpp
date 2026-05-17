@@ -455,20 +455,7 @@ VnlcTypeDeclarationParsingResult VnlcParser::parseTypeDeclaration(VnlcTypeDeclar
 }
 
 VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPropertyDeclarationParsingContext context) {
-    VnlcPropertyDeclarationType::AccessModifier accessModifier = VnlcPropertyDeclarationType::AccessModifier::PUBLIC;
-    VnlcPropertyDeclarationType::Binding binding = VnlcPropertyDeclarationType::Binding::INSTANCE;
-
     VnlcToken firstToken = peek();
-
-    if (match(VnlcTokenType::PRIVATE)) {
-        accessModifier = VnlcPropertyDeclarationType::AccessModifier::PRIVATE;
-    } else if (match(VnlcTokenType::PUBLIC)) {
-        accessModifier = VnlcPropertyDeclarationType::AccessModifier::PUBLIC;
-    }
-
-    if (match(VnlcTokenType::STATIC)) {
-        binding = VnlcPropertyDeclarationType::Binding::STATIC;
-    }
 
     std::string name;
     if (!check(VnlcTokenType::IDENTIFIER)) {
@@ -493,8 +480,8 @@ VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPr
 
         if (context.hasMetadata) {
             node = std::make_unique<VnlcPropertyDeclarationNode>(
-                accessModifier,
-                binding,
+                context.accessModifier,
+                context.binding,
                 std::move(name),
                 std::move(typeAnnotationResult.typeAnnotation),
                 std::make_optional<std::unique_ptr<VnlcExpressionNode>>(std::move(initializerResult.expression)),
@@ -504,8 +491,8 @@ VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPr
             );
         } else {
             node = std::make_unique<VnlcPropertyDeclarationNode>(
-                accessModifier,
-                binding,
+                context.accessModifier,
+                context.binding,
                 std::move(name),
                 std::move(typeAnnotationResult.typeAnnotation),
                 std::make_optional<std::unique_ptr<VnlcExpressionNode>>(std::move(initializerResult.expression)),
@@ -524,8 +511,8 @@ VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPr
 
         if (context.hasMetadata) {
             node = std::make_unique<VnlcPropertyDeclarationNode>(
-                accessModifier,
-                binding,
+                context.accessModifier,
+                context.binding,
                 std::move(name),
                 std::move(typeAnnotationResult.typeAnnotation),
                 std::nullopt,
@@ -534,48 +521,14 @@ VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPr
                 std::move(context.metadataTerms)
             );
         } else {
-            node = std::make_unique<VnlcPropertyDeclarationNode>(accessModifier, binding, std::move(name), std::move(typeAnnotationResult.typeAnnotation), std::nullopt, firstToken, lastToken);
+            node = std::make_unique<
+                VnlcPropertyDeclarationNode>(context.accessModifier, context.binding, std::move(name), std::move(typeAnnotationResult.typeAnnotation), std::nullopt, firstToken, lastToken);
         }
 
         return VnlcPropertyDeclarationParsingResult{
             .declaration = std::move(node),
         };
     }
-}
-
-VnlcClassMethodDeclarationParsingResult VnlcParser::parseClassMethodDeclaration(VnlcClassMethodDeclarationParsingContext context) {
-    VnlcFunctionDeclarationType::AccessModifier accessModifier = VnlcFunctionDeclarationType::AccessModifier::PUBLIC;
-    VnlcFunctionDeclarationType::Binding binding = VnlcFunctionDeclarationType::Binding::INSTANCE;
-
-    VnlcToken firstToken = peek();
-
-    if (match(VnlcTokenType::PRIVATE)) {
-        accessModifier = VnlcFunctionDeclarationType::AccessModifier::PRIVATE;
-    } else if (match(VnlcTokenType::PUBLIC)) {
-        accessModifier = VnlcFunctionDeclarationType::AccessModifier::PUBLIC;
-    }
-
-    if (match(VnlcTokenType::STATIC)) {
-        binding = VnlcFunctionDeclarationType::Binding::STATIC;
-    } else if (match(VnlcTokenType::OVERRIDE)) {
-        binding = VnlcFunctionDeclarationType::Binding::INSTANCE;
-    }
-
-    VnlcFunctionDeclarationParsingContext functionDeclarationContext{
-        .context = VnlcFunctionDeclarationType::Context::CLASS,
-        .accessModifier = accessModifier,
-        .binding = binding,
-        .hasMetadata = context.hasMetadata,
-        .metadataTerms = std::move(context.metadataTerms),
-    };
-
-    auto result = parseFunctionDeclaration(std::move(functionDeclarationContext));
-
-    VnlcToken lastToken = peek();
-
-    return VnlcClassMethodDeclarationParsingResult{
-        .declaration = std::move(result.declaration),
-    };
 }
 
 VnlcInterfaceMethodDeclarationParsingResult VnlcParser::parseInterfaceMethodDeclaration() {
