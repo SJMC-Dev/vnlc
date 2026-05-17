@@ -17,10 +17,17 @@ private:
     std::unique_ptr<VnlcTypeNode> originalType;
 
 public:
-    VnlcTypeAliasDeclarationNode(std::string&& aliasName, std::unique_ptr<VnlcTypeNode>&& originalType, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
+    VnlcTypeAliasDeclarationNode(
+        std::string&& aliasName,
+        std::vector<std::string>&& genericParameterNames,
+        std::unique_ptr<VnlcTypeNode>&& originalType,
+        const VnlcToken& firstToken,
+        const VnlcToken& lastToken
+    ) noexcept;
 
     VnlcTypeAliasDeclarationNode(
         std::string&& aliasName,
+        std::vector<std::string>&& genericParameterNames,
         std::unique_ptr<VnlcTypeNode>&& originalType,
         const VnlcToken& firstToken,
         const VnlcToken& lastToken,
@@ -28,6 +35,7 @@ public:
     ) noexcept;
 
     [[nodiscard]] std::string_view getAliasName() const noexcept;
+    [[nodiscard]] const std::vector<std::string>& getGenericParameterNames() const noexcept;
     [[nodiscard]] const VnlcTypeNode& getOriginalType() const noexcept;
 };
 
