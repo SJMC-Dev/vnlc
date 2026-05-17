@@ -633,8 +633,6 @@ VnlcInterfaceMethodDeclarationParsingResult VnlcParser::parseInterfaceMethodDecl
 }
 
 VnlcMetadataParsingResult VnlcParser::parseMetadata() {
-    VnlcToken firstToken = peek();
-
     if (!match(VnlcTokenType::METADATA)) {
         throw VnlcSyntaxError("Expected 'metadata' keyword", peek().getLine(), peek().getColumn());
     }
@@ -654,8 +652,6 @@ VnlcMetadataParsingResult VnlcParser::parseMetadata() {
     if (!match(VnlcTokenType::RIGHT_PARENTHESIS)) {
         throw VnlcSyntaxError("Expected ')' after metadata terms", peek().getLine(), peek().getColumn());
     }
-
-    VnlcToken lastToken = peek();
 
     return VnlcMetadataParsingResult{
         .metadata = std::move(metadataTerms),
