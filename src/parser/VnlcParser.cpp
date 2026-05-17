@@ -216,7 +216,7 @@ VnlcTopIdentifierDeclarationParsingResult VnlcParser::parseTopIdentifierDeclarat
             .hasMetadata = hasMetadata,
             .metadataTerms = std::move(metadataTerms),
         };
-        auto result = parseVariableDeclaration(context);
+        auto result = parseVariableDeclaration(std::move(context));
 
         VnlcToken lastToken = peek();
         result.declaration->resetPosition(firstToken, lastToken);
@@ -236,7 +236,7 @@ VnlcTopIdentifierDeclarationParsingResult VnlcParser::parseTopIdentifierDeclarat
             .hasMetadata = hasMetadata,
             .metadataTerms = std::move(metadataTerms),
         };
-        auto result = parseFunctionDeclaration(context);
+        auto result = parseFunctionDeclaration(std::move(context));
 
         VnlcToken lastToken = peek();
         result.declaration->resetPosition(firstToken, lastToken);
@@ -253,7 +253,7 @@ VnlcTopIdentifierDeclarationParsingResult VnlcParser::parseTopIdentifierDeclarat
             .hasMetadata = hasMetadata,
             .metadataTerms = std::move(metadataTerms),
         };
-        auto result = parseTypeDeclaration(context);
+        auto result = parseTypeDeclaration(std::move(context));
 
         VnlcToken lastToken = peek();
         result.declaration->resetPosition(firstToken, lastToken);
@@ -358,7 +358,7 @@ VnlcFunctionDeclarationParsingResult VnlcParser::parseFunctionDeclaration(VnlcFu
             .hasMetadata = context.hasMetadata,
             .metadataTerms = std::move(context.metadataTerms),
         };
-        auto result = parseRegularFunctionDeclaration(regularContext);
+        auto result = parseRegularFunctionDeclaration(std::move(regularContext));
         result.declaration->resetPosition(firstToken, peek());
 
         VnlcToken lastToken = peek();
@@ -372,7 +372,7 @@ VnlcFunctionDeclarationParsingResult VnlcParser::parseFunctionDeclaration(VnlcFu
             .hasMetadata = context.hasMetadata,
             .metadataTerms = std::move(context.metadataTerms),
         };
-        auto result = parseNativeFunctionDeclaration(nativeContext);
+        auto result = parseNativeFunctionDeclaration(std::move(nativeContext));
 
         VnlcToken lastToken = peek();
         result.declaration->resetPosition(firstToken, lastToken);
@@ -394,7 +394,7 @@ VnlcTypeDeclarationParsingResult VnlcParser::parseTypeDeclaration(VnlcTypeDeclar
             .metadataTerms = std::move(context.metadataTerms),
         };
 
-        auto result = parseClassDeclaration(classContext);
+        auto result = parseClassDeclaration(std::move(classContext));
 
         VnlcToken lastToken = peek();
 
@@ -407,7 +407,7 @@ VnlcTypeDeclarationParsingResult VnlcParser::parseTypeDeclaration(VnlcTypeDeclar
             .metadataTerms = std::move(context.metadataTerms),
         };
 
-        auto result = parseInterfaceDeclaration(interfaceContext);
+        auto result = parseInterfaceDeclaration(std::move(interfaceContext));
 
         VnlcToken lastToken = peek();
 
@@ -420,7 +420,7 @@ VnlcTypeDeclarationParsingResult VnlcParser::parseTypeDeclaration(VnlcTypeDeclar
             .metadataTerms = std::move(context.metadataTerms),
         };
 
-        auto result = parseEnumDeclaration(enumContext);
+        auto result = parseEnumDeclaration(std::move(enumContext));
 
         VnlcToken lastToken = peek();
 
@@ -433,7 +433,7 @@ VnlcTypeDeclarationParsingResult VnlcParser::parseTypeDeclaration(VnlcTypeDeclar
             .metadataTerms = std::move(context.metadataTerms),
         };
 
-        auto result = parseTypeAliasDeclaration(typeAliasContext);
+        auto result = parseTypeAliasDeclaration(std::move(typeAliasContext));
 
         VnlcToken lastToken = peek();
 
@@ -565,7 +565,7 @@ VnlcClassMethodDeclarationParsingResult VnlcParser::parseClassMethodDeclaration(
         .metadataTerms = std::move(context.metadataTerms),
     };
 
-    auto result = parseFunctionDeclaration(functionDeclarationContext);
+    auto result = parseFunctionDeclaration(std::move(functionDeclarationContext));
 
     VnlcToken lastToken = peek();
 
