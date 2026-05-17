@@ -518,8 +518,22 @@ VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPr
     } else {
         VnlcToken lastToken = peek();
 
-        std::unique_ptr<VnlcPropertyDeclarationNode> node =
-            std::make_unique<VnlcPropertyDeclarationNode>(accessModifier, binding, std::move(name), std::move(typeAnnotationResult.typeAnnotation), std::nullopt, firstToken, lastToken);
+        std::unique_ptr<VnlcPropertyDeclarationNode> node;
+
+        if (context.hasMetadata) {
+            node = std::make_unique<VnlcPropertyDeclarationNode>(
+                accessModifier,
+                binding,
+                std::move(name),
+                std::move(typeAnnotationResult.typeAnnotation),
+                std::nullopt,
+                firstToken,
+                lastToken,
+                std::move(context.metadataTerms)
+            );
+        } else {
+            node = std::make_unique<VnlcPropertyDeclarationNode>(accessModifier, binding, std::move(name), std::move(typeAnnotationResult.typeAnnotation), std::nullopt, firstToken, lastToken);
+        }
 
         return VnlcPropertyDeclarationParsingResult{
             .declaration = std::move(node),
@@ -560,10 +574,6 @@ VnlcClassMethodDeclarationParsingResult VnlcParser::parseClassMethodDeclaration(
     auto result = parseFunctionDeclaration(std::move(functionDeclarationContext));
 
     VnlcToken lastToken = peek();
-
-    if (!matchSeparatorEndOfLine()) {
-        throw VnlcSyntaxError("Expected newline after method declaration", peek().getLine(), peek().getColumn());
-    }
 
     return VnlcClassMethodDeclarationParsingResult{
         .declaration = std::move(result.declaration),
