@@ -29,8 +29,8 @@ private:
     void advance();
     void skipNewlines();
 
-    [[nodiscard]] bool check(VnlcTokenType expectedType) const;
-    [[nodiscard]] bool check(std::span<VnlcTokenType> expectedTypes) const;
+    [[nodiscard]] bool check(VnlcTokenType expectedType);
+    [[nodiscard]] bool check(std::span<VnlcTokenType> expectedTypes);
     [[nodiscard]] bool checkGeneralizedIdentifier();
     [[nodiscard]] bool match(VnlcTokenType expectedType);
     [[nodiscard]] bool match(std::span<VnlcTokenType> expectedTypes);

@@ -61,6 +61,7 @@ void VnlcParser::fillBuffer() {
 
 void VnlcParser::advance() {
     if (peek().getType() == VnlcTokenType::END_OF_FILE) {
+        currentTokenIndex = bufferSize; // Move index to the end of the buffer to indicate no more tokens
         return;
     }
 
@@ -74,17 +75,19 @@ void VnlcParser::advance() {
 }
 
 void VnlcParser::skipNewlines() {
-    while (hasNextToken() && check(VnlcTokenType::NEWLINE)) {
+    while (hasNextToken() && peek().getType() == VnlcTokenType::NEWLINE) {
         advance();
     }
 }
 
-bool VnlcParser::check(VnlcTokenType expectedType) const {
+bool VnlcParser::check(VnlcTokenType expectedType) {
+    skipNewlines();
     return hasNextToken() && peek().getType() == expectedType;
 }
 
-bool VnlcParser::check(std::span<VnlcTokenType> expectedTypes) const {
+bool VnlcParser::check(std::span<VnlcTokenType> expectedTypes) {
     for (unsigned int i = 0; i < expectedTypes.size(); i++) {
+        skipNewlines();
         if (!hasNextToken() || peek(i).getType() != expectedTypes[i]) {
             return false;
         }
@@ -93,7 +96,8 @@ bool VnlcParser::check(std::span<VnlcTokenType> expectedTypes) const {
 }
 
 bool VnlcParser::checkGeneralizedIdentifier() {
-    if (VnlcTokenTypeUtil::isGeneralizedIdentifier(peek().getType())) {
+    skipNewlines();
+    if (hasNextToken() && VnlcTokenTypeUtil::isGeneralizedIdentifier(peek().getType())) {
         return true;
     }
     return false;
@@ -118,10 +122,10 @@ bool VnlcParser::match(std::span<VnlcTokenType> expectedTypes) {
 }
 
 bool VnlcParser::matchSeparatorEndOfLine() {
-    if (check(VnlcTokenType::NEWLINE)) {
+    if (hasNextToken() && peek().getType() == VnlcTokenType::NEWLINE) {
         skipNewlines();
         return true;
-    } else if (check(VnlcTokenType::END_OF_FILE)) {
+    } else if (hasNextToken() && peek().getType() == VnlcTokenType::END_OF_FILE) {
         return true;
     }
     return false;
@@ -177,8 +181,6 @@ VnlcModuleParsingResult VnlcParser::parseModule(VnlcModuleParsingContext context
         fullName.pop_back();
     }
     name = fullName.substr(fullName.find_last_of('.') + 1);
-
-    skipNewlines();
 
     VnlcToken firstToken = peek();
 
@@ -286,7 +288,6 @@ VnlcImportDeclarationParsingResult VnlcParser::parseImportDeclaration() {
     if (!match(VnlcTokenType::IMPORT)) {
         throw VnlcSyntaxError("Expected 'import' keyword", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     auto result = parseImportPath();
 
@@ -305,7 +306,6 @@ VnlcExportDeclarationParsingResult VnlcParser::parseExportDeclaration() {
     if (!match(VnlcTokenType::EXPORT)) {
         throw VnlcSyntaxError("Expected 'export' keyword", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     auto result = parseExportList();
 
@@ -326,7 +326,6 @@ VnlcVariableDeclarationParsingResult VnlcParser::parseVariableDeclaration(VnlcVa
     if (!match(VnlcTokenType::EQUAL)) {
         throw VnlcSyntaxError("Expected '=' after variable declaration", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     auto initializerResult = parseExpression();
 
@@ -463,15 +462,12 @@ VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPr
 
     if (match(VnlcTokenType::PRIVATE)) {
         accessModifier = VnlcPropertyDeclarationType::AccessModifier::PRIVATE;
-        skipNewlines();
     } else if (match(VnlcTokenType::PUBLIC)) {
         accessModifier = VnlcPropertyDeclarationType::AccessModifier::PUBLIC;
-        skipNewlines();
     }
 
     if (match(VnlcTokenType::STATIC)) {
         binding = VnlcPropertyDeclarationType::Binding::STATIC;
-        skipNewlines();
     }
 
     std::string name;
@@ -481,18 +477,14 @@ VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPr
         name = peek().getValue();
         advance();
     }
-    skipNewlines();
 
     if (!match(VnlcTokenType::COLON)) {
         throw VnlcSyntaxError("Expected ':' after property name", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     auto typeAnnotationResult = parseTypeAnnotation();
 
     if (match(VnlcTokenType::EQUAL)) {
-        skipNewlines();
-
         auto initializerResult = parseExpression();
 
         VnlcToken lastToken = peek();
@@ -559,18 +551,14 @@ VnlcClassMethodDeclarationParsingResult VnlcParser::parseClassMethodDeclaration(
 
     if (match(VnlcTokenType::PRIVATE)) {
         accessModifier = VnlcFunctionDeclarationType::AccessModifier::PRIVATE;
-        skipNewlines();
     } else if (match(VnlcTokenType::PUBLIC)) {
         accessModifier = VnlcFunctionDeclarationType::AccessModifier::PUBLIC;
-        skipNewlines();
     }
 
     if (match(VnlcTokenType::STATIC)) {
         binding = VnlcFunctionDeclarationType::Binding::STATIC;
-        skipNewlines();
     } else if (match(VnlcTokenType::OVERRIDE)) {
         binding = VnlcFunctionDeclarationType::Binding::INSTANCE;
-        skipNewlines();
     }
 
     VnlcFunctionDeclarationParsingContext functionDeclarationContext{
@@ -650,17 +638,14 @@ VnlcMetadataParsingResult VnlcParser::parseMetadata() {
     if (!match(VnlcTokenType::METADATA)) {
         throw VnlcSyntaxError("Expected 'metadata' keyword", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     if (!match(VnlcTokenType::LEFT_PARENTHESIS)) {
         throw VnlcSyntaxError("Expected '(' after 'metadata' keyword", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     std::vector<VnlcDeclarationItem::MetadataTerm> metadataTerms;
 
     do {
-        skipNewlines();
         auto result = parseMetadataTerm();
         metadataTerms.push_back(std::move(result.term));
 
@@ -669,7 +654,6 @@ VnlcMetadataParsingResult VnlcParser::parseMetadata() {
     if (!match(VnlcTokenType::RIGHT_PARENTHESIS)) {
         throw VnlcSyntaxError("Expected ')' after metadata terms", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     VnlcToken lastToken = peek();
 
@@ -692,7 +676,6 @@ VnlcVariableDeclarationPrimaryParsingResult VnlcParser::parseVariableDeclaration
     } else {
         throw VnlcSyntaxError("Expected 'var', 'let' or 'const' keyword", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     if (!check(VnlcTokenType::IDENTIFIER)) {
         throw VnlcSyntaxError("Expected variable name", peek().getLine(), peek().getColumn());
@@ -700,10 +683,8 @@ VnlcVariableDeclarationPrimaryParsingResult VnlcParser::parseVariableDeclaration
         name = peek().getValue();
         advance();
     }
-    skipNewlines();
 
     if (match(VnlcTokenType::COLON)) {
-        skipNewlines();
 
         auto typeAnnotationResult = parseTypeAnnotation();
         typeAnnotation = std::make_optional<std::unique_ptr<VnlcTypeAnnotationNode>>(std::move(typeAnnotationResult.typeAnnotation));
@@ -764,7 +745,6 @@ VnlcNativeFunctionDeclarationParsingResult VnlcParser::parseNativeFunctionDeclar
     if (!match(VnlcTokenType::NATIVE)) {
         throw VnlcSyntaxError("Expected 'native' keyword", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     auto signatureResult = parseFunctionSignature();
 
@@ -811,7 +791,6 @@ VnlcTypeAnnotationParsingResult VnlcParser::parseTypeAnnotation() {
 
     if (match(VnlcTokenType::READONLY)) {
         readonly = true;
-        skipNewlines();
     }
 
     auto result = parseType();
@@ -827,8 +806,6 @@ VnlcParameterListParsingResult VnlcParser::parseParameterList() {
     std::vector<VnlcParameterListParsingResult::Parameter> parameters;
 
     do {
-        skipNewlines();
-
         auto result = parseParameter();
         parameters.emplace_back(
             VnlcParameterListParsingResult::Parameter{
@@ -855,13 +832,11 @@ VnlcClassDeclarationParsingResult VnlcParser::parseClassDeclaration(VnlcClassDec
 
     if (match(VnlcTokenType::FINAL)) {
         final = true;
-        skipNewlines();
     }
 
     if (!match(VnlcTokenType::CLASS)) {
         throw VnlcSyntaxError("Expected 'class' keyword", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     if (!check(VnlcTokenType::IDENTIFIER)) {
         throw VnlcSyntaxError("Expected class name", peek().getLine(), peek().getColumn());
@@ -869,10 +844,8 @@ VnlcClassDeclarationParsingResult VnlcParser::parseClassDeclaration(VnlcClassDec
         name = peek().getValue();
         advance();
     }
-    skipNewlines();
 
     if (match(VnlcTokenType::LEFT_ANGLE)) {
-        skipNewlines();
 
         auto genericParameterListResult = parseGenericParameterList();
         genericParameterNames = std::move(genericParameterListResult.parameters);
@@ -880,21 +853,16 @@ VnlcClassDeclarationParsingResult VnlcParser::parseClassDeclaration(VnlcClassDec
         if (!match(VnlcTokenType::RIGHT_ANGLE)) {
             throw VnlcSyntaxError("Expected '>' after generic parameter list", peek().getLine(), peek().getColumn());
         }
-        skipNewlines();
     }
 
     if (match(VnlcTokenType::EXTENDS)) {
-        skipNewlines();
 
         auto typeResult = parseType();
         baseClass = std::make_optional<std::unique_ptr<VnlcTypeNode>>(std::move(typeResult.type));
     }
 
     if (match(VnlcTokenType::IMPLEMENTS)) {
-        skipNewlines();
-
         do {
-            skipNewlines();
             auto typeResult = parseType();
             implementedInterfaces.push_back(std::move(typeResult.type));
         } while (match(VnlcTokenType::COMMA));
@@ -944,7 +912,6 @@ VnlcInterfaceDeclarationParsingResult VnlcParser::parseInterfaceDeclaration(Vnlc
     if (!match(VnlcTokenType::INTERFACE)) {
         throw VnlcSyntaxError("Expected 'interface' keyword", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     if (!check(VnlcTokenType::IDENTIFIER)) {
         throw VnlcSyntaxError("Expected interface name", peek().getLine(), peek().getColumn());
@@ -952,18 +919,14 @@ VnlcInterfaceDeclarationParsingResult VnlcParser::parseInterfaceDeclaration(Vnlc
         name = peek().getValue();
         advance();
     }
-    skipNewlines();
 
     if (match(VnlcTokenType::LEFT_ANGLE)) {
-        skipNewlines();
-
         auto genericParameterListResult = parseGenericParameterList();
         genericParameterNames = std::move(genericParameterListResult.parameters);
 
         if (!match(VnlcTokenType::RIGHT_ANGLE)) {
             throw VnlcSyntaxError("Expected '>' after generic parameter list", peek().getLine(), peek().getColumn());
         }
-        skipNewlines();
     }
 
     auto bodyResult = parseInterfaceBody();
@@ -992,7 +955,6 @@ VnlcEnumDeclarationParsingResult VnlcParser::parseEnumDeclaration(VnlcEnumDeclar
     if (!match(VnlcTokenType::ENUM)) {
         throw VnlcSyntaxError("Expected 'enum' keyword", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     if (!check(VnlcTokenType::IDENTIFIER)) {
         throw VnlcSyntaxError("Expected enum name", peek().getLine(), peek().getColumn());
@@ -1000,18 +962,14 @@ VnlcEnumDeclarationParsingResult VnlcParser::parseEnumDeclaration(VnlcEnumDeclar
         name = peek().getValue();
         advance();
     }
-    skipNewlines();
 
     if (match(VnlcTokenType::LEFT_ANGLE)) {
-        skipNewlines();
-
         auto genericParameterListResult = parseGenericParameterList();
         genericParameterNames = std::move(genericParameterListResult.parameters);
 
         if (!match(VnlcTokenType::RIGHT_ANGLE)) {
             throw VnlcSyntaxError("Expected '>' after generic parameter list", peek().getLine(), peek().getColumn());
         }
-        skipNewlines();
     }
 
     auto bodyResult = parseEnumBody();
@@ -1040,7 +998,6 @@ VnlcTypeAliasDeclarationParsingResult VnlcParser::parseTypeAliasDeclaration(Vnlc
     if (!match(VnlcTokenType::TYPE)) {
         throw VnlcSyntaxError("Expected 'type' keyword", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     if (!check(VnlcTokenType::IDENTIFIER)) {
         throw VnlcSyntaxError("Expected type alias name", peek().getLine(), peek().getColumn());
@@ -1048,24 +1005,19 @@ VnlcTypeAliasDeclarationParsingResult VnlcParser::parseTypeAliasDeclaration(Vnlc
         aliasName = peek().getValue();
         advance();
     }
-    skipNewlines();
 
     if (match(VnlcTokenType::LEFT_ANGLE)) {
-        skipNewlines();
-
         auto genericParameterListResult = parseGenericParameterList();
         genericParameterNames = std::move(genericParameterListResult.parameters);
 
         if (!match(VnlcTokenType::RIGHT_ANGLE)) {
             throw VnlcSyntaxError("Expected '>' after generic parameter list", peek().getLine(), peek().getColumn());
         }
-        skipNewlines();
     }
 
     if (!match(VnlcTokenType::EQUAL)) {
         throw VnlcSyntaxError("Expected '=' after type alias name", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     auto typeResult = parseType();
 
@@ -1089,12 +1041,10 @@ VnlcImportPathParsingResult VnlcParser::parseImportPath() {
 
     if (match(VnlcTokenType::MODULE)) {
         relative = true;
-        skipNewlines();
 
         if (!match(VnlcTokenType::DOT)) {
             throw VnlcSyntaxError("Expected '.' after 'module' keyword", peek().getLine(), peek().getColumn());
         }
-        skipNewlines();
 
         auto result = parseRelativeImportPath();
         paths = std::move(result.paths);
@@ -1113,8 +1063,6 @@ VnlcExportListParsingResult VnlcParser::parseExportList() {
     std::vector<VnlcExportDeclarationItem> items;
 
     do {
-        skipNewlines();
-
         std::string name;
         std::optional<std::string> alias = std::nullopt;
 
@@ -1124,18 +1072,14 @@ VnlcExportListParsingResult VnlcParser::parseExportList() {
             name = peek().getValue();
             advance();
         }
-        skipNewlines();
 
         if (match(VnlcTokenType::AS)) {
-            skipNewlines();
-
             if (!check(VnlcTokenType::IDENTIFIER)) {
                 throw VnlcSyntaxError("Expected identifier after 'as' keyword in export list", peek().getLine(), peek().getColumn());
             } else {
                 alias = std::make_optional<std::string>(peek().getValue());
                 advance();
             }
-            skipNewlines();
         }
 
         items.emplace_back(
@@ -1161,7 +1105,6 @@ VnlcMetadataTermParsingResult VnlcParser::parseMetadataTerm() {
         key = peek().getValue();
         advance();
     }
-    skipNewlines();
 
     if (check(VnlcTokenType::STRING)) {
         std::string literal(peek().getValue());
@@ -1172,7 +1115,6 @@ VnlcMetadataTermParsingResult VnlcParser::parseMetadataTerm() {
 
         value = std::make_optional<std::string>(literal.substr(1, literal.size() - 2));
         advance();
-        skipNewlines();
     }
 
     return VnlcMetadataTermParsingResult{
@@ -1192,7 +1134,6 @@ VnlcFunctionSignatureParsingResult VnlcParser::parseFunctionSignature() {
     if (!match(VnlcTokenType::FUNC)) {
         throw VnlcSyntaxError("Expected 'func' keyword", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     if (!check(VnlcTokenType::IDENTIFIER)) {
         throw VnlcSyntaxError("Expected function name", peek().getLine(), peek().getColumn());
@@ -1200,12 +1141,10 @@ VnlcFunctionSignatureParsingResult VnlcParser::parseFunctionSignature() {
         name = std::make_unique<std::string>(peek().getValue());
         advance();
     }
-    skipNewlines();
 
     if (!match(VnlcTokenType::LEFT_PARENTHESIS)) {
         throw VnlcSyntaxError("Expected '(' after function name", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     if (!check(VnlcTokenType::RIGHT_PARENTHESIS)) {
         auto parameterListResult = parseParameterList();
@@ -1218,14 +1157,9 @@ VnlcFunctionSignatureParsingResult VnlcParser::parseFunctionSignature() {
     if (!match(VnlcTokenType::RIGHT_PARENTHESIS)) {
         throw VnlcSyntaxError("Expected ')' after parameter list", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     if (match(VnlcTokenType::ARROW)) {
-        skipNewlines();
-
-        if (match(VnlcTokenType::VOID)) {
-            skipNewlines();
-        } else {
+        if (!match(VnlcTokenType::VOID)) {
             auto typeAnnotationResult = parseTypeAnnotation();
             returnType = std::make_optional<std::unique_ptr<VnlcTypeAnnotationNode>>(std::move(typeAnnotationResult.typeAnnotation));
         }
@@ -1245,24 +1179,18 @@ VnlcAbsoluteImportPathParsingResult VnlcParser::parseAbsoluteImportPath() {
     std::array<VnlcTokenType, 2> expectedTypes = { VnlcTokenType::DOT, VnlcTokenType::IDENTIFIER };
 
     do {
-        skipNewlines();
-
         if (!check(VnlcTokenType::IDENTIFIER)) {
             throw VnlcSyntaxError("Expected identifier in import path", peek().getLine(), peek().getColumn());
         } else {
             namePartsPrefix.emplace_back(peek().getValue());
             advance();
         }
-        skipNewlines();
     } while (match(expectedTypes));
 
     if (match(VnlcTokenType::DOT)) {
-        skipNewlines();
-
         if (!match(VnlcTokenType::ASTERISK)) {
             throw VnlcSyntaxError("Expected '*' after '.' in wildcard import path", peek().getLine(), peek().getColumn());
         }
-        skipNewlines();
 
         std::vector<std::string> nameParts = std::move(namePartsPrefix);
         nameParts.emplace_back("*");
@@ -1274,14 +1202,11 @@ VnlcAbsoluteImportPathParsingResult VnlcParser::parseAbsoluteImportPath() {
             }
         );
     } else if (match(VnlcTokenType::AS)) {
-        skipNewlines();
-
         if (!check(VnlcTokenType::IDENTIFIER)) {
             throw VnlcSyntaxError("Expected identifier after 'as' keyword in import path", peek().getLine(), peek().getColumn());
         } else {
             std::string alias(peek().getValue());
             advance();
-            skipNewlines();
 
             paths.emplace_back(
                 VnlcImportDeclarationItem{
@@ -1291,7 +1216,6 @@ VnlcAbsoluteImportPathParsingResult VnlcParser::parseAbsoluteImportPath() {
             );
         }
     } else if (match(VnlcTokenType::LEFT_BRACE)) {
-        skipNewlines();
 
         auto listResult = parseAbsoluteImportPathList();
 
@@ -1328,8 +1252,6 @@ VnlcRelativeImportPathParsingResult VnlcParser::parseRelativeImportPath() {
     std::array<VnlcTokenType, 2> parentMatch = { VnlcTokenType::DOT, VnlcTokenType::PARENT };
 
     do {
-        skipNewlines();
-
         if (match(VnlcTokenType::PARENT)) {
             namePartsPrefix.emplace_back("parent");
         } else if (!check(VnlcTokenType::IDENTIFIER)) {
@@ -1338,16 +1260,12 @@ VnlcRelativeImportPathParsingResult VnlcParser::parseRelativeImportPath() {
             namePartsPrefix.emplace_back(peek().getValue());
             advance();
         }
-        skipNewlines();
     } while (match(parentMatch) || match(identifierMatch));
 
     if (match(VnlcTokenType::DOT)) {
-        skipNewlines();
-
         if (!match(VnlcTokenType::ASTERISK)) {
             throw VnlcSyntaxError("Expected '*' after '.' in wildcard import path", peek().getLine(), peek().getColumn());
         }
-        skipNewlines();
 
         std::vector<std::string> nameParts = std::move(namePartsPrefix);
         nameParts.emplace_back("*");
@@ -1359,14 +1277,11 @@ VnlcRelativeImportPathParsingResult VnlcParser::parseRelativeImportPath() {
             }
         );
     } else if (match(VnlcTokenType::AS)) {
-        skipNewlines();
-
         if (!check(VnlcTokenType::IDENTIFIER)) {
             throw VnlcSyntaxError("Expected identifier after 'as' keyword in import path", peek().getLine(), peek().getColumn());
         } else {
             std::string alias(peek().getValue());
             advance();
-            skipNewlines();
 
             paths.emplace_back(
                 VnlcImportDeclarationItem{
@@ -1376,8 +1291,6 @@ VnlcRelativeImportPathParsingResult VnlcParser::parseRelativeImportPath() {
             );
         }
     } else if (match(VnlcTokenType::LEFT_BRACE)) {
-        skipNewlines();
-
         auto listResult = parseRelativeImportPathList();
 
         for (auto& path : listResult.paths) {
@@ -1413,27 +1326,21 @@ VnlcTypeParsingResult VnlcParser::parseType() {
     std::vector<std::unique_ptr<VnlcTypeNode>> genericArguments;
 
     do {
-        skipNewlines();
-
         if (!check(VnlcTokenType::IDENTIFIER)) {
             throw VnlcSyntaxError("Expected identifier in type", peek().getLine(), peek().getColumn());
         } else {
             nameParts.emplace_back(peek().getValue());
             advance();
         }
-        skipNewlines();
     } while (match(VnlcTokenType::DOT));
 
     if (match(VnlcTokenType::LEFT_ANGLE)) {
-        skipNewlines();
-
         auto genericArgumentListResult = parseGenericArgumentList();
         genericArguments = std::move(genericArgumentListResult.arguments);
     }
 
     if (match(VnlcTokenType::QUESTION)) {
         questionMarkSuffix = true;
-        skipNewlines();
     }
 
     VnlcToken lastToken = peek();
@@ -1453,12 +1360,10 @@ VnlcParameterParsingResult VnlcParser::parseParameter() {
         name = peek().getValue();
         advance();
     }
-    skipNewlines();
 
     if (!match(VnlcTokenType::COLON)) {
         throw VnlcSyntaxError("Expected ':' after parameter name", peek().getLine(), peek().getColumn());
     }
-    skipNewlines();
 
     auto typeAnnotationResult = parseTypeAnnotation();
     typeAnnotation = std::move(typeAnnotationResult.typeAnnotation);
@@ -1473,15 +1378,12 @@ VnlcGenericParameterListParsingResult VnlcParser::parseGenericParameterList() {
     std::vector<std::string> parameters;
 
     do {
-        skipNewlines();
-
         if (!check(VnlcTokenType::IDENTIFIER)) {
             throw VnlcSyntaxError("Expected identifier in generic parameter list", peek().getLine(), peek().getColumn());
         } else {
             parameters.emplace_back(peek().getValue());
             advance();
         }
-        skipNewlines();
     } while (match(VnlcTokenType::COMMA));
 
     return VnlcGenericParameterListParsingResult{
