@@ -9,6 +9,8 @@
 
 struct VnlcRegularFunctionDeclarationParsingContext {
     VnlcFunctionDeclarationType::Context context;
+    VnlcFunctionDeclarationType::AccessModifier accessModifier;
+    VnlcFunctionDeclarationType::Binding binding;
 
     bool hasMetadata;
     std::vector<VnlcDeclarationItem::MetadataTerm> metadataTerms;
