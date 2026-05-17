@@ -368,9 +368,9 @@ VnlcFunctionDeclarationParsingResult VnlcParser::parseFunctionDeclaration(VnlcFu
             .metadataTerms = std::move(context.metadataTerms),
         };
         auto result = parseRegularFunctionDeclaration(std::move(regularContext));
-        result.declaration->resetPosition(firstToken, peek());
 
         VnlcToken lastToken = peek();
+        result.declaration->resetPosition(firstToken, lastToken);
 
         return VnlcFunctionDeclarationParsingResult{
             .declaration = std::move(result.declaration),
