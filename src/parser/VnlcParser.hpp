@@ -33,6 +33,7 @@ private:
     [[nodiscard]] bool check(std::span<VnlcTokenType> expectedTypes) const;
     [[nodiscard]] bool checkGeneralizedIdentifier();
     [[nodiscard]] bool match(VnlcTokenType expectedType);
+    [[nodiscard]] bool match(std::span<VnlcTokenType> expectedTypes);
     [[nodiscard]] bool matchSeparatorEndOfLine();
 
     [[nodiscard]] VnlcModuleParsingResult parseModule(VnlcModuleParsingContext context);
