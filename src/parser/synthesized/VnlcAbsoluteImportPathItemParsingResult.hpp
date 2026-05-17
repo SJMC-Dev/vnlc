@@ -7,7 +7,7 @@
 #include <vector>
 
 struct VnlcAbsoluteImportPathItemParsingResult {
-    std::vector<VnlcImportDeclarationItem> items;
+    std::vector<VnlcImportDeclarationItem> paths;
 };
 
 #endif // VNLC_ABSOLUTE_IMPORT_PATH_ITEM_PARSING_RESULT_HPP
