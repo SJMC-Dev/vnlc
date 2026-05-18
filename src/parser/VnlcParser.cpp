@@ -1598,3 +1598,87 @@ VnlcClassMemberParsingResult VnlcParser::parseClassMember() {
         };
     }
 }
+
+VnlcEnumMemberDeclarationParsingResult VnlcParser::parseEnumMemberDeclaration() {
+    VnlcToken firstToken = peek();
+
+    bool hasMetadata = false;
+    std::vector<VnlcDeclarationItem::MetadataTerm> metadataTerms;
+    std::string name;
+    std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>> associatedValues;
+
+    if (check(VnlcTokenType::METADATA)) {
+        hasMetadata = true;
+        auto metadataResult = parseMetadata();
+        metadataTerms = std::move(metadataResult.metadata);
+    }
+
+    if (!check(VnlcTokenType::IDENTIFIER)) {
+        throw VnlcSyntaxError("Expected enum member name", peek().getLine(), peek().getColumn());
+    } else {
+        name = peek().getValue();
+        advance();
+    }
+
+    if (match(VnlcTokenType::LEFT_PARENTHESIS)) {
+        if (!check(VnlcTokenType::RIGHT_PARENTHESIS)) {
+            auto enumAssoicatedValueListResult = parseEnumAssociatedValueList();
+            for (auto& associatedValue : enumAssoicatedValueListResult.associatedValues) {
+                associatedValues.emplace_back(std::move(associatedValue.name), std::move(associatedValue.typeAnnotation));
+            }
+        }
+
+        if (!match(VnlcTokenType::RIGHT_PARENTHESIS)) {
+            throw VnlcSyntaxError("Expected ')' after enum member associated value list", peek().getLine(), peek().getColumn());
+        }
+    }
+
+    VnlcToken lastToken = peek();
+
+    if (hasMetadata) {
+        return VnlcEnumMemberDeclarationParsingResult{
+            .declaration = std::make_unique<VnlcEnumMemberDeclarationNode>(std::move(name), std::move(associatedValues), firstToken, lastToken, std::move(metadataTerms)),
+        };
+    } else {
+        return VnlcEnumMemberDeclarationParsingResult{
+            .declaration = std::make_unique<VnlcEnumMemberDeclarationNode>(std::move(name), std::move(associatedValues), firstToken, lastToken),
+        };
+    }
+}
+
+VnlcEnumAssociatedValueListParsingResult VnlcParser::parseEnumAssociatedValueList() {
+    std::vector<VnlcEnumAssociatedValueListParsingResult::Item> items;
+
+    do {
+        auto result = parseEnumAssociatedValue();
+        items.emplace_back(std::move(result.name), std::move(result.typeAnnotation));
+    } while (match(VnlcTokenType::COMMA));
+
+    return VnlcEnumAssociatedValueListParsingResult{
+        .associatedValues = std::move(items),
+    };
+}
+
+VnlcEnumAssociatedValueParsingResult VnlcParser::parseEnumAssociatedValue() {
+    std::string name;
+    std::unique_ptr<VnlcTypeAnnotationNode> typeAnnotation;
+
+    if (!check(VnlcTokenType::IDENTIFIER)) {
+        throw VnlcSyntaxError("Expected parameter name", peek().getLine(), peek().getColumn());
+    } else {
+        name = peek().getValue();
+        advance();
+    }
+
+    if (!match(VnlcTokenType::COLON)) {
+        throw VnlcSyntaxError("Expected ':' after parameter name", peek().getLine(), peek().getColumn());
+    }
+
+    auto typeAnnotationResult = parseTypeAnnotation();
+    typeAnnotation = std::move(typeAnnotationResult.typeAnnotation);
+
+    return VnlcEnumAssociatedValueParsingResult{
+        .name = std::move(name),
+        .typeAnnotation = std::move(typeAnnotation),
+    };
+}
