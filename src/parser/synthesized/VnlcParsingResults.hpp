@@ -9,7 +9,6 @@
 #include "VnlcAdditiveExpressionParsingResult.hpp"           // IWYU pragma: export
 #include "VnlcArgumentListParsingResult.hpp"                 // IWYU pragma: export
 #include "VnlcAssignmentExpressionParsingResult.hpp"         // IWYU pragma: export
-#include "VnlcAssignmentOperatorParsingResult.hpp"           // IWYU pragma: export
 #include "VnlcBitwiseAndExpressionParsingResult.hpp"         // IWYU pragma: export
 #include "VnlcBitwiseOrExpressionParsingResult.hpp"          // IWYU pragma: export
 #include "VnlcBitwiseXorExpressionParsingResult.hpp"         // IWYU pragma: export

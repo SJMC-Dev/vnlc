@@ -96,7 +96,6 @@ private:
     [[nodiscard]] VnlcExponentialExpressionParsingResult parseExponentialExpression();
     [[nodiscard]] VnlcPostfixExpressionParsingResult parsePostfixExpression();
     [[nodiscard]] VnlcPrimaryExpressionParsingResult parsePrimaryExpression();
-    [[nodiscard]] VnlcAssignmentOperatorParsingResult parseAssignmentOperator();
     [[nodiscard]] VnlcPostfixSuffixParsingResult parsePostfixSuffix();
     [[nodiscard]] VnlcLiteralParsingResult parseLiteral();
     [[nodiscard]] VnlcStringParsingResult parseString();
