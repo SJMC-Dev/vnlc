@@ -2,6 +2,9 @@
 #include "../ast/declaration/VnlcDeclarationNode.hpp"
 #include "../ast/declaration/VnlcExportDeclarationNode.hpp"
 #include "../ast/declaration/VnlcImportDeclarationNode.hpp"
+#include "../ast/expression/VnlcBinaryExpressionNode.hpp"
+#include "../ast/expression/VnlcBinaryExpressionType.hpp"
+#include "../ast/expression/VnlcConditionalExpressionNode.hpp"
 #include "../ast/module/VnlcModuleNode.hpp"
 #include "../error/VnlcIllegalModuleOrPackageNameError.hpp"
 #include "../error/VnlcInternalError.hpp"
@@ -1681,4 +1684,90 @@ VnlcEnumAssociatedValueParsingResult VnlcParser::parseEnumAssociatedValue() {
         .name = std::move(name),
         .typeAnnotation = std::move(typeAnnotation),
     };
+}
+
+VnlcExpressionParsingResult VnlcParser::parseExpression() {
+    VnlcToken firstToken = peek();
+
+    auto result = parseAssignmentExpression();
+
+    VnlcToken lastToken = peek();
+    result.expression->resetPosition(firstToken, lastToken);
+
+    return VnlcExpressionParsingResult{
+        .expression = std::move(result.expression),
+    };
+}
+
+VnlcAssignmentExpressionParsingResult VnlcParser::parseAssignmentExpression() {
+    static const std::unordered_map<VnlcTokenType, VnlcBinaryExpressionType> assignmentOperators = {
+        { VnlcTokenType::EQUAL, VnlcBinaryExpressionType::ASSIGNMENT },
+        { VnlcTokenType::DOUBLE_QUESTION_EQUAL, VnlcBinaryExpressionType::NULLISH_COALESCING_ASSIGNMENT },
+        { VnlcTokenType::PLUS_EQUAL, VnlcBinaryExpressionType::ADDITION_ASSIGNMENT },
+        { VnlcTokenType::MINUS_EQUAL, VnlcBinaryExpressionType::SUBTRACTION_ASSIGNMENT },
+        { VnlcTokenType::ASTERISK_EQUAL, VnlcBinaryExpressionType::MULTIPLICATION_ASSIGNMENT },
+        { VnlcTokenType::SLASH_EQUAL, VnlcBinaryExpressionType::DIVISION_ASSIGNMENT },
+        { VnlcTokenType::DOUBLE_SLASH_EQUAL, VnlcBinaryExpressionType::INTEGER_DIVISION_ASSIGNMENT },
+        { VnlcTokenType::PERCENT_EQUAL, VnlcBinaryExpressionType::MODULO_ASSIGNMENT },
+        { VnlcTokenType::DOUBLE_ASTERISK_EQUAL, VnlcBinaryExpressionType::EXPONENT_ASSIGNMENT },
+        { VnlcTokenType::AMPERSAND_EQUAL, VnlcBinaryExpressionType::BITWISE_AND_ASSIGNMENT },
+        { VnlcTokenType::CARET_EQUAL, VnlcBinaryExpressionType::BITWISE_XOR_ASSIGNMENT },
+        { VnlcTokenType::PIPE_EQUAL, VnlcBinaryExpressionType::BITWISE_OR_ASSIGNMENT },
+        { VnlcTokenType::DOUBLE_LEFT_ANGLE, VnlcBinaryExpressionType::SHIFT_LEFT_ASSIGNMENT },
+        { VnlcTokenType::DOUBLE_RIGHT_ANGLE, VnlcBinaryExpressionType::SHIFT_RIGHT_ASSIGNMENT },
+        { VnlcTokenType::TRIPLE_RIGHT_ANGLE, VnlcBinaryExpressionType::SHIFT_RIGHT_UNSIGNED_ASSIGNMENT },
+    };
+
+    VnlcToken firstToken = peek();
+
+    auto leftResult = parseConditionalExpression();
+
+    if (assignmentOperators.contains(peek().getType())) {
+        VnlcBinaryExpressionType operatorType = assignmentOperators.at(peek().getType());
+        advance();
+        auto rightResult = parseAssignmentExpression();
+
+        VnlcToken lastToken = peek();
+
+        return VnlcAssignmentExpressionParsingResult{
+            .expression = std::make_unique<VnlcBinaryExpressionNode>(operatorType, std::move(leftResult.expression), std::move(rightResult.expression), firstToken, lastToken),
+        };
+    } else {
+        VnlcToken lastToken = peek();
+        leftResult.expression->resetPosition(firstToken, lastToken);
+
+        return VnlcAssignmentExpressionParsingResult{
+            .expression = std::move(leftResult.expression),
+        };
+    }
+}
+
+VnlcConditionalExpressionParsingResult VnlcParser::parseConditionalExpression() {
+    VnlcToken firstToken = peek();
+
+    auto leftResult = parseNullishCoalescingExpression();
+
+    if (match(VnlcTokenType::QUESTION)) {
+        auto middleResult = parseAssignmentExpression();
+
+        if (!match(VnlcTokenType::COLON)) {
+            throw VnlcSyntaxError("Expected ':' in conditional expression", peek().getLine(), peek().getColumn());
+        }
+
+        auto rightResult = parseConditionalExpression();
+
+        VnlcToken lastToken = peek();
+
+        return VnlcConditionalExpressionParsingResult{
+            .expression =
+                std::make_unique<VnlcConditionalExpressionNode>(std::move(leftResult.expression), std::move(middleResult.expression), std::move(rightResult.expression), firstToken, lastToken),
+        };
+    } else {
+        VnlcToken lastToken = peek();
+        leftResult.expression->resetPosition(firstToken, lastToken);
+
+        return VnlcConditionalExpressionParsingResult{
+            .expression = std::move(leftResult.expression),
+        };
+    }
 }
