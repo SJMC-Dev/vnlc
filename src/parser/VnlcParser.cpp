@@ -14,6 +14,7 @@
 #include <memory>
 #include <optional>
 #include <sstream>
+#include <array>
 
 VnlcParser::VnlcParser(VnlcLexer&& lexer, unsigned int maxBufferSize) : lexer(std::move(lexer)), tokenBuffer(), currentTokenIndex(0), bufferSize(0) {
     for (unsigned int i = 0; i < maxBufferSize; i++) {
