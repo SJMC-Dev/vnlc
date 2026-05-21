@@ -21,6 +21,9 @@ public:
     VnlcToken(VnlcToken&& other) noexcept;
     VnlcToken(const VnlcToken& other);
 
+    VnlcToken& operator=(VnlcToken&& other) noexcept;
+    VnlcToken& operator=(const VnlcToken& other);
+
     [[nodiscard]] VnlcTokenType getType() const noexcept;
     [[nodiscard]] unsigned int getLine() const noexcept;
     [[nodiscard]] unsigned int getColumn() const noexcept;
