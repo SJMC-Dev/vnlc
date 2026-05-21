@@ -363,8 +363,6 @@ VnlcVariableDeclarationParsingResult VnlcParser::parseVariableDeclaration(VnlcVa
 }
 
 VnlcFunctionDeclarationParsingResult VnlcParser::parseFunctionDeclaration(VnlcFunctionDeclarationParsingContext context) {
-    VnlcToken firstToken = peek();
-
     if (check(VnlcTokenType::FUNC)) {
         VnlcRegularFunctionDeclarationParsingContext regularContext{
             .context = context.context,
@@ -372,9 +370,6 @@ VnlcFunctionDeclarationParsingResult VnlcParser::parseFunctionDeclaration(VnlcFu
             .metadataTerms = std::move(context.metadataTerms),
         };
         auto result = parseRegularFunctionDeclaration(std::move(regularContext));
-
-        VnlcToken lastToken = peek();
-        result.declaration->resetPosition(firstToken, lastToken);
 
         return VnlcFunctionDeclarationParsingResult{
             .declaration = std::move(result.declaration),
@@ -386,9 +381,6 @@ VnlcFunctionDeclarationParsingResult VnlcParser::parseFunctionDeclaration(VnlcFu
             .metadataTerms = std::move(context.metadataTerms),
         };
         auto result = parseNativeFunctionDeclaration(std::move(nativeContext));
-
-        VnlcToken lastToken = peek();
-        result.declaration->resetPosition(firstToken, lastToken);
 
         return VnlcFunctionDeclarationParsingResult{
             .declaration = std::move(result.declaration),
@@ -1384,12 +1376,7 @@ VnlcRelativeImportPathListParsingResult VnlcParser::parseRelativeImportPathList(
 }
 
 VnlcFunctionBodyParsingResult VnlcParser::parseFunctionBody() {
-    VnlcToken firstToken = peek();
-
     auto result = parseBlockStatement();
-
-    VnlcToken lastToken = peek();
-    result.statement->resetPosition(firstToken, lastToken);
 
     return VnlcFunctionBodyParsingResult{
         .body = std::move(result.statement),
@@ -1688,12 +1675,7 @@ VnlcEnumAssociatedValueParsingResult VnlcParser::parseEnumAssociatedValue() {
 }
 
 VnlcExpressionParsingResult VnlcParser::parseExpression() {
-    VnlcToken firstToken = peek();
-
     auto result = parseAssignmentExpression();
-
-    VnlcToken lastToken = peek();
-    result.expression->resetPosition(firstToken, lastToken);
 
     return VnlcExpressionParsingResult{
         .expression = std::move(result.expression),
@@ -1734,9 +1716,6 @@ VnlcAssignmentExpressionParsingResult VnlcParser::parseAssignmentExpression() {
             .expression = std::make_unique<VnlcBinaryExpressionNode>(operatorType, std::move(leftResult.expression), std::move(rightResult.expression), firstToken, lastToken),
         };
     } else {
-        VnlcToken lastToken = peek();
-        leftResult.expression->resetPosition(firstToken, lastToken);
-
         return VnlcAssignmentExpressionParsingResult{
             .expression = std::move(leftResult.expression),
         };
@@ -1764,9 +1743,6 @@ VnlcConditionalExpressionParsingResult VnlcParser::parseConditionalExpression() 
                 std::make_unique<VnlcConditionalExpressionNode>(std::move(leftResult.expression), std::move(middleResult.expression), std::move(rightResult.expression), firstToken, lastToken),
         };
     } else {
-        VnlcToken lastToken = peek();
-        leftResult.expression->resetPosition(firstToken, lastToken);
-
         return VnlcConditionalExpressionParsingResult{
             .expression = std::move(leftResult.expression),
         };
