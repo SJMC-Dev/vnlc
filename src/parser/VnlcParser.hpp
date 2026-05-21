@@ -85,11 +85,11 @@ private:
     [[nodiscard]] VnlcLogicalAndExpressionParsingResult parseLogicalAndExpression();
     [[nodiscard]] VnlcEqualityExpressionParsingResult parseEqualityExpression();
     [[nodiscard]] VnlcRelationalExpressionParsingResult parseRelationalExpression();
+    [[nodiscard]] VnlcRangeExpressionParsingResult parseRangeExpression();
     [[nodiscard]] VnlcBitwiseOrExpressionParsingResult parseBitwiseOrExpression();
     [[nodiscard]] VnlcBitwiseXorExpressionParsingResult parseBitwiseXorExpression();
     [[nodiscard]] VnlcBitwiseAndExpressionParsingResult parseBitwiseAndExpression();
     [[nodiscard]] VnlcShiftExpressionParsingResult parseShiftExpression();
-    [[nodiscard]] VnlcRangeExpressionParsingResult parseRangeExpression();
     [[nodiscard]] VnlcAdditiveExpressionParsingResult parseAdditiveExpression();
     [[nodiscard]] VnlcMultiplicativeExpressionParsingResult parseMultiplicativeExpression();
     [[nodiscard]] VnlcUnaryExpressionParsingResult parseUnaryExpression();
