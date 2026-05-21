@@ -1,9 +1,9 @@
 #include "VnlcSimpleLiteralExpressionNode.hpp"
 
-VnlcSimpleLiteralExpressionNode::VnlcSimpleLiteralExpressionNode(VnlcSimpleLiteralExpressionType type, std::string&& literal, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept
+VnlcSimpleLiteralExpressionNode::VnlcSimpleLiteralExpressionNode(VnlcSimpleLiteralExpressionType type, std::string_view literal, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept
     : VnlcLiteralExpressionNode(firstToken, lastToken),
       type(type),
-      literal(std::move(literal)) {}
+      literal(std::string(literal)) {}
 
 const VnlcSimpleLiteralExpressionType VnlcSimpleLiteralExpressionNode::getType() const noexcept {
     return type;

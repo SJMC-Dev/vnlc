@@ -14,7 +14,7 @@ private:
     std::string literal;
 
 public:
-    VnlcSimpleLiteralExpressionNode(VnlcSimpleLiteralExpressionType type, std::string&& literal, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
+    VnlcSimpleLiteralExpressionNode(VnlcSimpleLiteralExpressionType type, std::string_view literal, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
 
     [[nodiscard]] const VnlcSimpleLiteralExpressionType getType() const noexcept;
     [[nodiscard]] std::string_view getLiteral() const noexcept;
