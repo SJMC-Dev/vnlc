@@ -22,7 +22,8 @@
 
 VnlcParser::VnlcParser(VnlcLexer&& lexer, unsigned int maxBufferSize) : lexer(std::move(lexer)), tokenBuffer(), currentTokenIndex(0), bufferSize(0) {
     for (unsigned int i = 0; i < maxBufferSize; i++) {
-        while (lexer.hasNext() && lexer.next().getType() == VnlcTokenType::BLANK) {
+        while (lexer.hasNext() && (lexer.next().getType() == VnlcTokenType::BLANK || lexer.next().getType() == VnlcTokenType::SINGLE_LINE_COMMENT ||
+                                   lexer.next().getType() == VnlcTokenType::MULTI_LINE_COMMENT)) {
             // Skip blank tokens when filling the initial buffer
         }
 
@@ -56,7 +57,7 @@ void VnlcParser::fillBuffer() {
 
     for (unsigned int i = 0; i < bufferSize && lexer.hasNext(); i = blank ? i : i + 1) {
         VnlcToken token = lexer.next();
-        if (token.getType() == VnlcTokenType::BLANK) {
+        if (token.getType() == VnlcTokenType::BLANK || token.getType() == VnlcTokenType::SINGLE_LINE_COMMENT || token.getType() == VnlcTokenType::MULTI_LINE_COMMENT) {
             blank = true;
         } else {
             blank = false;
@@ -1113,7 +1114,7 @@ VnlcAbsoluteImportPathParsingResult VnlcParser::parseAbsoluteImportPath() {
     std::vector<VnlcImportDeclarationItem> paths;
     std::vector<std::string> namePartsPrefix;
 
-    while(true) {
+    while (true) {
         if (!check(VnlcTokenType::IDENTIFIER)) {
             throw VnlcSyntaxError("Expected identifier in import path", peek().getLine(), peek().getColumn());
         } else {
