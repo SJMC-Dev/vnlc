@@ -304,6 +304,10 @@ VnlcImportDeclarationParsingResult VnlcParser::parseImportDeclaration() {
 
     std::unique_ptr<VnlcImportDeclarationNode> node = std::make_unique<VnlcImportDeclarationNode>(result.relative, std::move(result.paths), firstToken, lastToken);
 
+    if (!matchSeparatorEndOfLine()) {
+        throw VnlcSyntaxError("Expected newline after import declaration", peek().getLine(), peek().getColumn());
+    }
+
     return VnlcImportDeclarationParsingResult{
         .declaration = std::move(node),
     };
@@ -321,6 +325,10 @@ VnlcExportDeclarationParsingResult VnlcParser::parseExportDeclaration() {
     VnlcToken lastToken = peek();
 
     std::unique_ptr<VnlcExportDeclarationNode> node = std::make_unique<VnlcExportDeclarationNode>(std::move(result.items), firstToken, lastToken);
+
+    if (!matchSeparatorEndOfLine()) {
+        throw VnlcSyntaxError("Expected newline after export declaration", peek().getLine(), peek().getColumn());
+    }
 
     return VnlcExportDeclarationParsingResult{
         .declaration = std::move(node),
@@ -1556,6 +1564,10 @@ VnlcClassMemberParsingResult VnlcParser::parseClassMember() {
         VnlcToken lastToken = peek();
         functionDeclarationResult.declaration->resetPosition(firstToken, lastToken);
 
+        if (!matchSeparatorEndOfLine()) {
+            throw VnlcSyntaxError("Expected newline after method declaration", peek().getLine(), peek().getColumn());
+        }
+
         return VnlcClassMemberParsingResult{
             .declaration = std::move(functionDeclarationResult.declaration),
         };
@@ -1574,6 +1586,10 @@ VnlcClassMemberParsingResult VnlcParser::parseClassMember() {
         VnlcToken lastToken = peek();
         functionDeclarationResult.declaration->resetPosition(firstToken, lastToken);
 
+        if (!matchSeparatorEndOfLine()) {
+            throw VnlcSyntaxError("Expected newline after method declaration", peek().getLine(), peek().getColumn());
+        }
+
         return VnlcClassMemberParsingResult{
             .declaration = std::move(functionDeclarationResult.declaration),
         };
@@ -1588,6 +1604,10 @@ VnlcClassMemberParsingResult VnlcParser::parseClassMember() {
 
         VnlcToken lastToken = peek();
         propertyDeclarationResult.declaration->resetPosition(firstToken, lastToken);
+
+        if (!matchSeparatorEndOfLine()) {
+            throw VnlcSyntaxError("Expected newline after property declaration", peek().getLine(), peek().getColumn());
+        }
 
         return VnlcClassMemberParsingResult{
             .declaration = std::move(propertyDeclarationResult.declaration),
@@ -1630,6 +1650,10 @@ VnlcEnumMemberDeclarationParsingResult VnlcParser::parseEnumMemberDeclaration() 
     }
 
     VnlcToken lastToken = peek();
+
+    if (!matchSeparatorEndOfLine()) {
+        throw VnlcSyntaxError("Expected newline after enum member declaration", peek().getLine(), peek().getColumn());
+    }
 
     if (hasMetadata) {
         return VnlcEnumMemberDeclarationParsingResult{
