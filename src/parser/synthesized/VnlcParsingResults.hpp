@@ -47,7 +47,7 @@
 #include "VnlcInterfaceDeclarationParsingResult.hpp"         // IWYU pragma: export
 #include "VnlcInterfaceMethodDeclarationParsingResult.hpp"   // IWYU pragma: export
 #include "VnlcInterpolationParsingResult.hpp"                // IWYU pragma: export
-#include "VnlcListLiteralParsingResult.hpp"                  // IWYU pragma: export
+#include "VnlcListLikeLiteralParsingResult.hpp"                  // IWYU pragma: export
 #include "VnlcLiteralParsingResult.hpp"                      // IWYU pragma: export
 #include "VnlcLogicalAndExpressionParsingResult.hpp"         // IWYU pragma: export
 #include "VnlcLogicalOrExpressionParsingResult.hpp"          // IWYU pragma: export
@@ -70,7 +70,6 @@
 #include "VnlcRelativeImportPathParsingResult.hpp"           // IWYU pragma: export
 #include "VnlcReloadStatementParsingResult.hpp"              // IWYU pragma: export
 #include "VnlcReturnStatementParsingResult.hpp"              // IWYU pragma: export
-#include "VnlcSNBTArrayParsingResult.hpp"                    // IWYU pragma: export
 #include "VnlcSelectorArgumentListParsingResult.hpp"         // IWYU pragma: export
 #include "VnlcSelectorArgumentParsingResult.hpp"             // IWYU pragma: export
 #include "VnlcSelectorParsingResult.hpp"                     // IWYU pragma: export

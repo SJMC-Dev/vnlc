@@ -96,9 +96,8 @@ private:
     [[nodiscard]] VnlcLiteralParsingResult parseLiteral();
     [[nodiscard]] VnlcStringParsingResult parseString();
     [[nodiscard]] VnlcBooleanParsingResult parseBoolean();
-    [[nodiscard]] VnlcListLiteralParsingResult parseListLiteral();
+    [[nodiscard]] VnlcListLikeLiteralParsingResult parseListLikeLiteral();
     [[nodiscard]] VnlcDictLiteralParsingResult parseDictLiteral();
-    [[nodiscard]] VnlcSNBTArrayParsingResult parseSNBTArray();
     [[nodiscard]] VnlcSelectorParsingResult parseSelector();
     [[nodiscard]] VnlcArgumentListParsingResult parseArgumentList();
     [[nodiscard]] VnlcInterpolationParsingResult parseInterpolation();
