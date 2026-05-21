@@ -60,7 +60,6 @@
 #include "VnlcParameterListParsingResult.hpp"                // IWYU pragma: export
 #include "VnlcParameterParsingResult.hpp"                    // IWYU pragma: export
 #include "VnlcPostfixExpressionParsingResult.hpp"            // IWYU pragma: export
-#include "VnlcPostfixSuffixParsingResult.hpp"                // IWYU pragma: export
 #include "VnlcPrimaryExpressionParsingResult.hpp"            // IWYU pragma: export
 #include "VnlcPropertyDeclarationParsingResult.hpp"          // IWYU pragma: export
 #include "VnlcRangeExpressionParsingResult.hpp"              // IWYU pragma: export
