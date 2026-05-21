@@ -5,7 +5,14 @@
 #include "../ast/expression/VnlcBinaryExpressionNode.hpp"
 #include "../ast/expression/VnlcBinaryExpressionType.hpp"
 #include "../ast/expression/VnlcConditionalExpressionNode.hpp"
+#include "../ast/expression/VnlcFunctionCallExpressionNode.hpp"
+#include "../ast/expression/VnlcMemberAccessExpressionNode.hpp"
+#include "../ast/expression/VnlcMemberAccessExpressionType.hpp"
 #include "../ast/expression/VnlcRangeExpressionNode.hpp"
+#include "../ast/expression/VnlcSimpleLiteralExpressionNode.hpp"
+#include "../ast/expression/VnlcSubscriptExpressionNode.hpp"
+#include "../ast/expression/VnlcSuperExpressionNode.hpp"
+#include "../ast/expression/VnlcThisExpressionNode.hpp"
 #include "../ast/expression/VnlcUnaryExpressionNode.hpp"
 #include "../ast/expression/VnlcUnaryExpressionType.hpp"
 #include "../ast/module/VnlcModuleNode.hpp"
@@ -1128,15 +1135,15 @@ VnlcAbsoluteImportPathParsingResult VnlcParser::parseAbsoluteImportPath() {
             advance();
 
             if (match(VnlcTokenType::ASTERISK)) {
-        std::vector<std::string> nameParts = std::move(namePartsPrefix);
-        nameParts.emplace_back("*");
+                std::vector<std::string> nameParts = std::move(namePartsPrefix);
+                nameParts.emplace_back("*");
 
-        paths.emplace_back(
-            VnlcImportDeclarationItem{
-                .nameParts = std::move(nameParts),
-                .alias = std::nullopt,
-            }
-        );
+                paths.emplace_back(
+                    VnlcImportDeclarationItem{
+                        .nameParts = std::move(nameParts),
+                        .alias = std::nullopt,
+                    }
+                );
 
                 return VnlcAbsoluteImportPathParsingResult{
                     .paths = std::move(paths),
@@ -1210,15 +1217,15 @@ VnlcRelativeImportPathParsingResult VnlcParser::parseRelativeImportPath() {
             advance();
 
             if (match(VnlcTokenType::ASTERISK)) {
-        std::vector<std::string> nameParts = std::move(namePartsPrefix);
-        nameParts.emplace_back("*");
+                std::vector<std::string> nameParts = std::move(namePartsPrefix);
+                nameParts.emplace_back("*");
 
-        paths.emplace_back(
-            VnlcImportDeclarationItem{
-                .nameParts = std::move(nameParts),
-                .alias = std::nullopt,
-            }
-        );
+                paths.emplace_back(
+                    VnlcImportDeclarationItem{
+                        .nameParts = std::move(nameParts),
+                        .alias = std::nullopt,
+                    }
+                );
 
                 return VnlcRelativeImportPathParsingResult{
                     .paths = std::move(paths),
@@ -2130,5 +2137,215 @@ VnlcExponentialExpressionParsingResult VnlcParser::parseExponentialExpression() 
         return VnlcExponentialExpressionParsingResult{
             .expression = std::move(leftResult.expression),
         };
+    }
+}
+
+VnlcPostfixExpressionParsingResult VnlcParser::parsePostfixExpression() {
+    VnlcToken firstToken = peek();
+
+    auto primaryResult = parsePrimaryExpression();
+    std::unique_ptr<VnlcExpressionNode> currentNode = std::move(primaryResult.expression);
+
+    static const std::unordered_set<VnlcTokenType> postfixOperators = {
+        VnlcTokenType::DOT,
+        VnlcTokenType::QUESTION_DOT,
+        VnlcTokenType::LEFT_PARENTHESIS,
+        VnlcTokenType::LEFT_BRACKET,
+    };
+
+    while (postfixOperators.contains(peek().getType())) {
+        if (match(VnlcTokenType::DOT)) {
+            VnlcToken identifierFirstToken = peek();
+
+            std::string name;
+            if (!check(VnlcTokenType::IDENTIFIER)) {
+                throw VnlcSyntaxError("Expected identifier after '.'", peek().getLine(), peek().getColumn());
+            } else {
+                name = peek().getValue();
+                advance();
+            }
+
+            VnlcToken lastToken = peek();
+
+            std::unique_ptr<VnlcIdentifierExpressionNode> nameNode = std::make_unique<VnlcIdentifierExpressionNode>(std::move(name), identifierFirstToken, lastToken);
+
+            currentNode = std::make_unique<VnlcMemberAccessExpressionNode>(VnlcMemberAccessExpressionType::DOT, std::move(currentNode), std::move(nameNode), firstToken, lastToken);
+        } else if (match(VnlcTokenType::QUESTION_DOT)) {
+            VnlcToken identifierFirstToken = peek();
+
+            std::string name;
+            if (!check(VnlcTokenType::IDENTIFIER)) {
+                throw VnlcSyntaxError("Expected identifier after '?.'", peek().getLine(), peek().getColumn());
+            } else {
+                name = peek().getValue();
+                advance();
+            }
+
+            VnlcToken lastToken = peek();
+
+            std::unique_ptr<VnlcIdentifierExpressionNode> nameNode = std::make_unique<VnlcIdentifierExpressionNode>(std::move(name), identifierFirstToken, lastToken);
+
+            currentNode =
+                std::make_unique<VnlcMemberAccessExpressionNode>(VnlcMemberAccessExpressionType::OPTIONAL_CHAINING, std::move(currentNode), std::move(nameNode), firstToken, lastToken);
+        } else if (match(VnlcTokenType::LEFT_PARENTHESIS)) {
+            std::vector<std::unique_ptr<VnlcExpressionNode>> arguments;
+
+            if (!check(VnlcTokenType::RIGHT_PARENTHESIS)) {
+                auto argumentListResult = parseArgumentList();
+                arguments = std::move(argumentListResult.arguments);
+            }
+
+            if (!match(VnlcTokenType::RIGHT_PARENTHESIS)) {
+                throw VnlcSyntaxError("Expected ')' after argument list", peek().getLine(), peek().getColumn());
+            }
+
+            VnlcToken lastToken = peek();
+
+            currentNode = std::make_unique<VnlcFunctionCallExpressionNode>(std::move(currentNode), std::move(arguments), firstToken, lastToken);
+        } else if (match(VnlcTokenType::LEFT_BRACKET)) {
+            auto indexResult = parseExpression();
+
+            if (!match(VnlcTokenType::RIGHT_BRACKET)) {
+                throw VnlcSyntaxError("Expected ']' after index expression", peek().getLine(), peek().getColumn());
+            }
+
+            VnlcToken lastToken = peek();
+
+            currentNode = std::make_unique<VnlcSubscriptExpressionNode>(std::move(currentNode), std::move(indexResult.expression), firstToken, lastToken);
+        }
+    }
+
+    return VnlcPostfixExpressionParsingResult{
+        .expression = std::move(currentNode),
+    };
+}
+
+VnlcPrimaryExpressionParsingResult VnlcParser::parsePrimaryExpression() {
+    static const std::unordered_set<VnlcTokenType> literalStarters = {
+        VnlcTokenType::NUMBER, VnlcTokenType::STRING,       VnlcTokenType::CHAR,       VnlcTokenType::TRUE,
+        VnlcTokenType::FALSE,  VnlcTokenType::LEFT_BRACKET, VnlcTokenType::LEFT_BRACE, VnlcTokenType::SELECTOR_PREFIX,
+    };
+
+    VnlcToken firstToken = peek();
+
+    if (match(VnlcTokenType::LEFT_PARENTHESIS)) {
+        auto expressionResult = parseExpression();
+
+        if (!match(VnlcTokenType::RIGHT_PARENTHESIS)) {
+            throw VnlcSyntaxError("Expected ')' after expression", peek().getLine(), peek().getColumn());
+        }
+
+        VnlcToken lastToken = peek();
+        expressionResult.expression->resetPosition(firstToken, lastToken);
+
+        return VnlcPrimaryExpressionParsingResult{
+            .expression = std::move(expressionResult.expression),
+        };
+    } else if (match(VnlcTokenType::THIS)) {
+        VnlcToken lastToken = peek();
+
+        return VnlcPrimaryExpressionParsingResult{
+            .expression = std::make_unique<VnlcThisExpressionNode>(firstToken, lastToken),
+        };
+    } else if (match(VnlcTokenType::SUPER)) {
+        VnlcToken lastToken = peek();
+
+        return VnlcPrimaryExpressionParsingResult{
+            .expression = std::make_unique<VnlcSuperExpressionNode>(firstToken, lastToken),
+        };
+    } else if (check(VnlcTokenType::IDENTIFIER)) {
+        std::string name(peek().getValue());
+        advance();
+
+        VnlcToken lastToken = peek();
+
+        return VnlcPrimaryExpressionParsingResult{
+            .expression = std::make_unique<VnlcIdentifierExpressionNode>(std::move(name), firstToken, lastToken),
+        };
+    } else if (literalStarters.contains(peek().getType())) {
+        auto literalResult = parseLiteral();
+
+        return VnlcPrimaryExpressionParsingResult{
+            .expression = std::move(literalResult.expression),
+        };
+    } else {
+        throw VnlcSyntaxError("Expected primary expression", peek().getLine(), peek().getColumn());
+    }
+}
+
+VnlcLiteralParsingResult VnlcParser::parseLiteral() {
+    VnlcToken firstToken = peek();
+
+    if (match(VnlcTokenType::NUMBER)) {
+        VnlcToken lastToken = peek();
+
+        VnlcSimpleLiteralExpressionType literalType = VnlcSimpleLiteralExpressionType::DECIMAL_INTEGER;
+
+        if (firstToken.getValue().find('.') != std::string::npos || firstToken.getValue().find('e') != std::string::npos || firstToken.getValue().find('E') != std::string::npos) {
+            if (firstToken.getValue().ends_with('f') || firstToken.getValue().ends_with('F')) {
+                literalType = VnlcSimpleLiteralExpressionType::DECIMAL_FLOAT;
+            } else {
+                literalType = VnlcSimpleLiteralExpressionType::DECIMAL_DOUBLE;
+            }
+        } else if (firstToken.getValue().starts_with("0x")) {
+            literalType = VnlcSimpleLiteralExpressionType::HEXADECIMAL;
+        } else if (firstToken.getValue().starts_with("0b")) {
+            literalType = VnlcSimpleLiteralExpressionType::BINARY;
+        } else if (firstToken.getValue().starts_with("0o")) {
+            literalType = VnlcSimpleLiteralExpressionType::OCTAL;
+        } else if (firstToken.getValue().ends_with(('b')) || firstToken.getValue().ends_with(('B'))) {
+            literalType = VnlcSimpleLiteralExpressionType::DECIMAL_BYTE;
+        } else if (firstToken.getValue().ends_with(('s')) || firstToken.getValue().ends_with(('S'))) {
+            literalType = VnlcSimpleLiteralExpressionType::DECIMAL_SHORT;
+        } else if (firstToken.getValue().ends_with(('l')) || firstToken.getValue().ends_with(('L'))) {
+            literalType = VnlcSimpleLiteralExpressionType::DECIMAL_LONG;
+        }
+
+        return VnlcLiteralParsingResult{
+            .expression = std::make_unique<VnlcSimpleLiteralExpressionNode>(literalType, firstToken.getValue(), firstToken, lastToken),
+        };
+    } else if (match(VnlcTokenType::CHAR)) {
+        VnlcToken lastToken = peek();
+
+        return VnlcLiteralParsingResult{
+            .expression = std::make_unique<VnlcSimpleLiteralExpressionNode>(
+                VnlcSimpleLiteralExpressionType::CHARACTER,
+                firstToken.getValue().substr(1, firstToken.getValue().length() - 2), // Remove the surrounding single quotes
+                firstToken,
+                lastToken
+            ),
+        };
+    } else if (check(VnlcTokenType::STRING)) {
+        auto result = parseString();
+
+        return VnlcLiteralParsingResult{
+            .expression = std::move(result.expression),
+        };
+    } else if (check(VnlcTokenType::TRUE) || check(VnlcTokenType::FALSE)) {
+        auto result = parseBoolean();
+
+        return VnlcLiteralParsingResult{
+            .expression = std::move(result.expression),
+        };
+    } else if (check(VnlcTokenType::LEFT_BRACKET)) {
+        auto result = parseListLikeLiteral();
+
+        return VnlcLiteralParsingResult{
+            .expression = std::move(result.expression),
+        };
+    } else if (check(VnlcTokenType::LEFT_BRACE)) {
+        auto result = parseDictLiteral();
+
+        return VnlcLiteralParsingResult{
+            .expression = std::move(result.expression),
+        };
+    } else if (check(VnlcTokenType::SELECTOR_PREFIX)) {
+        auto result = parseSelector();
+
+        return VnlcLiteralParsingResult{
+            .expression = std::move(result.expression),
+        };
+    } else {
+        throw VnlcSyntaxError("Expected literal", peek().getLine(), peek().getColumn());
     }
 }
