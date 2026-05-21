@@ -14,7 +14,6 @@
 #include "../error/VnlcOutOfRangeError.hpp"
 #include "../error/VnlcSyntaxError.hpp"
 #include "../util/VnlcTokenTypeUtil.hpp"
-#include <array>
 #include <memory>
 #include <optional>
 #include <sstream>
@@ -94,16 +93,6 @@ bool VnlcParser::check(VnlcTokenType expectedType) {
     return hasNextToken() && peek().getType() == expectedType;
 }
 
-bool VnlcParser::check(std::span<VnlcTokenType> expectedTypes) {
-    for (unsigned int i = 0; i < expectedTypes.size(); i++) {
-        skipNewlines();
-        if (!hasNextToken() || peek(i).getType() != expectedTypes[i]) {
-            return false;
-        }
-    }
-    return true;
-}
-
 bool VnlcParser::checkGeneralizedIdentifier() {
     skipNewlines();
     if (hasNextToken() && VnlcTokenTypeUtil::isGeneralizedIdentifier(peek().getType())) {
@@ -115,16 +104,6 @@ bool VnlcParser::checkGeneralizedIdentifier() {
 bool VnlcParser::match(VnlcTokenType expectedType) {
     if (check(expectedType)) {
         advance();
-        return true;
-    }
-    return false;
-}
-
-bool VnlcParser::match(std::span<VnlcTokenType> expectedTypes) {
-    if (check(expectedTypes)) {
-        for (unsigned int i = 0; i < expectedTypes.size(); i++) {
-            advance();
-        }
         return true;
     }
     return false;
@@ -1134,22 +1113,20 @@ VnlcAbsoluteImportPathParsingResult VnlcParser::parseAbsoluteImportPath() {
     std::vector<VnlcImportDeclarationItem> paths;
     std::vector<std::string> namePartsPrefix;
 
-    std::array<VnlcTokenType, 2> expectedTypes = { VnlcTokenType::DOT, VnlcTokenType::IDENTIFIER };
-
-    do {
+    while(true) {
         if (!check(VnlcTokenType::IDENTIFIER)) {
             throw VnlcSyntaxError("Expected identifier in import path", peek().getLine(), peek().getColumn());
         } else {
             namePartsPrefix.emplace_back(peek().getValue());
             advance();
         }
-    } while (match(expectedTypes));
 
-    if (match(VnlcTokenType::DOT)) {
-        if (!match(VnlcTokenType::ASTERISK)) {
-            throw VnlcSyntaxError("Expected '*' after '.' in wildcard import path", peek().getLine(), peek().getColumn());
-        }
+        if (!check(VnlcTokenType::DOT)) {
+            break;
+        } else {
+            advance();
 
+            if (match(VnlcTokenType::ASTERISK)) {
         std::vector<std::string> nameParts = std::move(namePartsPrefix);
         nameParts.emplace_back("*");
 
@@ -1159,7 +1136,17 @@ VnlcAbsoluteImportPathParsingResult VnlcParser::parseAbsoluteImportPath() {
                 .alias = std::nullopt,
             }
         );
-    } else if (match(VnlcTokenType::AS)) {
+
+                return VnlcAbsoluteImportPathParsingResult{
+                    .paths = std::move(paths),
+                };
+            } else {
+                continue;
+            }
+        }
+    };
+
+    if (match(VnlcTokenType::AS)) {
         if (!check(VnlcTokenType::IDENTIFIER)) {
             throw VnlcSyntaxError("Expected identifier after 'as' keyword in import path", peek().getLine(), peek().getColumn());
         } else {
@@ -1206,10 +1193,7 @@ VnlcRelativeImportPathParsingResult VnlcParser::parseRelativeImportPath() {
     std::vector<VnlcImportDeclarationItem> paths;
     std::vector<std::string> namePartsPrefix;
 
-    std::array<VnlcTokenType, 2> identifierMatch = { VnlcTokenType::DOT, VnlcTokenType::IDENTIFIER };
-    std::array<VnlcTokenType, 2> parentMatch = { VnlcTokenType::DOT, VnlcTokenType::PARENT };
-
-    do {
+    while (true) {
         if (match(VnlcTokenType::PARENT)) {
             namePartsPrefix.emplace_back("parent");
         } else if (!check(VnlcTokenType::IDENTIFIER)) {
@@ -1218,13 +1202,13 @@ VnlcRelativeImportPathParsingResult VnlcParser::parseRelativeImportPath() {
             namePartsPrefix.emplace_back(peek().getValue());
             advance();
         }
-    } while (match(parentMatch) || match(identifierMatch));
 
-    if (match(VnlcTokenType::DOT)) {
-        if (!match(VnlcTokenType::ASTERISK)) {
-            throw VnlcSyntaxError("Expected '*' after '.' in wildcard import path", peek().getLine(), peek().getColumn());
-        }
+        if (!check(VnlcTokenType::DOT)) {
+            break;
+        } else {
+            advance();
 
+            if (match(VnlcTokenType::ASTERISK)) {
         std::vector<std::string> nameParts = std::move(namePartsPrefix);
         nameParts.emplace_back("*");
 
@@ -1234,7 +1218,17 @@ VnlcRelativeImportPathParsingResult VnlcParser::parseRelativeImportPath() {
                 .alias = std::nullopt,
             }
         );
-    } else if (match(VnlcTokenType::AS)) {
+
+                return VnlcRelativeImportPathParsingResult{
+                    .paths = std::move(paths),
+                };
+            } else {
+                continue;
+            }
+        }
+    }
+
+    if (match(VnlcTokenType::AS)) {
         if (!check(VnlcTokenType::IDENTIFIER)) {
             throw VnlcSyntaxError("Expected identifier after 'as' keyword in import path", peek().getLine(), peek().getColumn());
         } else {

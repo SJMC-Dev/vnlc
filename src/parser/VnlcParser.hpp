@@ -10,7 +10,6 @@
 #include "inherited/VnlcParsingContexts.hpp"
 #include "synthesized/VnlcParsingResults.hpp"
 #include <memory>
-#include <span>
 #include <vector>
 
 class VnlcParser {
@@ -30,10 +29,8 @@ private:
     void skipNewlines();
 
     [[nodiscard]] bool check(VnlcTokenType expectedType);
-    [[nodiscard]] bool check(std::span<VnlcTokenType> expectedTypes);
     [[nodiscard]] bool checkGeneralizedIdentifier();
     [[nodiscard]] bool match(VnlcTokenType expectedType);
-    [[nodiscard]] bool match(std::span<VnlcTokenType> expectedTypes);
     [[nodiscard]] bool matchSeparatorEndOfLine();
 
     [[nodiscard]] VnlcModuleParsingResult parseModule(VnlcModuleParsingContext context);
