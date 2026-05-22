@@ -1736,6 +1736,7 @@ VnlcAssignmentExpressionParsingResult VnlcParser::parseAssignmentExpression() {
 
     auto leftResult = parseConditionalExpression();
 
+    skipNewlines();
     if (assignmentOperators.contains(peek().getType())) {
         VnlcBinaryExpressionType operatorType = assignmentOperators.at(peek().getType());
         advance();
@@ -1849,6 +1850,7 @@ VnlcEqualityExpressionParsingResult VnlcParser::parseEqualityExpression() {
     auto leftResult = parseRelationalExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
 
+    skipNewlines();
     while (equalityOperators.contains(peek().getType())) {
         VnlcBinaryExpressionType operatorType = equalityOperators.at(peek().getType());
         advance();
@@ -1877,6 +1879,7 @@ VnlcRelationalExpressionParsingResult VnlcParser::parseRelationalExpression() {
     auto leftResult = parseRangeExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
 
+    skipNewlines();
     while (relationalOperators.contains(peek().getType())) {
         VnlcBinaryExpressionType operatorType = relationalOperators.at(peek().getType());
         advance();
@@ -1925,6 +1928,7 @@ VnlcRangeExpressionParsingResult VnlcParser::parseRangeExpression() {
                 VnlcTokenType::SELECTOR_PREFIX,
             };
 
+            skipNewlines();
             if (rangeEndExpressionStarters.contains(peek().getType())) {
                 auto endResult = parseBitwiseOrExpression();
                 VnlcToken lastToken = peek();
@@ -2021,6 +2025,7 @@ VnlcShiftExpressionParsingResult VnlcParser::parseShiftExpression() {
     auto leftResult = parseAdditiveExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
 
+    skipNewlines();
     while (shiftOperators.contains(peek().getType())) {
         VnlcBinaryExpressionType operatorType = shiftOperators.at(peek().getType());
         advance();
@@ -2047,6 +2052,7 @@ VnlcAdditiveExpressionParsingResult VnlcParser::parseAdditiveExpression() {
     auto leftResult = parseMultiplicativeExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
 
+    skipNewlines();
     while (additiveOperators.contains(peek().getType())) {
         VnlcBinaryExpressionType operatorType = additiveOperators.at(peek().getType());
         advance();
@@ -2075,6 +2081,7 @@ VnlcMultiplicativeExpressionParsingResult VnlcParser::parseMultiplicativeExpress
     auto leftResult = parseUnaryExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
 
+    skipNewlines();
     while (multiplicativeOperators.contains(peek().getType())) {
         VnlcBinaryExpressionType operatorType = multiplicativeOperators.at(peek().getType());
         advance();
@@ -2099,7 +2106,8 @@ VnlcUnaryExpressionParsingResult VnlcParser::parseUnaryExpression() {
     };
 
     VnlcToken firstToken = peek();
-
+    
+    skipNewlines();
     if (unaryOperators.contains(peek().getType())) {
         VnlcUnaryExpressionType operatorType = unaryOperators.at(peek().getType());
         advance();
@@ -2153,7 +2161,12 @@ VnlcPostfixExpressionParsingResult VnlcParser::parsePostfixExpression() {
         VnlcTokenType::LEFT_BRACKET,
     };
 
-    while (postfixOperators.contains(peek().getType())) {
+    while (true) {
+        skipNewlines();
+        if (!postfixOperators.contains(peek().getType())) {
+            break;
+        }
+
         if (match(VnlcTokenType::DOT)) {
             VnlcToken identifierFirstToken = peek();
 
@@ -2228,6 +2241,7 @@ VnlcPrimaryExpressionParsingResult VnlcParser::parsePrimaryExpression() {
 
     VnlcToken firstToken = peek();
 
+    skipNewlines();
     if (match(VnlcTokenType::LEFT_PARENTHESIS)) {
         auto expressionResult = parseExpression();
 
