@@ -10,6 +10,7 @@
 #include "inherited/VnlcParsingContexts.hpp"
 #include "synthesized/VnlcParsingResults.hpp"
 #include <memory>
+#include <unordered_set>
 #include <vector>
 
 class VnlcParser {
@@ -30,8 +31,10 @@ private:
 
     [[nodiscard]] bool check(VnlcTokenType expectedType);
     [[nodiscard]] bool checkGeneralizedIdentifier();
+    [[nodiscard]] bool checkAny(const std::unordered_set<VnlcTokenType>& expectedTypes);
     [[nodiscard]] bool match(VnlcTokenType expectedType);
     [[nodiscard]] bool matchSeparatorEndOfLine();
+    [[nodiscard]] bool matchAny(const std::unordered_set<VnlcTokenType>& expectedTypes);
 
     [[nodiscard]] VnlcModuleParsingResult parseModule(VnlcModuleParsingContext context);
     [[nodiscard]] VnlcTopIdentifierDeclarationParsingResult parseTopIdentifierDeclaration();

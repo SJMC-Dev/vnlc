@@ -109,6 +109,11 @@ bool VnlcParser::checkGeneralizedIdentifier() {
     return false;
 }
 
+bool VnlcParser::checkAny(const std::unordered_set<VnlcTokenType>& expectedTypes) {
+    skipNewlines();
+    return hasNextToken() && expectedTypes.contains(peek().getType());
+}
+
 bool VnlcParser::match(VnlcTokenType expectedType) {
     if (check(expectedType)) {
         advance();
@@ -122,6 +127,14 @@ bool VnlcParser::matchSeparatorEndOfLine() {
         skipNewlines();
         return true;
     } else if (hasNextToken() && peek().getType() == VnlcTokenType::END_OF_FILE) {
+        return true;
+    }
+    return false;
+}
+
+bool VnlcParser::matchAny(const std::unordered_set<VnlcTokenType>& expectedTypes) {
+    if (checkAny(expectedTypes)) {
+        advance();
         return true;
     }
     return false;
@@ -1714,7 +1727,25 @@ VnlcExpressionParsingResult VnlcParser::parseExpression() {
 }
 
 VnlcAssignmentExpressionParsingResult VnlcParser::parseAssignmentExpression() {
-    static const std::unordered_map<VnlcTokenType, VnlcBinaryExpressionType> assignmentOperators = {
+    static const std::unordered_set<VnlcTokenType> assignmentOperators = {
+        VnlcTokenType::EQUAL,
+        VnlcTokenType::DOUBLE_QUESTION_EQUAL,
+        VnlcTokenType::PLUS_EQUAL,
+        VnlcTokenType::MINUS_EQUAL,
+        VnlcTokenType::ASTERISK_EQUAL,
+        VnlcTokenType::SLASH_EQUAL,
+        VnlcTokenType::DOUBLE_SLASH_EQUAL,
+        VnlcTokenType::PERCENT_EQUAL,
+        VnlcTokenType::DOUBLE_ASTERISK_EQUAL,
+        VnlcTokenType::AMPERSAND_EQUAL,
+        VnlcTokenType::CARET_EQUAL,
+        VnlcTokenType::PIPE_EQUAL,
+        VnlcTokenType::DOUBLE_LEFT_ANGLE,
+        VnlcTokenType::DOUBLE_RIGHT_ANGLE,
+        VnlcTokenType::TRIPLE_RIGHT_ANGLE,
+    };
+
+    static const std::unordered_map<VnlcTokenType, VnlcBinaryExpressionType> assignmentExpressionTypes = {
         { VnlcTokenType::EQUAL, VnlcBinaryExpressionType::ASSIGNMENT },
         { VnlcTokenType::DOUBLE_QUESTION_EQUAL, VnlcBinaryExpressionType::NULLISH_COALESCING_ASSIGNMENT },
         { VnlcTokenType::PLUS_EQUAL, VnlcBinaryExpressionType::ADDITION_ASSIGNMENT },
@@ -1736,9 +1767,8 @@ VnlcAssignmentExpressionParsingResult VnlcParser::parseAssignmentExpression() {
 
     auto leftResult = parseConditionalExpression();
 
-    skipNewlines();
-    if (assignmentOperators.contains(peek().getType())) {
-        VnlcBinaryExpressionType operatorType = assignmentOperators.at(peek().getType());
+    if (checkAny(assignmentOperators)) {
+        VnlcBinaryExpressionType operatorType = assignmentExpressionTypes.at(peek().getType());
         advance();
         auto rightResult = parseAssignmentExpression();
 
@@ -1840,7 +1870,12 @@ VnlcLogicalAndExpressionParsingResult VnlcParser::parseLogicalAndExpression() {
 }
 
 VnlcEqualityExpressionParsingResult VnlcParser::parseEqualityExpression() {
-    static const std::unordered_map<VnlcTokenType, VnlcBinaryExpressionType> equalityOperators = {
+    static const std::unordered_set<VnlcTokenType> equalityOperators = {
+        VnlcTokenType::DOUBLE_EQUAL,
+        VnlcTokenType::EXCLAMATION_EQUAL,
+    };
+
+    static const std::unordered_map<VnlcTokenType, VnlcBinaryExpressionType> equalityExpressionTypes = {
         { VnlcTokenType::DOUBLE_EQUAL, VnlcBinaryExpressionType::EQUAL },
         { VnlcTokenType::EXCLAMATION_EQUAL, VnlcBinaryExpressionType::NOT_EQUAL },
     };
@@ -1850,9 +1885,8 @@ VnlcEqualityExpressionParsingResult VnlcParser::parseEqualityExpression() {
     auto leftResult = parseRelationalExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
 
-    skipNewlines();
-    while (equalityOperators.contains(peek().getType())) {
-        VnlcBinaryExpressionType operatorType = equalityOperators.at(peek().getType());
+    while (checkAny(equalityOperators)) {
+        VnlcBinaryExpressionType operatorType = equalityExpressionTypes.at(peek().getType());
         advance();
         auto rightResult = parseRelationalExpression();
 
@@ -1867,7 +1901,14 @@ VnlcEqualityExpressionParsingResult VnlcParser::parseEqualityExpression() {
 }
 
 VnlcRelationalExpressionParsingResult VnlcParser::parseRelationalExpression() {
-    static const std::unordered_map<VnlcTokenType, VnlcBinaryExpressionType> relationalOperators = {
+    static const std::unordered_set<VnlcTokenType> relationalOperators = {
+        VnlcTokenType::LEFT_ANGLE,
+        VnlcTokenType::LEFT_ANGLE_EQUAL,
+        VnlcTokenType::RIGHT_ANGLE,
+        VnlcTokenType::RIGHT_ANGLE_EQUAL,
+    };
+
+    static const std::unordered_map<VnlcTokenType, VnlcBinaryExpressionType> relationalExpressionTypes = {
         { VnlcTokenType::LEFT_ANGLE, VnlcBinaryExpressionType::LESS_THAN },
         { VnlcTokenType::LEFT_ANGLE_EQUAL, VnlcBinaryExpressionType::LESS_THAN_OR_EQUAL },
         { VnlcTokenType::RIGHT_ANGLE, VnlcBinaryExpressionType::GREATER_THAN },
@@ -1879,9 +1920,8 @@ VnlcRelationalExpressionParsingResult VnlcParser::parseRelationalExpression() {
     auto leftResult = parseRangeExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
 
-    skipNewlines();
-    while (relationalOperators.contains(peek().getType())) {
-        VnlcBinaryExpressionType operatorType = relationalOperators.at(peek().getType());
+    while (checkAny(relationalOperators)) {
+        VnlcBinaryExpressionType operatorType = relationalExpressionTypes.at(peek().getType());
         advance();
         auto rightResult = parseRangeExpression();
 
@@ -1928,8 +1968,7 @@ VnlcRangeExpressionParsingResult VnlcParser::parseRangeExpression() {
                 VnlcTokenType::SELECTOR_PREFIX,
             };
 
-            skipNewlines();
-            if (rangeEndExpressionStarters.contains(peek().getType())) {
+            if (checkAny(rangeEndExpressionStarters)) {
                 auto endResult = parseBitwiseOrExpression();
                 VnlcToken lastToken = peek();
 
@@ -2014,7 +2053,13 @@ VnlcBitwiseAndExpressionParsingResult VnlcParser::parseBitwiseAndExpression() {
 }
 
 VnlcShiftExpressionParsingResult VnlcParser::parseShiftExpression() {
-    static const std::unordered_map<VnlcTokenType, VnlcBinaryExpressionType> shiftOperators = {
+    static const std::unordered_set<VnlcTokenType> shiftOperators = {
+        VnlcTokenType::DOUBLE_LEFT_ANGLE,
+        VnlcTokenType::DOUBLE_RIGHT_ANGLE,
+        VnlcTokenType::TRIPLE_RIGHT_ANGLE,
+    };
+
+    static const std::unordered_map<VnlcTokenType, VnlcBinaryExpressionType> shiftExpressionTypes = {
         { VnlcTokenType::DOUBLE_LEFT_ANGLE, VnlcBinaryExpressionType::SHIFT_LEFT },
         { VnlcTokenType::DOUBLE_RIGHT_ANGLE, VnlcBinaryExpressionType::SHIFT_RIGHT },
         { VnlcTokenType::TRIPLE_RIGHT_ANGLE, VnlcBinaryExpressionType::SHIFT_RIGHT_UNSIGNED },
@@ -2025,9 +2070,8 @@ VnlcShiftExpressionParsingResult VnlcParser::parseShiftExpression() {
     auto leftResult = parseAdditiveExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
 
-    skipNewlines();
-    while (shiftOperators.contains(peek().getType())) {
-        VnlcBinaryExpressionType operatorType = shiftOperators.at(peek().getType());
+    while (checkAny(shiftOperators)) {
+        VnlcBinaryExpressionType operatorType = shiftExpressionTypes.at(peek().getType());
         advance();
         auto rightResult = parseAdditiveExpression();
 
@@ -2042,7 +2086,12 @@ VnlcShiftExpressionParsingResult VnlcParser::parseShiftExpression() {
 }
 
 VnlcAdditiveExpressionParsingResult VnlcParser::parseAdditiveExpression() {
-    static const std::unordered_map<VnlcTokenType, VnlcBinaryExpressionType> additiveOperators = {
+    static const std::unordered_set<VnlcTokenType> additiveOperators = {
+        VnlcTokenType::PLUS,
+        VnlcTokenType::MINUS,
+    };
+
+    static const std::unordered_map<VnlcTokenType, VnlcBinaryExpressionType> additiveExpressionTypes = {
         { VnlcTokenType::PLUS, VnlcBinaryExpressionType::ADDITION },
         { VnlcTokenType::MINUS, VnlcBinaryExpressionType::SUBTRACTION },
     };
@@ -2052,9 +2101,8 @@ VnlcAdditiveExpressionParsingResult VnlcParser::parseAdditiveExpression() {
     auto leftResult = parseMultiplicativeExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
 
-    skipNewlines();
-    while (additiveOperators.contains(peek().getType())) {
-        VnlcBinaryExpressionType operatorType = additiveOperators.at(peek().getType());
+    while (checkAny(additiveOperators)) {
+        VnlcBinaryExpressionType operatorType = additiveExpressionTypes.at(peek().getType());
         advance();
         auto rightResult = parseMultiplicativeExpression();
 
@@ -2069,7 +2117,14 @@ VnlcAdditiveExpressionParsingResult VnlcParser::parseAdditiveExpression() {
 }
 
 VnlcMultiplicativeExpressionParsingResult VnlcParser::parseMultiplicativeExpression() {
-    static const std::unordered_map<VnlcTokenType, VnlcBinaryExpressionType> multiplicativeOperators = {
+    static const std::unordered_set<VnlcTokenType> multiplicativeOperators = {
+        VnlcTokenType::ASTERISK,
+        VnlcTokenType::SLASH,
+        VnlcTokenType::DOUBLE_SLASH,
+        VnlcTokenType::PERCENT,
+    };
+
+    static const std::unordered_map<VnlcTokenType, VnlcBinaryExpressionType> multiplicativeExpressionTypes = {
         { VnlcTokenType::ASTERISK, VnlcBinaryExpressionType::MULTIPLICATION },
         { VnlcTokenType::SLASH, VnlcBinaryExpressionType::DIVISION },
         { VnlcTokenType::DOUBLE_SLASH, VnlcBinaryExpressionType::INTEGER_DIVISION },
@@ -2081,9 +2136,8 @@ VnlcMultiplicativeExpressionParsingResult VnlcParser::parseMultiplicativeExpress
     auto leftResult = parseUnaryExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
 
-    skipNewlines();
-    while (multiplicativeOperators.contains(peek().getType())) {
-        VnlcBinaryExpressionType operatorType = multiplicativeOperators.at(peek().getType());
+    while (checkAny(multiplicativeOperators)) {
+        VnlcBinaryExpressionType operatorType = multiplicativeExpressionTypes.at(peek().getType());
         advance();
         auto rightResult = parseUnaryExpression();
 
@@ -2098,7 +2152,14 @@ VnlcMultiplicativeExpressionParsingResult VnlcParser::parseMultiplicativeExpress
 }
 
 VnlcUnaryExpressionParsingResult VnlcParser::parseUnaryExpression() {
-    static const std::unordered_map<VnlcTokenType, VnlcUnaryExpressionType> unaryOperators = {
+    static const std::unordered_set<VnlcTokenType> unaryOperators = {
+        VnlcTokenType::PLUS,
+        VnlcTokenType::MINUS,
+        VnlcTokenType::TILDE,
+        VnlcTokenType::EXCLAMATION,
+    };
+
+    static const std::unordered_map<VnlcTokenType, VnlcUnaryExpressionType> unaryExpressionTypes = {
         { VnlcTokenType::PLUS, VnlcUnaryExpressionType::UNARY_PLUS },
         { VnlcTokenType::MINUS, VnlcUnaryExpressionType::UNARY_MINUS },
         { VnlcTokenType::TILDE, VnlcUnaryExpressionType::BITWISE_NOT },
@@ -2106,10 +2167,9 @@ VnlcUnaryExpressionParsingResult VnlcParser::parseUnaryExpression() {
     };
 
     VnlcToken firstToken = peek();
-    
-    skipNewlines();
-    if (unaryOperators.contains(peek().getType())) {
-        VnlcUnaryExpressionType operatorType = unaryOperators.at(peek().getType());
+
+    if (checkAny(unaryOperators)) {
+        VnlcUnaryExpressionType operatorType = unaryExpressionTypes.at(peek().getType());
         advance();
         auto operandResult = parseExponentialExpression();
 
@@ -2161,12 +2221,7 @@ VnlcPostfixExpressionParsingResult VnlcParser::parsePostfixExpression() {
         VnlcTokenType::LEFT_BRACKET,
     };
 
-    while (true) {
-        skipNewlines();
-        if (!postfixOperators.contains(peek().getType())) {
-            break;
-        }
-
+    while (checkAny(postfixOperators)) {
         if (match(VnlcTokenType::DOT)) {
             VnlcToken identifierFirstToken = peek();
 
@@ -2241,7 +2296,6 @@ VnlcPrimaryExpressionParsingResult VnlcParser::parsePrimaryExpression() {
 
     VnlcToken firstToken = peek();
 
-    skipNewlines();
     if (match(VnlcTokenType::LEFT_PARENTHESIS)) {
         auto expressionResult = parseExpression();
 
@@ -2276,7 +2330,7 @@ VnlcPrimaryExpressionParsingResult VnlcParser::parsePrimaryExpression() {
         return VnlcPrimaryExpressionParsingResult{
             .expression = std::make_unique<VnlcIdentifierExpressionNode>(std::move(name), firstToken, lastToken),
         };
-    } else if (literalStarters.contains(peek().getType())) {
+    } else if (checkAny(literalStarters)) {
         auto literalResult = parseLiteral();
 
         return VnlcPrimaryExpressionParsingResult{
