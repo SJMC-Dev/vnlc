@@ -140,6 +140,24 @@ bool VnlcParser::matchAny(const std::unordered_set<VnlcTokenType>& expectedTypes
     return false;
 }
 
+bool VnlcParser::consumeRightAngleInType() {
+    if (match(VnlcTokenType::RIGHT_ANGLE)) {
+        return true;
+    }
+
+    if (check(VnlcTokenType::DOUBLE_RIGHT_ANGLE)) {
+        tokenBuffer[currentTokenIndex] = VnlcToken(VnlcTokenType::RIGHT_ANGLE, ">", peek().getLine(), peek().getColumn() + 1, peek().getOffset() + 1);
+        return true;
+    }
+
+    if (check(VnlcTokenType::TRIPLE_RIGHT_ANGLE)) {
+        tokenBuffer[currentTokenIndex] = VnlcToken(VnlcTokenType::DOUBLE_RIGHT_ANGLE, ">>", peek().getLine(), peek().getColumn() + 1, peek().getOffset() + 1);
+        return true;
+    }
+
+    return false;
+}
+
 std::unique_ptr<VnlcModuleNode> VnlcParser::parse(const VnlcConfig& config) {
     VnlcModuleParsingContext context(config);
     auto result = parseModule(context);
@@ -1310,6 +1328,10 @@ VnlcTypeParsingResult VnlcParser::parseType() {
     if (match(VnlcTokenType::LEFT_ANGLE)) {
         auto genericArgumentListResult = parseGenericArgumentList();
         genericArguments = std::move(genericArgumentListResult.arguments);
+
+        if (!consumeRightAngleInType()) {
+            throw VnlcSyntaxError("Expected '>' after generic argument list in type", peek().getLine(), peek().getColumn());
+        }
     }
 
     if (match(VnlcTokenType::QUESTION)) {

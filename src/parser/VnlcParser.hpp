@@ -35,6 +35,7 @@ private:
     [[nodiscard]] bool match(VnlcTokenType expectedType);
     [[nodiscard]] bool matchSeparatorEndOfLine();
     [[nodiscard]] bool matchAny(const std::unordered_set<VnlcTokenType>& expectedTypes);
+    [[nodiscard]] bool consumeRightAngleInType();
 
     [[nodiscard]] VnlcModuleParsingResult parseModule(VnlcModuleParsingContext context);
     [[nodiscard]] VnlcTopIdentifierDeclarationParsingResult parseTopIdentifierDeclaration();
