@@ -105,7 +105,6 @@ private:
     [[nodiscard]] VnlcSelectorParsingResult parseSelector();
     [[nodiscard]] VnlcArgumentListParsingResult parseArgumentList();
     [[nodiscard]] VnlcInterpolationParsingResult parseInterpolation();
-    [[nodiscard]] VnlcStringPartParsingResult parseStringPart();
     [[nodiscard]] VnlcDictEntryParsingResult parseDictEntry();
     [[nodiscard]] VnlcSelectorArgumentListParsingResult parseSelectorArgumentList();
     [[nodiscard]] VnlcSelectorArgumentParsingResult parseSelectorArgument();

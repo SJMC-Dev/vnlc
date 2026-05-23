@@ -76,7 +76,6 @@
 #include "VnlcShiftExpressionParsingResult.hpp"              // IWYU pragma: export
 #include "VnlcStatementParsingResult.hpp"                    // IWYU pragma: export
 #include "VnlcStringParsingResult.hpp"                       // IWYU pragma: export
-#include "VnlcStringPartParsingResult.hpp"                   // IWYU pragma: export
 #include "VnlcSwitchCaseParsingResult.hpp"                   // IWYU pragma: export
 #include "VnlcSwitchStatementParsingResult.hpp"              // IWYU pragma: export
 #include "VnlcTopIdentifierDeclarationParsingResult.hpp"     // IWYU pragma: export
