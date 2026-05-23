@@ -5,11 +5,18 @@
 #include "../ast/expression/VnlcBinaryExpressionNode.hpp"
 #include "../ast/expression/VnlcBinaryExpressionType.hpp"
 #include "../ast/expression/VnlcConditionalExpressionNode.hpp"
+#include "../ast/expression/VnlcDictLiteralExpressionNode.hpp"
 #include "../ast/expression/VnlcFunctionCallExpressionNode.hpp"
+#include "../ast/expression/VnlcListLikeLiteralExpressionNode.hpp"
+#include "../ast/expression/VnlcListLikeLiteralExpressionType.hpp"
 #include "../ast/expression/VnlcMemberAccessExpressionNode.hpp"
 #include "../ast/expression/VnlcMemberAccessExpressionType.hpp"
 #include "../ast/expression/VnlcRangeExpressionNode.hpp"
+#include "../ast/expression/VnlcSelectorLiteralExpressionNode.hpp"
+#include "../ast/expression/VnlcSelectorLiteralExpressionType.hpp"
 #include "../ast/expression/VnlcSimpleLiteralExpressionNode.hpp"
+#include "../ast/expression/VnlcStringLiteralExpressionNode.hpp"
+#include "../ast/expression/VnlcStringLiteralExpressionType.hpp"
 #include "../ast/expression/VnlcSubscriptExpressionNode.hpp"
 #include "../ast/expression/VnlcSuperExpressionNode.hpp"
 #include "../ast/expression/VnlcThisExpressionNode.hpp"
@@ -2438,4 +2445,298 @@ VnlcLiteralParsingResult VnlcParser::parseLiteral() {
     } else {
         throw VnlcSyntaxError("Expected literal", peek().getLine(), peek().getColumn());
     }
+}
+
+VnlcStringParsingResult VnlcParser::parseString() {
+    VnlcToken firstToken = peek();
+    std::vector<std::variant<std::string, std::unique_ptr<VnlcExpressionNode>>> parts;
+
+    if (!check(VnlcTokenType::STRING)) {
+        throw VnlcSyntaxError("Expected string literal", peek().getLine(), peek().getColumn());
+    }
+
+    if (peek().getValue().starts_with("\"")) {
+        std::string value(peek().getValue().substr(1, peek().getValue().length() - 2));
+        parts.emplace_back(std::move(value));
+        advance();
+
+        VnlcToken lastToken = peek();
+
+        return VnlcStringParsingResult{
+            .expression = std::make_unique<VnlcStringLiteralExpressionNode>(VnlcStringLiteralExpressionType::STRING, std::move(parts), firstToken, lastToken),
+        };
+    } else if (peek().getValue().starts_with("f\"")) {
+        std::string value(peek().getValue().substr(2));
+        if (value.ends_with('\"') && !value.ends_with("\\\"")) {
+            value.pop_back();
+        }
+        parts.emplace_back(std::move(value));
+        advance();
+
+        while (check(VnlcTokenType::INTERPOLATION_START) || check(VnlcTokenType::STRING)) {
+            if (check(VnlcTokenType::STRING)) {
+                std::string value(peek().getValue());
+                if (value.ends_with('\"') && !value.ends_with("\\\"")) {
+                    value.pop_back();
+                }
+                parts.emplace_back(std::move(value));
+                advance();
+            } else if (check(VnlcTokenType::INTERPOLATION_START)) {
+                auto interpolationResult = parseInterpolation();
+                parts.emplace_back(std::move(interpolationResult.expression));
+            } else {
+                throw VnlcSyntaxError("Expected string literal or interpolation in formatted string", peek().getLine(), peek().getColumn());
+            }
+        }
+
+        VnlcToken lastToken = peek();
+
+        return VnlcStringParsingResult{
+            .expression = std::make_unique<VnlcStringLiteralExpressionNode>(VnlcStringLiteralExpressionType::FORMAT_STRING, std::move(parts), firstToken, lastToken),
+        };
+
+    } else if (peek().getValue().starts_with("r\"")) {
+        std::string value(peek().getValue().substr(2, peek().getValue().length() - 3)); // Remove the r" prefix and the surrounding quotes
+        parts.emplace_back(std::move(value));
+        advance();
+
+        VnlcToken lastToken = peek();
+
+        return VnlcStringParsingResult{
+            .expression = std::make_unique<VnlcStringLiteralExpressionNode>(VnlcStringLiteralExpressionType::RAW_STRING, std::move(parts), firstToken, lastToken),
+        };
+    } else {
+        throw VnlcSyntaxError("Invalid string literal", peek().getLine(), peek().getColumn());
+    }
+}
+
+VnlcBooleanParsingResult VnlcParser::parseBoolean() {
+    VnlcToken firstToken = peek();
+
+    if (match(VnlcTokenType::TRUE) || match(VnlcTokenType::FALSE)) {
+        bool value = firstToken.getType() == VnlcTokenType::TRUE;
+
+        VnlcToken lastToken = peek();
+
+        return VnlcBooleanParsingResult{
+            .expression = std::make_unique<VnlcSimpleLiteralExpressionNode>(VnlcSimpleLiteralExpressionType::BOOLEAN, value ? "true" : "false", firstToken, lastToken),
+        };
+    } else {
+        throw VnlcSyntaxError("Expected boolean literal", peek().getLine(), peek().getColumn());
+    }
+}
+
+VnlcListLikeLiteralParsingResult VnlcParser::parseListLikeLiteral() {
+    VnlcToken firstToken = peek();
+
+    VnlcListLikeLiteralExpressionType literalType = VnlcListLikeLiteralExpressionType::LIST;
+
+    if (!match(VnlcTokenType::LEFT_BRACKET)) {
+        throw VnlcSyntaxError("Expected '[' to start list literal", peek().getLine(), peek().getColumn());
+    }
+
+    std::vector<std::unique_ptr<VnlcExpressionNode>> elements;
+
+    if (check(VnlcTokenType::IDENTIFIER)) {
+        std::string name(peek().getValue());
+        advance();
+
+        if ((name == "B" || name == "I" || name == "L")) {
+            if (!match(VnlcTokenType::SEMICOLON)) {
+                elements.push_back(std::make_unique<VnlcIdentifierExpressionNode>(std::move(name), firstToken, peek()));
+                bool _ = match(VnlcTokenType::COMMA);
+            } else {
+                if (name == "B") {
+                    literalType = VnlcListLikeLiteralExpressionType::BYTE_SNBT_ARRAY;
+                } else if (name == "I") {
+                    literalType = VnlcListLikeLiteralExpressionType::INT_SNBT_ARRAY;
+                } else if (name == "L") {
+                    literalType = VnlcListLikeLiteralExpressionType::LONG_SNBT_ARRAY;
+                }
+            }
+        } else {
+            elements.push_back(std::make_unique<VnlcIdentifierExpressionNode>(std::move(name), firstToken, peek()));
+            bool _ = match(VnlcTokenType::COMMA);
+        }
+    }
+
+    if (!check(VnlcTokenType::RIGHT_BRACKET)) {
+        do {
+            auto expressionResult = parseExpression();
+            elements.push_back(std::move(expressionResult.expression));
+        } while (match(VnlcTokenType::COMMA));
+    }
+
+    if (!match(VnlcTokenType::RIGHT_BRACKET)) {
+        throw VnlcSyntaxError("Expected ']' to end list literal", peek().getLine(), peek().getColumn());
+    }
+
+    VnlcToken lastToken = peek();
+
+    return VnlcListLikeLiteralParsingResult{
+        .expression = std::make_unique<VnlcListLikeLiteralExpressionNode>(literalType, std::move(elements), firstToken, lastToken),
+    };
+}
+
+VnlcDictLiteralParsingResult VnlcParser::parseDictLiteral() {
+    VnlcToken firstToken = peek();
+
+    if (!match(VnlcTokenType::LEFT_BRACE)) {
+        throw VnlcSyntaxError("Expected '{' to start dict literal", peek().getLine(), peek().getColumn());
+    }
+
+    std::unordered_map<std::string, std::unique_ptr<VnlcExpressionNode>> entries;
+
+    if (!check(VnlcTokenType::RIGHT_BRACE)) {
+        do {
+            auto entryResult = parseDictEntry();
+            entries.emplace(std::move(entryResult.key), std::move(entryResult.value));
+        } while (match(VnlcTokenType::COMMA));
+    }
+
+    if (!match(VnlcTokenType::RIGHT_BRACE)) {
+        throw VnlcSyntaxError("Expected '}' to end dict literal", peek().getLine(), peek().getColumn());
+    }
+
+    VnlcToken lastToken = peek();
+
+    return VnlcDictLiteralParsingResult{
+        .expression = std::make_unique<VnlcDictLiteralExpressionNode>(std::move(entries), firstToken, lastToken),
+    };
+}
+
+VnlcSelectorParsingResult VnlcParser::parseSelector() {
+    VnlcToken firstToken = peek();
+
+    VnlcSelectorLiteralExpressionType literalType = VnlcSelectorLiteralExpressionType::NEAREST_PLAYER;
+    std::unordered_map<std::string, std::unique_ptr<VnlcExpressionNode>> arguments;
+
+    if (!check(VnlcTokenType::SELECTOR_PREFIX)) {
+        throw VnlcSyntaxError("Expected '@' to start selector", peek().getLine(), peek().getColumn());
+    }
+
+    if (peek().getValue() == "@p") {
+        literalType = VnlcSelectorLiteralExpressionType::NEAREST_PLAYER;
+    } else if (peek().getValue() == "@r") {
+        literalType = VnlcSelectorLiteralExpressionType::RANDOM_PLAYER;
+    } else if (peek().getValue() == "@a") {
+        literalType = VnlcSelectorLiteralExpressionType::ALL_PLAYERS;
+    } else if (peek().getValue() == "@e") {
+        literalType = VnlcSelectorLiteralExpressionType::ALL_ENTITIES;
+    } else if (peek().getValue() == "@s") {
+        literalType = VnlcSelectorLiteralExpressionType::CURRENT_EXECUTOR;
+    } else if (peek().getValue() == "@n") {
+        literalType = VnlcSelectorLiteralExpressionType::NEAREST_ENTITY;
+    } else {
+        throw VnlcSyntaxError("Invalid selector type", peek().getLine(), peek().getColumn());
+    }
+
+    if (match(VnlcTokenType::LEFT_BRACKET)) {
+        if (!check(VnlcTokenType::RIGHT_BRACKET)) {
+            auto argumentListResult = parseSelectorArgumentList();
+            arguments = std::move(argumentListResult.arguments);
+        }
+
+        if (!match(VnlcTokenType::RIGHT_BRACKET)) {
+            throw VnlcSyntaxError("Expected ']' to end selector arguments", peek().getLine(), peek().getColumn());
+        }
+    }
+
+    VnlcToken lastToken = peek();
+
+    return VnlcSelectorParsingResult{
+        .expression = std::make_unique<VnlcSelectorLiteralExpressionNode>(literalType, std::move(arguments), firstToken, lastToken),
+    };
+}
+
+VnlcArgumentListParsingResult VnlcParser::parseArgumentList() {
+    std::vector<std::unique_ptr<VnlcExpressionNode>> arguments;
+
+    do {
+        auto expressionResult = parseExpression();
+        arguments.push_back(std::move(expressionResult.expression));
+    } while (match(VnlcTokenType::COMMA));
+
+    return VnlcArgumentListParsingResult{
+        .arguments = std::move(arguments),
+    };
+}
+
+VnlcInterpolationParsingResult VnlcParser::parseInterpolation() {
+    if (!match(VnlcTokenType::INTERPOLATION_START)) {
+        throw VnlcSyntaxError("Expected '$(' to start interpolation", peek().getLine(), peek().getColumn());
+    }
+
+    auto expressionResult = parseExpression();
+
+    if (!match(VnlcTokenType::RIGHT_PARENTHESIS)) {
+        throw VnlcSyntaxError("Expected ')' to end interpolation", peek().getLine(), peek().getColumn());
+    }
+
+    return VnlcInterpolationParsingResult{
+        .expression = std::move(expressionResult.expression),
+    };
+}
+
+VnlcDictEntryParsingResult VnlcParser::parseDictEntry() {
+    std::string key;
+    if (check(VnlcTokenType::STRING)) {
+        if (!peek().getValue().starts_with("\"")) {
+            throw VnlcSyntaxError("Expected simple string literal for dict key", peek().getLine(), peek().getColumn());
+        }
+
+        key = peek().getValue().substr(1, peek().getValue().length() - 2); // Remove the surrounding quotes
+        advance();
+    } else if (checkGeneralizedIdentifier()) {
+        key = peek().getValue();
+        advance();
+    } else {
+        throw VnlcSyntaxError("Expected string literal or identifier for dict key", peek().getLine(), peek().getColumn());
+    }
+
+    if (!match(VnlcTokenType::COLON)) {
+        throw VnlcSyntaxError("Expected ':' after dict key", peek().getLine(), peek().getColumn());
+    }
+
+    auto valueResult = parseExpression();
+
+    return VnlcDictEntryParsingResult{
+        .key = std::move(key),
+        .value = std::move(valueResult.expression),
+    };
+}
+
+VnlcSelectorArgumentListParsingResult VnlcParser::parseSelectorArgumentList() {
+    std::unordered_map<std::string, std::unique_ptr<VnlcExpressionNode>> arguments;
+
+    do {
+        auto argumentResult = parseSelectorArgument();
+        arguments.emplace(std::move(argumentResult.key), std::move(argumentResult.value));
+    } while (match(VnlcTokenType::COMMA));
+
+    return VnlcSelectorArgumentListParsingResult{
+        .arguments = std::move(arguments),
+    };
+}
+
+VnlcSelectorArgumentParsingResult VnlcParser::parseSelectorArgument() {
+    std::string key;
+    
+    if (!checkGeneralizedIdentifier()) {
+        throw VnlcSyntaxError("Expected identifier for selector argument key", peek().getLine(), peek().getColumn());
+    } else {
+        key = peek().getValue();
+        advance();
+    }
+
+    if (!match(VnlcTokenType::EQUAL)) {
+        throw VnlcSyntaxError("Expected '=' after selector argument key", peek().getLine(), peek().getColumn());
+    }
+
+    auto valueResult = parseExpression();
+
+    return VnlcSelectorArgumentParsingResult{
+        .key = std::move(key),
+        .value = std::move(valueResult.expression),
+    };
 }
