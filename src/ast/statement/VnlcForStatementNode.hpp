@@ -5,6 +5,7 @@
 
 #include "../declaration/VnlcVariableDeclarationType.hpp"
 #include "../expression/VnlcExpressionNode.hpp"
+#include "../other/VnlcTypeAnnotationNode.hpp"
 #include "VnlcLoopStatementNode.hpp"
 #include <memory>
 
@@ -14,6 +15,7 @@ private:
 
     VnlcVariableDeclarationType loopVariableKind;
     std::string loopVariableName;
+    std::optional<std::unique_ptr<VnlcTypeAnnotationNode>> loopVariableTypeAnnotation;
     std::unique_ptr<VnlcExpressionNode> iterableExpression;
     std::unique_ptr<VnlcStatementNode> body;
 
@@ -21,6 +23,7 @@ public:
     VnlcForStatementNode(
         VnlcVariableDeclarationType loopVariableKind,
         std::string&& loopVariableName,
+        std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& loopVariableTypeAnnotation,
         std::unique_ptr<VnlcExpressionNode>&& iterableExpression,
         std::unique_ptr<VnlcStatementNode>&& body,
         const VnlcToken& firstToken,
@@ -31,6 +34,7 @@ public:
         std::string&& label,
         VnlcVariableDeclarationType loopVariableKind,
         std::string&& loopVariableName,
+        std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& loopVariableTypeAnnotation,
         std::unique_ptr<VnlcExpressionNode>&& iterableExpression,
         std::unique_ptr<VnlcStatementNode>&& body,
         const VnlcToken& firstToken,

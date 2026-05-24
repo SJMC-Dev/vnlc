@@ -3,6 +3,7 @@
 VnlcForStatementNode::VnlcForStatementNode(
     VnlcVariableDeclarationType loopVariableKind,
     std::string&& loopVariableName,
+    std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& loopVariableTypeAnnotation,
     std::unique_ptr<VnlcExpressionNode>&& iterableExpression,
     std::unique_ptr<VnlcStatementNode>&& body,
     const VnlcToken& firstToken,
@@ -11,6 +12,7 @@ VnlcForStatementNode::VnlcForStatementNode(
     : VnlcLoopStatementNode(std::nullopt, firstToken, lastToken),
       loopVariableKind(loopVariableKind),
       loopVariableName(std::move(loopVariableName)),
+      loopVariableTypeAnnotation(std::move(loopVariableTypeAnnotation)),
       iterableExpression(std::move(iterableExpression)),
       body(std::move(body)) {}
 
@@ -18,6 +20,7 @@ VnlcForStatementNode::VnlcForStatementNode(
     std::string&& label,
     VnlcVariableDeclarationType loopVariableKind,
     std::string&& loopVariableName,
+    std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& loopVariableTypeAnnotation,
     std::unique_ptr<VnlcExpressionNode>&& iterableExpression,
     std::unique_ptr<VnlcStatementNode>&& body,
     const VnlcToken& firstToken,
@@ -26,6 +29,7 @@ VnlcForStatementNode::VnlcForStatementNode(
     : VnlcLoopStatementNode(std::make_optional(std::move(label)), firstToken, lastToken),
       loopVariableKind(loopVariableKind),
       loopVariableName(std::move(loopVariableName)),
+      loopVariableTypeAnnotation(std::move(loopVariableTypeAnnotation)),
       iterableExpression(std::move(iterableExpression)),
       body(std::move(body)) {}
 
