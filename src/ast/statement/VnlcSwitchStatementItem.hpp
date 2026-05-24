@@ -5,10 +5,10 @@
 
 #include "../expression/VnlcExpressionNode.hpp"
 #include "../expression/VnlcLiteralExpressionNode.hpp"
+#include "../other/VnlcTypeNode.hpp"
 #include "VnlcStatementNode.hpp"
 #include <memory>
 #include <optional>
-#include <vector>
 
 namespace VnlcSwitchStatementItem {
     struct LiteralMatchItem {
@@ -17,7 +17,7 @@ namespace VnlcSwitchStatementItem {
     };
 
     struct TypeMatchItem {
-        std::vector<std::string> typeNameParts;
+        std::unique_ptr<VnlcTypeNode> type;
         std::unique_ptr<VnlcStatementNode> body;
         std::optional<std::unique_ptr<VnlcExpressionNode>> guardExpression;
     };
