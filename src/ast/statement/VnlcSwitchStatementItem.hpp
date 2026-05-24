@@ -4,7 +4,6 @@
 #define VNLC_SWITCH_STATEMENT_ITEM_HPP
 
 #include "../expression/VnlcExpressionNode.hpp"
-#include "../expression/VnlcLiteralExpressionNode.hpp"
 #include "../other/VnlcTypeNode.hpp"
 #include "VnlcStatementNode.hpp"
 #include <memory>
@@ -12,7 +11,7 @@
 
 namespace VnlcSwitchStatementItem {
     struct LiteralMatchItem {
-        std::unique_ptr<VnlcLiteralExpressionNode> literal;
+        std::unique_ptr<VnlcExpressionNode> literal;
         std::unique_ptr<VnlcStatementNode> body;
     };
 
