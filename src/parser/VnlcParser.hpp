@@ -117,8 +117,8 @@ private:
     [[nodiscard]] VnlcControlFlowStatementParsingResult parseControlFlowStatement();
     [[nodiscard]] VnlcIfStatementParsingResult parseIfStatement();
     [[nodiscard]] VnlcSwitchStatementParsingResult parseSwitchStatement();
-    [[nodiscard]] VnlcWhileStatementParsingResult parseWhileStatement();
-    [[nodiscard]] VnlcForStatementParsingResult parseForStatement();
+    [[nodiscard]] VnlcWhileStatementParsingResult parseWhileStatement(VnlcWhileStatementParsingContext context);
+    [[nodiscard]] VnlcForStatementParsingResult parseForStatement(VnlcForStatementParsingContext context);
     [[nodiscard]] VnlcReturnStatementParsingResult parseReturnStatement();
     [[nodiscard]] VnlcBreakStatementParsingResult parseBreakStatement();
     [[nodiscard]] VnlcContinueStatementParsingResult parseContinueStatement();

@@ -23,6 +23,9 @@
 #include "../ast/expression/VnlcUnaryExpressionNode.hpp"
 #include "../ast/expression/VnlcUnaryExpressionType.hpp"
 #include "../ast/module/VnlcModuleNode.hpp"
+#include "../ast/statement/VnlcSwitchStatementItem.hpp"
+#include "../ast/statement/VnlcSwitchStatementNode.hpp"
+#include "../ast/statement/VnlcSwitchStatementType.hpp"
 #include "../error/VnlcIllegalModuleOrPackageNameError.hpp"
 #include "../error/VnlcInternalError.hpp"
 #include "../error/VnlcOutOfRangeError.hpp"
@@ -2745,4 +2748,550 @@ VnlcSelectorArgumentParsingResult VnlcParser::parseSelectorArgument() {
         .key = std::move(key),
         .value = std::move(valueResult.expression),
     };
+}
+
+VnlcStatementParsingResult VnlcParser::parseStatement() {
+    static const std::unordered_set<VnlcTokenType> expressionStarters = {
+        VnlcTokenType::IDENTIFIER,  VnlcTokenType::NUMBER,           VnlcTokenType::STRING,       VnlcTokenType::CHAR,       VnlcTokenType::TRUE, VnlcTokenType::FALSE, VnlcTokenType::THIS,
+        VnlcTokenType::SUPER,       VnlcTokenType::LEFT_PARENTHESIS, VnlcTokenType::LEFT_BRACKET, VnlcTokenType::LEFT_BRACE, VnlcTokenType::PLUS, VnlcTokenType::MINUS, VnlcTokenType::TILDE,
+        VnlcTokenType::EXCLAMATION, VnlcTokenType::SELECTOR_PREFIX,
+    };
+
+    static const std::unordered_set<VnlcTokenType> variableDeclarationStarters = {
+        VnlcTokenType::VAR,
+        VnlcTokenType::LET,
+        VnlcTokenType::CONST,
+    };
+
+    static const std::unordered_set<VnlcTokenType> controlFlowStarters = {
+        VnlcTokenType::IF,     VnlcTokenType::SWITCH, VnlcTokenType::LABEL,    VnlcTokenType::WHILE,  VnlcTokenType::FOR,
+        VnlcTokenType::RETURN, VnlcTokenType::BREAK,  VnlcTokenType::CONTINUE, VnlcTokenType::RELOAD,
+    };
+
+    std::unique_ptr<VnlcStatementNode> statement;
+
+    if (checkAny(expressionStarters)) {
+        auto result = parseExpressionStatement();
+
+        statement = std::move(result.statement);
+    } else if (checkAny(variableDeclarationStarters)) {
+        auto result = parseVariableDeclarationStatement();
+
+        statement = std::move(result.statement);
+    } else if (check(VnlcTokenType::LEFT_BRACE)) {
+        auto result = parseBlockStatement();
+
+        statement = std::move(result.statement);
+    } else if (checkAny(controlFlowStarters)) {
+        auto result = parseControlFlowStatement();
+
+        statement = std::move(result.statement);
+    } else {
+        throw VnlcSyntaxError("Expected statement", peek().getLine(), peek().getColumn());
+    }
+
+    if (!matchSeparatorEndOfLine()) {
+        throw VnlcSyntaxError("Expected newline after statement", peek().getLine(), peek().getColumn());
+    }
+
+    return VnlcStatementParsingResult{
+        .statement = std::move(statement),
+    };
+}
+
+VnlcExpressionStatementParsingResult VnlcParser::parseExpressionStatement() {
+    VnlcToken firstToken = peekValid();
+
+    auto result = parseExpression();
+
+    VnlcToken lastToken = peek();
+
+    return VnlcExpressionStatementParsingResult{
+        .statement = std::make_unique<VnlcExpressionStatementNode>(std::move(result.expression), firstToken, lastToken),
+    };
+}
+
+VnlcVariableDeclarationStatementParsingResult VnlcParser::parseVariableDeclarationStatement() {
+    VnlcToken firstToken = peekValid();
+
+    VnlcVariableDeclarationParsingContext context{
+        .position = VnlcVariableDeclarationParsingContext::Position::STATEMENT,
+        .hasMetadata = false,
+        .metadataTerms = {},
+    };
+
+    auto result = parseVariableDeclaration(std::move(context));
+
+    VnlcToken lastToken = peek();
+
+    return VnlcVariableDeclarationStatementParsingResult{
+        .statement = std::make_unique<VnlcVariableDeclarationStatementNode>(std::move(result.declaration), firstToken, lastToken),
+    };
+}
+
+VnlcBlockStatementParsingResult VnlcParser::parseBlockStatement() {
+    VnlcToken firstToken = peekValid();
+
+    if (!match(VnlcTokenType::LEFT_BRACE)) {
+        throw VnlcSyntaxError("Expected '{' to start block statement", peek().getLine(), peek().getColumn());
+    }
+
+    std::vector<std::unique_ptr<VnlcStatementNode>> statements;
+
+    while (!match(VnlcTokenType::RIGHT_BRACE)) {
+        auto statementResult = parseStatement();
+        statements.push_back(std::move(statementResult.statement));
+    }
+
+    VnlcToken lastToken = peek();
+
+    return VnlcBlockStatementParsingResult{
+        .statement = std::make_unique<VnlcBlockStatementNode>(std::move(statements), firstToken, lastToken),
+    };
+}
+
+VnlcControlFlowStatementParsingResult VnlcParser::parseControlFlowStatement() {
+    if (check(VnlcTokenType::IF)) {
+        auto result = parseIfStatement();
+
+        return VnlcControlFlowStatementParsingResult{
+            .statement = std::move(result.statement),
+        };
+    } else if (check(VnlcTokenType::SWITCH)) {
+        auto result = parseSwitchStatement();
+
+        return VnlcControlFlowStatementParsingResult{
+            .statement = std::move(result.statement),
+        };
+    } else if (match(VnlcTokenType::LABEL)) {
+        std::string label;
+
+        if (!check(VnlcTokenType::IDENTIFIER)) {
+            throw VnlcSyntaxError("Expected identifier after 'label'", peek().getLine(), peek().getColumn());
+        } else {
+            label = peek().getValue();
+            advance();
+        }
+
+        if (check(VnlcTokenType::WHILE)) {
+            VnlcWhileStatementParsingContext context{
+                .label = std::move(label),
+            };
+
+            auto result = parseWhileStatement(std::move(context));
+
+            return VnlcControlFlowStatementParsingResult{
+                .statement = std::move(result.statement),
+            };
+        } else if (check(VnlcTokenType::FOR)) {
+            VnlcForStatementParsingContext context{
+                .label = std::move(label),
+            };
+
+            auto result = parseForStatement(std::move(context));
+
+            return VnlcControlFlowStatementParsingResult{
+                .statement = std::move(result.statement),
+            };
+        } else {
+            throw VnlcSyntaxError("Expected 'while' or 'for' after label declaration", peek().getLine(), peek().getColumn());
+        }
+    } else if (check(VnlcTokenType::WHILE)) {
+        auto result = parseWhileStatement({ std::nullopt });
+
+        return VnlcControlFlowStatementParsingResult{
+            .statement = std::move(result.statement),
+        };
+    } else if (check(VnlcTokenType::FOR)) {
+        auto result = parseForStatement({ std::nullopt });
+
+        return VnlcControlFlowStatementParsingResult{
+            .statement = std::move(result.statement),
+        };
+    } else if (check(VnlcTokenType::RETURN)) {
+        auto result = parseReturnStatement();
+
+        return VnlcControlFlowStatementParsingResult{
+            .statement = std::move(result.statement),
+        };
+    } else if (check(VnlcTokenType::BREAK)) {
+        auto result = parseBreakStatement();
+
+        return VnlcControlFlowStatementParsingResult{
+            .statement = std::move(result.statement),
+        };
+    } else if (check(VnlcTokenType::CONTINUE)) {
+        auto result = parseContinueStatement();
+
+        return VnlcControlFlowStatementParsingResult{
+            .statement = std::move(result.statement),
+        };
+    } else if (check(VnlcTokenType::RELOAD)) {
+        auto result = parseReloadStatement();
+
+        return VnlcControlFlowStatementParsingResult{
+            .statement = std::move(result.statement),
+        };
+    } else {
+        throw VnlcSyntaxError("Expected control flow statement", peek().getLine(), peek().getColumn());
+    }
+}
+
+VnlcIfStatementParsingResult VnlcParser::parseIfStatement() {
+    VnlcToken firstToken = peekValid();
+
+    if (!match(VnlcTokenType::IF)) {
+        throw VnlcSyntaxError("Expected 'if' to start if statement", peek().getLine(), peek().getColumn());
+    }
+
+    if (!match(VnlcTokenType::LEFT_PARENTHESIS)) {
+        throw VnlcSyntaxError("Expected '(' after 'if'", peek().getLine(), peek().getColumn());
+    }
+
+    auto conditionResult = parseExpression();
+
+    if (!match(VnlcTokenType::RIGHT_PARENTHESIS)) {
+        throw VnlcSyntaxError("Expected ')' after if condition", peek().getLine(), peek().getColumn());
+    }
+
+    auto thenBranchResult = parseStatement();
+
+    std::optional<std::unique_ptr<VnlcStatementNode>> elseBranch = std::nullopt;
+
+    if (match(VnlcTokenType::ELSE)) {
+        auto elseBranchResult = parseStatement();
+        elseBranch = std::move(elseBranchResult.statement);
+    }
+
+    VnlcToken lastToken = peek();
+
+    return VnlcIfStatementParsingResult{
+        .statement = std::make_unique<VnlcIfStatementNode>(std::move(conditionResult.expression), std::move(thenBranchResult.statement), std::move(elseBranch), firstToken, lastToken),
+    };
+}
+
+VnlcSwitchStatementParsingResult VnlcParser::parseSwitchStatement() {
+    VnlcToken firstToken = peekValid();
+
+    bool hasSwitchCases = false;
+    VnlcSwitchStatementType switchType = VnlcSwitchStatementType::LITERAL_MATCH;
+    std::vector<VnlcSwitchStatementItem::LiteralMatchItem> literalMatchItems;
+    std::vector<VnlcSwitchStatementItem::TypeMatchItem> typeMatchItems;
+    std::unique_ptr<VnlcStatementNode> defaultCase = nullptr;
+
+    if (!match(VnlcTokenType::SWITCH)) {
+        throw VnlcSyntaxError("Expected 'switch' to start switch statement", peek().getLine(), peek().getColumn());
+    }
+
+    if (!match(VnlcTokenType::LEFT_PARENTHESIS)) {
+        throw VnlcSyntaxError("Expected '(' after 'switch'", peek().getLine(), peek().getColumn());
+    }
+
+    auto expressionResult = parseExpression();
+
+    if (!match(VnlcTokenType::RIGHT_PARENTHESIS)) {
+        throw VnlcSyntaxError("Expected ')' after switch expression", peek().getLine(), peek().getColumn());
+    }
+
+    if (!match(VnlcTokenType::LEFT_BRACE)) {
+        throw VnlcSyntaxError("Expected '{' to start switch body", peek().getLine(), peek().getColumn());
+    }
+
+    while (check(VnlcTokenType::CASE)) {
+        unsigned int caseBeginLine = peek().getLine();
+        unsigned int caseBeginColumn = peek().getColumn();
+        auto caseResult = parseSwitchCase();
+
+        if (hasSwitchCases && caseResult.kind != switchType) {
+            throw VnlcSyntaxError("Cannot mix different types of switch cases in the same switch statement", caseBeginLine, caseBeginColumn);
+        }
+
+        if (!hasSwitchCases) {
+            switchType = caseResult.kind;
+            hasSwitchCases = true;
+        }
+
+        if (!match(VnlcTokenType::ARROW)) {
+            throw VnlcSyntaxError("Expected '->' after case label", peek().getLine(), peek().getColumn());
+        }
+
+        auto caseBodyResult = parseStatement();
+
+        if (caseResult.kind == VnlcSwitchStatementType::LITERAL_MATCH) {
+            literalMatchItems.push_back({ std::move(caseResult.literal.value()), std::move(caseBodyResult.statement) });
+        } else if (caseResult.kind == VnlcSwitchStatementType::TYPE_MATCH) {
+            typeMatchItems.push_back({ std::move(caseResult.type.value()), std::move(caseBodyResult.statement) });
+        }
+    }
+
+    if (match(VnlcTokenType::DEFAULT)) {
+        if (!match(VnlcTokenType::ARROW)) {
+            throw VnlcSyntaxError("Expected '->' after 'default'", peek().getLine(), peek().getColumn());
+        }
+
+        auto defaultBodyResult = parseStatement();
+
+        defaultCase = std::move(defaultBodyResult.statement);
+    }
+
+    if (!match(VnlcTokenType::RIGHT_BRACE)) {
+        throw VnlcSyntaxError("Expected '}' to end switch body", peek().getLine(), peek().getColumn());
+    }
+
+    VnlcToken lastToken = peek();
+
+    if (switchType == VnlcSwitchStatementType::LITERAL_MATCH) {
+        return VnlcSwitchStatementParsingResult{
+            .statement = std::make_unique<VnlcSwitchStatementNode>(std::move(expressionResult.expression), std::move(literalMatchItems), std::move(defaultCase), firstToken, lastToken),
+        };
+    } else {
+        return VnlcSwitchStatementParsingResult{
+            .statement = std::make_unique<VnlcSwitchStatementNode>(std::move(expressionResult.expression), std::move(typeMatchItems), std::move(defaultCase), firstToken, lastToken),
+        };
+    }
+}
+
+VnlcWhileStatementParsingResult VnlcParser::parseWhileStatement(VnlcWhileStatementParsingContext context) {
+    VnlcToken firstToken = peekValid();
+
+    if (!match(VnlcTokenType::WHILE)) {
+        throw VnlcSyntaxError("Expected 'while' to start while statement", peek().getLine(), peek().getColumn());
+    }
+
+    if (!match(VnlcTokenType::LEFT_PARENTHESIS)) {
+        throw VnlcSyntaxError("Expected '(' after 'while'", peek().getLine(), peek().getColumn());
+    }
+
+    auto conditionResult = parseExpression();
+
+    if (!match(VnlcTokenType::RIGHT_PARENTHESIS)) {
+        throw VnlcSyntaxError("Expected ')' after while condition", peek().getLine(), peek().getColumn());
+    }
+
+    auto bodyResult = parseStatement();
+
+    VnlcToken lastToken = peek();
+
+    if (context.label.has_value()) {
+        return VnlcWhileStatementParsingResult{
+            .statement =
+                std::make_unique<VnlcWhileStatementNode>(std::move(context.label.value()), std::move(conditionResult.expression), std::move(bodyResult.statement), firstToken, lastToken),
+        };
+    } else {
+        return VnlcWhileStatementParsingResult{
+            .statement = std::make_unique<VnlcWhileStatementNode>(std::move(conditionResult.expression), std::move(bodyResult.statement), firstToken, lastToken),
+        };
+    }
+}
+
+VnlcForStatementParsingResult VnlcParser::parseForStatement(VnlcForStatementParsingContext context) {
+    VnlcToken firstToken = peekValid();
+
+    VnlcVariableDeclarationType loopVariableKind;
+    std::string loopVariableName;
+    std::optional<std::unique_ptr<VnlcTypeAnnotationNode>> loopVariableTypeAnnotation;
+    std::unique_ptr<VnlcExpressionNode> iterableExpression;
+    std::unique_ptr<VnlcStatementNode> body;
+
+    if (!match(VnlcTokenType::FOR)) {
+        throw VnlcSyntaxError("Expected 'for' to start for statement", peek().getLine(), peek().getColumn());
+    }
+
+    if (!match(VnlcTokenType::LEFT_PARENTHESIS)) {
+        throw VnlcSyntaxError("Expected '(' after 'for'", peek().getLine(), peek().getColumn());
+    }
+
+    auto variableDeclarationPrimaryResult = parseVariableDeclarationPrimary();
+    loopVariableKind = variableDeclarationPrimaryResult.type;
+    loopVariableName = std::move(variableDeclarationPrimaryResult.name);
+    loopVariableTypeAnnotation = std::move(variableDeclarationPrimaryResult.typeAnnotation);
+
+    if (!match(VnlcTokenType::IN)) {
+        throw VnlcSyntaxError("Expected 'in' after loop variable declaration", peek().getLine(), peek().getColumn());
+    }
+
+    auto iterableExpressionResult = parseExpression();
+    iterableExpression = std::move(iterableExpressionResult.expression);
+
+    if (!match(VnlcTokenType::RIGHT_PARENTHESIS)) {
+        throw VnlcSyntaxError("Expected ')' after for statement", peek().getLine(), peek().getColumn());
+    }
+
+    auto bodyResult = parseStatement();
+    body = std::move(bodyResult.statement);
+
+    VnlcToken lastToken = peek();
+
+    if (context.label.has_value()) {
+        return VnlcForStatementParsingResult{
+            .statement = std::make_unique<VnlcForStatementNode>(
+                std::move(context.label.value()),
+                loopVariableKind,
+                std::move(loopVariableName),
+                std::move(loopVariableTypeAnnotation),
+                std::move(iterableExpression),
+                std::move(body),
+                firstToken,
+                lastToken
+            ),
+        };
+    } else {
+        return VnlcForStatementParsingResult{
+            .statement = std::make_unique<VnlcForStatementNode>(
+                loopVariableKind,
+                std::move(loopVariableName),
+                std::move(loopVariableTypeAnnotation),
+                std::move(iterableExpression),
+                std::move(body),
+                firstToken,
+                lastToken
+            ),
+        };
+    }
+}
+
+VnlcReturnStatementParsingResult VnlcParser::parseReturnStatement() {
+    VnlcToken firstToken = peekValid();
+
+    if (!match(VnlcTokenType::RETURN)) {
+        throw VnlcSyntaxError("Expected 'return' to start return statement", peek().getLine(), peek().getColumn());
+    }
+
+    std::optional<std::unique_ptr<VnlcExpressionNode>> returnValue = std::nullopt;
+
+    if (!(peek().getType() == VnlcTokenType::NEWLINE)) {
+        auto returnValueResult = parseExpression();
+        returnValue = std::move(returnValueResult.expression);
+    }
+
+    VnlcToken lastToken = peek();
+
+    if (returnValue.has_value()) {
+        return VnlcReturnStatementParsingResult{
+            .statement = std::make_unique<VnlcReturnStatementNode>(std::move(returnValue.value()), firstToken, lastToken),
+        };
+    } else {
+        return VnlcReturnStatementParsingResult{
+            .statement = std::make_unique<VnlcReturnStatementNode>(firstToken, lastToken),
+        };
+    }
+}
+
+VnlcBreakStatementParsingResult VnlcParser::parseBreakStatement() {
+    VnlcToken firstToken = peekValid();
+
+    if (!match(VnlcTokenType::BREAK)) {
+        throw VnlcSyntaxError("Expected 'break' to start break statement", peek().getLine(), peek().getColumn());
+    }
+
+    std::optional<std::string> label = std::nullopt;
+
+    if (!(peek().getType() == VnlcTokenType::NEWLINE)) {
+        if (!check(VnlcTokenType::IDENTIFIER)) {
+            throw VnlcSyntaxError("Expected identifier after 'break'", peek().getLine(), peek().getColumn());
+        } else {
+            label = peek().getValue();
+            advance();
+        }
+    }
+
+    VnlcToken lastToken = peek();
+
+    if (label.has_value()) {
+        return VnlcBreakStatementParsingResult{
+            .statement = std::make_unique<VnlcBreakStatementNode>(std::move(label.value()), firstToken, lastToken),
+        };
+    } else {
+        return VnlcBreakStatementParsingResult{
+            .statement = std::make_unique<VnlcBreakStatementNode>(firstToken, lastToken),
+        };
+    }
+}
+
+VnlcContinueStatementParsingResult VnlcParser::parseContinueStatement() {
+    VnlcToken firstToken = peekValid();
+
+    if (!match(VnlcTokenType::CONTINUE)) {
+        throw VnlcSyntaxError("Expected 'continue' to start continue statement", peek().getLine(), peek().getColumn());
+    }
+
+    std::optional<std::string> label = std::nullopt;
+
+    if (!(peek().getType() == VnlcTokenType::NEWLINE)) {
+        if (!check(VnlcTokenType::IDENTIFIER)) {
+            throw VnlcSyntaxError("Expected identifier after 'continue'", peek().getLine(), peek().getColumn());
+        } else {
+            label = peek().getValue();
+            advance();
+        }
+    }
+
+    VnlcToken lastToken = peek();
+
+    if (label.has_value()) {
+        return VnlcContinueStatementParsingResult{
+            .statement = std::make_unique<VnlcContinueStatementNode>(std::move(label.value()), firstToken, lastToken),
+        };
+    } else {
+        return VnlcContinueStatementParsingResult{
+            .statement = std::make_unique<VnlcContinueStatementNode>(firstToken, lastToken),
+        };
+    }
+}
+
+VnlcReloadStatementParsingResult VnlcParser::parseReloadStatement() {
+    VnlcToken firstToken = peekValid();
+
+    if (!match(VnlcTokenType::RELOAD)) {
+        throw VnlcSyntaxError("Expected 'reload' to start reload statement", peek().getLine(), peek().getColumn());
+    }
+
+    VnlcToken lastToken = peek();
+
+    return VnlcReloadStatementParsingResult{
+        .statement = std::make_unique<VnlcReloadStatementNode>(firstToken, lastToken),
+    };
+}
+
+VnlcSwitchCaseParsingResult VnlcParser::parseSwitchCase() {
+    if (!match(VnlcTokenType::CASE)) {
+        throw VnlcSyntaxError("Expected 'case' to start switch case", peek().getLine(), peek().getColumn());
+    }
+
+    static const std::unordered_set<VnlcTokenType> literalStarters = {
+        VnlcTokenType::PLUS,
+        VnlcTokenType::MINUS,
+        VnlcTokenType::TILDE,
+        VnlcTokenType::EXCLAMATION,
+        VnlcTokenType::NUMBER,
+        VnlcTokenType::STRING,
+        VnlcTokenType::CHAR,
+        VnlcTokenType::TRUE,
+        VnlcTokenType::FALSE,
+    };
+
+    if (checkAny(literalStarters)) {
+        auto literalExpressionResult = parseExpression();
+
+        return VnlcSwitchCaseParsingResult{
+            .kind = VnlcSwitchStatementType::LITERAL_MATCH,
+            .literal = std::move(literalExpressionResult.expression),
+        };
+    } else if (check(VnlcTokenType::IDENTIFIER)) {
+        auto typeResult = parseType();
+
+        std::optional<std::unique_ptr<VnlcExpressionNode>> guardExpression = std::nullopt;
+        if (match(VnlcTokenType::WHEN)) {
+            auto guardResult = parseExpression();
+            guardExpression = std::move(guardResult.expression);
+        }
+
+        return VnlcSwitchCaseParsingResult{
+            .kind = VnlcSwitchStatementType::TYPE_MATCH,
+            .type = std::move(typeResult.type),
+            .guardExpression = std::move(guardExpression),
+        };
+    } else {
+        throw VnlcSyntaxError("Expected literal or type identifier after 'case'", peek().getLine(), peek().getColumn());
+    }
 }
