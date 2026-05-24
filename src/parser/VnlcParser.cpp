@@ -65,6 +65,12 @@ const VnlcToken& VnlcParser::peek() const {
     return peek(0);
 }
 
+const VnlcToken& VnlcParser::peekValid() {
+    skipNewlines();
+
+    return peek();
+}
+
 void VnlcParser::fillBuffer() {
     bool blank = false;
     tokenBuffer.clear();
@@ -216,7 +222,7 @@ VnlcModuleParsingResult VnlcParser::parseModule(VnlcModuleParsingContext context
     }
     name = fullName.substr(fullName.find_last_of('.') + 1);
 
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     while (check(VnlcTokenType::IMPORT)) {
         auto result = parseImportDeclaration();
@@ -247,7 +253,7 @@ VnlcTopIdentifierDeclarationParsingResult VnlcParser::parseTopIdentifierDeclarat
     bool hasMetadata = false;
     std::vector<VnlcDeclarationItem::MetadataTerm> metadataTerms;
 
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     if (check(VnlcTokenType::METADATA)) {
         hasMetadata = true;
@@ -317,7 +323,7 @@ VnlcTopIdentifierDeclarationParsingResult VnlcParser::parseTopIdentifierDeclarat
 }
 
 VnlcImportDeclarationParsingResult VnlcParser::parseImportDeclaration() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     if (!match(VnlcTokenType::IMPORT)) {
         throw VnlcSyntaxError("Expected 'import' keyword", peek().getLine(), peek().getColumn());
@@ -339,7 +345,7 @@ VnlcImportDeclarationParsingResult VnlcParser::parseImportDeclaration() {
 }
 
 VnlcExportDeclarationParsingResult VnlcParser::parseExportDeclaration() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     if (!match(VnlcTokenType::EXPORT)) {
         throw VnlcSyntaxError("Expected 'export' keyword", peek().getLine(), peek().getColumn());
@@ -361,7 +367,7 @@ VnlcExportDeclarationParsingResult VnlcParser::parseExportDeclaration() {
 }
 
 VnlcVariableDeclarationParsingResult VnlcParser::parseVariableDeclaration(VnlcVariableDeclarationParsingContext context) {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto primaryResult = parseVariableDeclarationPrimary();
 
@@ -429,7 +435,7 @@ VnlcFunctionDeclarationParsingResult VnlcParser::parseFunctionDeclaration(VnlcFu
 }
 
 VnlcTypeDeclarationParsingResult VnlcParser::parseTypeDeclaration(VnlcTypeDeclarationParsingContext context) {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     if (check(VnlcTokenType::CLASS) || check(VnlcTokenType::FINAL)) {
         VnlcClassDeclarationParsingContext classContext{
@@ -489,7 +495,7 @@ VnlcTypeDeclarationParsingResult VnlcParser::parseTypeDeclaration(VnlcTypeDeclar
 }
 
 VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPropertyDeclarationParsingContext context) {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     std::string name;
     if (!check(VnlcTokenType::IDENTIFIER)) {
@@ -566,7 +572,7 @@ VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPr
 }
 
 VnlcInterfaceMethodDeclarationParsingResult VnlcParser::parseInterfaceMethodDeclaration() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     bool hasMetadata = false;
     std::vector<VnlcDeclarationItem::MetadataTerm> metadataTerms;
@@ -681,7 +687,7 @@ VnlcVariableDeclarationPrimaryParsingResult VnlcParser::parseVariableDeclaration
 }
 
 VnlcRegularFunctionDeclarationParsingResult VnlcParser::parseRegularFunctionDeclaration(VnlcRegularFunctionDeclarationParsingContext context) {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto signatureResult = parseFunctionSignature();
     auto bodyResult = parseFunctionBody();
@@ -723,7 +729,7 @@ VnlcRegularFunctionDeclarationParsingResult VnlcParser::parseRegularFunctionDecl
 }
 
 VnlcNativeFunctionDeclarationParsingResult VnlcParser::parseNativeFunctionDeclaration(VnlcNativeFunctionDeclarationParsingContext context) {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     if (!match(VnlcTokenType::NATIVE)) {
         throw VnlcSyntaxError("Expected 'native' keyword", peek().getLine(), peek().getColumn());
@@ -768,7 +774,7 @@ VnlcNativeFunctionDeclarationParsingResult VnlcParser::parseNativeFunctionDeclar
 }
 
 VnlcTypeAnnotationParsingResult VnlcParser::parseTypeAnnotation() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     bool readonly = false;
 
@@ -811,7 +817,7 @@ VnlcClassDeclarationParsingResult VnlcParser::parseClassDeclaration(VnlcClassDec
     std::vector<std::string> genericParameterNames;
     std::vector<std::unique_ptr<VnlcDeclarationNode>> memberDeclarations;
 
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     if (match(VnlcTokenType::FINAL)) {
         final = true;
@@ -890,7 +896,7 @@ VnlcInterfaceDeclarationParsingResult VnlcParser::parseInterfaceDeclaration(Vnlc
     std::vector<std::string> genericParameterNames;
     std::vector<std::unique_ptr<VnlcFunctionDeclarationNode>> methodDeclarations;
 
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     if (!match(VnlcTokenType::INTERFACE)) {
         throw VnlcSyntaxError("Expected 'interface' keyword", peek().getLine(), peek().getColumn());
@@ -933,7 +939,7 @@ VnlcEnumDeclarationParsingResult VnlcParser::parseEnumDeclaration(VnlcEnumDeclar
     std::vector<std::string> genericParameterNames;
     std::vector<std::unique_ptr<VnlcEnumMemberDeclarationNode>> memberDeclarations;
 
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     if (!match(VnlcTokenType::ENUM)) {
         throw VnlcSyntaxError("Expected 'enum' keyword", peek().getLine(), peek().getColumn());
@@ -976,7 +982,7 @@ VnlcTypeAliasDeclarationParsingResult VnlcParser::parseTypeAliasDeclaration(Vnlc
     std::vector<std::string> genericParameterNames;
     std::unique_ptr<VnlcTypeNode> originalType;
 
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     if (!match(VnlcTokenType::TYPE)) {
         throw VnlcSyntaxError("Expected 'type' keyword", peek().getLine(), peek().getColumn());
@@ -1317,7 +1323,7 @@ VnlcRelativeImportPathParsingResult VnlcParser::parseRelativeImportPath() {
 }
 
 VnlcTypeParsingResult VnlcParser::parseType() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     bool questionMarkSuffix = false;
     std::vector<std::string> nameParts;
@@ -1562,7 +1568,7 @@ VnlcRelativeImportPathItemParsingResult VnlcParser::parseRelativeImportPathItem(
 }
 
 VnlcClassMemberParsingResult VnlcParser::parseClassMember() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     bool hasMetadata = false;
     std::vector<VnlcDeclarationItem::MetadataTerm> metadataTerms;
@@ -1660,7 +1666,7 @@ VnlcClassMemberParsingResult VnlcParser::parseClassMember() {
 }
 
 VnlcEnumMemberDeclarationParsingResult VnlcParser::parseEnumMemberDeclaration() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     bool hasMetadata = false;
     std::vector<VnlcDeclarationItem::MetadataTerm> metadataTerms;
@@ -1792,7 +1798,7 @@ VnlcAssignmentExpressionParsingResult VnlcParser::parseAssignmentExpression() {
         { VnlcTokenType::TRIPLE_RIGHT_ANGLE, VnlcBinaryExpressionType::SHIFT_RIGHT_UNSIGNED_ASSIGNMENT },
     };
 
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto leftResult = parseConditionalExpression();
 
@@ -1814,7 +1820,7 @@ VnlcAssignmentExpressionParsingResult VnlcParser::parseAssignmentExpression() {
 }
 
 VnlcConditionalExpressionParsingResult VnlcParser::parseConditionalExpression() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto leftResult = parseNullishCoalescingExpression();
 
@@ -1841,7 +1847,7 @@ VnlcConditionalExpressionParsingResult VnlcParser::parseConditionalExpression() 
 }
 
 VnlcNullishCoalescingExpressionParsingResult VnlcParser::parseNullishCoalescingExpression() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto leftResult = parseLogicalOrExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
@@ -1861,7 +1867,7 @@ VnlcNullishCoalescingExpressionParsingResult VnlcParser::parseNullishCoalescingE
 }
 
 VnlcLogicalOrExpressionParsingResult VnlcParser::parseLogicalOrExpression() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto leftResult = parseLogicalAndExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
@@ -1880,7 +1886,7 @@ VnlcLogicalOrExpressionParsingResult VnlcParser::parseLogicalOrExpression() {
 }
 
 VnlcLogicalAndExpressionParsingResult VnlcParser::parseLogicalAndExpression() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto leftResult = parseEqualityExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
@@ -1909,7 +1915,7 @@ VnlcEqualityExpressionParsingResult VnlcParser::parseEqualityExpression() {
         { VnlcTokenType::EXCLAMATION_EQUAL, VnlcBinaryExpressionType::NOT_EQUAL },
     };
 
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto leftResult = parseRelationalExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
@@ -1944,7 +1950,7 @@ VnlcRelationalExpressionParsingResult VnlcParser::parseRelationalExpression() {
         { VnlcTokenType::RIGHT_ANGLE_EQUAL, VnlcBinaryExpressionType::GREATER_THAN_OR_EQUAL },
     };
 
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto leftResult = parseRangeExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
@@ -1965,7 +1971,7 @@ VnlcRelationalExpressionParsingResult VnlcParser::parseRelationalExpression() {
 }
 
 VnlcRangeExpressionParsingResult VnlcParser::parseRangeExpression() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     if (match(VnlcTokenType::DOUBLE_DOT)) {
         auto endResult = parseBitwiseOrExpression();
@@ -2025,7 +2031,7 @@ VnlcRangeExpressionParsingResult VnlcParser::parseRangeExpression() {
 }
 
 VnlcBitwiseOrExpressionParsingResult VnlcParser::parseBitwiseOrExpression() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto leftResult = parseBitwiseXorExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
@@ -2044,7 +2050,7 @@ VnlcBitwiseOrExpressionParsingResult VnlcParser::parseBitwiseOrExpression() {
 }
 
 VnlcBitwiseXorExpressionParsingResult VnlcParser::parseBitwiseXorExpression() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto leftResult = parseBitwiseAndExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
@@ -2063,7 +2069,7 @@ VnlcBitwiseXorExpressionParsingResult VnlcParser::parseBitwiseXorExpression() {
 }
 
 VnlcBitwiseAndExpressionParsingResult VnlcParser::parseBitwiseAndExpression() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto leftResult = parseShiftExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
@@ -2094,7 +2100,7 @@ VnlcShiftExpressionParsingResult VnlcParser::parseShiftExpression() {
         { VnlcTokenType::TRIPLE_RIGHT_ANGLE, VnlcBinaryExpressionType::SHIFT_RIGHT_UNSIGNED },
     };
 
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto leftResult = parseAdditiveExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
@@ -2125,7 +2131,7 @@ VnlcAdditiveExpressionParsingResult VnlcParser::parseAdditiveExpression() {
         { VnlcTokenType::MINUS, VnlcBinaryExpressionType::SUBTRACTION },
     };
 
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto leftResult = parseMultiplicativeExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
@@ -2160,7 +2166,7 @@ VnlcMultiplicativeExpressionParsingResult VnlcParser::parseMultiplicativeExpress
         { VnlcTokenType::PERCENT, VnlcBinaryExpressionType::MODULO },
     };
 
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto leftResult = parseUnaryExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(leftResult.expression);
@@ -2195,7 +2201,7 @@ VnlcUnaryExpressionParsingResult VnlcParser::parseUnaryExpression() {
         { VnlcTokenType::EXCLAMATION, VnlcUnaryExpressionType::LOGICAL_NOT },
     };
 
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     if (checkAny(unaryOperators)) {
         VnlcUnaryExpressionType operatorType = unaryExpressionTypes.at(peek().getType());
@@ -2217,7 +2223,7 @@ VnlcUnaryExpressionParsingResult VnlcParser::parseUnaryExpression() {
 }
 
 VnlcExponentialExpressionParsingResult VnlcParser::parseExponentialExpression() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto leftResult = parsePostfixExpression();
 
@@ -2238,7 +2244,7 @@ VnlcExponentialExpressionParsingResult VnlcParser::parseExponentialExpression() 
 }
 
 VnlcPostfixExpressionParsingResult VnlcParser::parsePostfixExpression() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     auto primaryResult = parsePrimaryExpression();
     std::unique_ptr<VnlcExpressionNode> currentNode = std::move(primaryResult.expression);
@@ -2323,7 +2329,7 @@ VnlcPrimaryExpressionParsingResult VnlcParser::parsePrimaryExpression() {
         VnlcTokenType::FALSE,  VnlcTokenType::LEFT_BRACKET, VnlcTokenType::LEFT_BRACE, VnlcTokenType::SELECTOR_PREFIX,
     };
 
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     if (match(VnlcTokenType::LEFT_PARENTHESIS)) {
         auto expressionResult = parseExpression();
@@ -2371,7 +2377,7 @@ VnlcPrimaryExpressionParsingResult VnlcParser::parsePrimaryExpression() {
 }
 
 VnlcLiteralParsingResult VnlcParser::parseLiteral() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     if (match(VnlcTokenType::NUMBER)) {
         VnlcToken lastToken = peek();
@@ -2448,7 +2454,7 @@ VnlcLiteralParsingResult VnlcParser::parseLiteral() {
 }
 
 VnlcStringParsingResult VnlcParser::parseString() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
     std::vector<std::variant<std::string, std::unique_ptr<VnlcExpressionNode>>> parts;
 
     if (!check(VnlcTokenType::STRING)) {
@@ -2511,7 +2517,7 @@ VnlcStringParsingResult VnlcParser::parseString() {
 }
 
 VnlcBooleanParsingResult VnlcParser::parseBoolean() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     if (match(VnlcTokenType::TRUE) || match(VnlcTokenType::FALSE)) {
         bool value = firstToken.getType() == VnlcTokenType::TRUE;
@@ -2527,7 +2533,7 @@ VnlcBooleanParsingResult VnlcParser::parseBoolean() {
 }
 
 VnlcListLikeLiteralParsingResult VnlcParser::parseListLikeLiteral() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     VnlcListLikeLiteralExpressionType literalType = VnlcListLikeLiteralExpressionType::LIST;
 
@@ -2579,7 +2585,7 @@ VnlcListLikeLiteralParsingResult VnlcParser::parseListLikeLiteral() {
 }
 
 VnlcDictLiteralParsingResult VnlcParser::parseDictLiteral() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     if (!match(VnlcTokenType::LEFT_BRACE)) {
         throw VnlcSyntaxError("Expected '{' to start dict literal", peek().getLine(), peek().getColumn());
@@ -2606,7 +2612,7 @@ VnlcDictLiteralParsingResult VnlcParser::parseDictLiteral() {
 }
 
 VnlcSelectorParsingResult VnlcParser::parseSelector() {
-    VnlcToken firstToken = peek();
+    VnlcToken firstToken = peekValid();
 
     VnlcSelectorLiteralExpressionType literalType = VnlcSelectorLiteralExpressionType::NEAREST_PLAYER;
     std::unordered_map<std::string, std::unique_ptr<VnlcExpressionNode>> arguments;
@@ -2721,7 +2727,7 @@ VnlcSelectorArgumentListParsingResult VnlcParser::parseSelectorArgumentList() {
 
 VnlcSelectorArgumentParsingResult VnlcParser::parseSelectorArgument() {
     std::string key;
-    
+
     if (!checkGeneralizedIdentifier()) {
         throw VnlcSyntaxError("Expected identifier for selector argument key", peek().getLine(), peek().getColumn());
     } else {

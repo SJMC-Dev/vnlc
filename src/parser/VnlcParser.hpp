@@ -25,6 +25,8 @@ private:
     [[nodiscard]] const VnlcToken& peek() const;
     [[nodiscard]] const VnlcToken& peek(unsigned int offset) const;
 
+    [[nodiscard]] const VnlcToken& peekValid();
+
     void fillBuffer();
     void advance();
     void skipNewlines();
