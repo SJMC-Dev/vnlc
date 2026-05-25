@@ -219,6 +219,10 @@ VnlcModuleParsingResult VnlcParser::parseModule(VnlcModuleParsingContext context
         exportDeclarations.push_back(std::move(result.declaration));
     }
 
+    if (!check(VnlcTokenType::END_OF_FILE)) {
+        throw VnlcSyntaxError("Unexpected declaration after export declaration", peek().getLine(), peek().getColumn());
+    }
+
     VnlcToken lastToken = peek();
 
     std::unique_ptr<VnlcModuleNode> node =
