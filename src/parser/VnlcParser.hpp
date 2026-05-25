@@ -20,12 +20,11 @@ private:
     std::vector<VnlcToken> tokenBuffer;
     unsigned int currentTokenIndex;
     unsigned int bufferSize;
+    bool endsWithNewlineOrEOF;
 
     [[nodiscard]] bool hasNextToken() const;
     [[nodiscard]] const VnlcToken& peek() const;
     [[nodiscard]] const VnlcToken& peek(unsigned int offset) const;
-
-    [[nodiscard]] const VnlcToken& peekValid();
 
     void fillBuffer();
     void advance();
@@ -35,7 +34,6 @@ private:
     [[nodiscard]] bool checkGeneralizedIdentifier();
     [[nodiscard]] bool checkAny(const std::unordered_set<VnlcTokenType>& expectedTypes);
     [[nodiscard]] bool match(VnlcTokenType expectedType);
-    [[nodiscard]] bool matchSeparatorEndOfLine();
     [[nodiscard]] bool matchAny(const std::unordered_set<VnlcTokenType>& expectedTypes);
     [[nodiscard]] bool consumeRightAngleInType();
 
