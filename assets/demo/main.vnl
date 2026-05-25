@@ -1,12 +1,62 @@
+#*
+    This demonstration file is intended solely
+    for testing the compiler and does not represent
+    the actual design of the standard library.
+*#
+
+import vanillang.std.{
+    self,
+    VnlEntity as Entity
+}
+
+interface Movable<T> {
+    func move(targetPos: Vec3<T>) -> void
+}
+
+# the class of player
+metadata(gameversion "1.20.4..26.1.2")
+class VnlPlayer extends Entity {
+    private name: readonly string
+    private health: readonly int
+
+    func init() {
+        super.init()
+        # implement the constructor
+    }
+
+    func getName() -> readonly string {
+        return this.name
+    }
+
+    func getHealth() -> readonly int {
+        return this.health
+    }
+}
+
+const foo = 1
+var bar = [I; buz, qux]
+
+let text: readonly Dict = {
+    text: "test",
+    color: "gold",
+    bold: true
+}
+
 func onLoad() {
     world.print("Hello, Vanillang!", @a)
     return
 }
 
 func onTick() {
-    world.print("tick", @a)
+    let worldTime = world.getCurrentWorldTime()
+
+    if (worldTime % 24000 == 0) {
+        world.print(f"A new day begins. Today is Day $(worldTime // 24000)", @a)
+    }
 }
 
 func add(a: readonly int, b: readonly int) -> int {
     return a + b
 }
+
+export VnlPlayer as Player
