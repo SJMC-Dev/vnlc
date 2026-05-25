@@ -2765,9 +2765,9 @@ VnlcSelectorArgumentParsingResult VnlcParser::parseSelectorArgument() {
 
 VnlcStatementParsingResult VnlcParser::parseStatement() {
     static const std::unordered_set<VnlcTokenType> expressionStarters = {
-        VnlcTokenType::IDENTIFIER,  VnlcTokenType::NUMBER,           VnlcTokenType::STRING,       VnlcTokenType::CHAR,       VnlcTokenType::TRUE, VnlcTokenType::FALSE, VnlcTokenType::THIS,
-        VnlcTokenType::SUPER,       VnlcTokenType::LEFT_PARENTHESIS, VnlcTokenType::LEFT_BRACKET, VnlcTokenType::LEFT_BRACE, VnlcTokenType::PLUS, VnlcTokenType::MINUS, VnlcTokenType::TILDE,
-        VnlcTokenType::EXCLAMATION, VnlcTokenType::SELECTOR_PREFIX,
+        VnlcTokenType::IDENTIFIER, VnlcTokenType::NUMBER,      VnlcTokenType::STRING,           VnlcTokenType::CHAR,         VnlcTokenType::TRUE, VnlcTokenType::FALSE,
+        VnlcTokenType::THIS,       VnlcTokenType::SUPER,       VnlcTokenType::LEFT_PARENTHESIS, VnlcTokenType::LEFT_BRACKET, VnlcTokenType::PLUS, VnlcTokenType::MINUS,
+        VnlcTokenType::TILDE,      VnlcTokenType::EXCLAMATION, VnlcTokenType::SELECTOR_PREFIX,
     };
 
     static const std::unordered_set<VnlcTokenType> variableDeclarationStarters = {
