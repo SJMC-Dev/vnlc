@@ -1173,7 +1173,11 @@ VnlcAbsoluteImportPathParsingResult VnlcParser::parseAbsoluteImportPath() {
                     .paths = std::move(paths),
                 };
             } else {
-                continue;
+                if (check(VnlcTokenType::IDENTIFIER)) {
+                    continue;
+                } else {
+                    break;
+                }
             }
         }
     };
@@ -1206,6 +1210,10 @@ VnlcAbsoluteImportPathParsingResult VnlcParser::parseAbsoluteImportPath() {
                     .alias = std::move(path.alias),
                 }
             );
+        }
+
+        if (!match(VnlcTokenType::RIGHT_BRACE)) {
+            throw VnlcSyntaxError("Expected '}' after import path list", peek().getLine(), peek().getColumn());
         }
     } else {
         paths.emplace_back(
@@ -1255,7 +1263,11 @@ VnlcRelativeImportPathParsingResult VnlcParser::parseRelativeImportPath() {
                     .paths = std::move(paths),
                 };
             } else {
-                continue;
+                if (check(VnlcTokenType::IDENTIFIER)) {
+                    continue;
+                } else {
+                    break;
+                }
             }
         }
     }
@@ -1287,6 +1299,10 @@ VnlcRelativeImportPathParsingResult VnlcParser::parseRelativeImportPath() {
                     .alias = std::move(path.alias),
                 }
             );
+        }
+
+        if (!match(VnlcTokenType::RIGHT_BRACE)) {
+            throw VnlcSyntaxError("Expected '}' after import path list", peek().getLine(), peek().getColumn());
         }
     } else {
         paths.emplace_back(
@@ -1509,6 +1525,15 @@ VnlcAbsoluteImportPathItemParsingResult VnlcParser::parseAbsoluteImportPathItem(
                 .alias = std::move(alias),
             } },
         };
+    } else if (match(VnlcTokenType::ASTERISK)) {
+        nameParts.emplace_back("*");
+
+        return VnlcAbsoluteImportPathItemParsingResult{
+            .paths = { VnlcImportDeclarationItem{
+                .nameParts = std::move(nameParts),
+                .alias = std::nullopt,
+            } },
+        };
     } else {
         auto result = parseAbsoluteImportPath();
 
@@ -1536,6 +1561,15 @@ VnlcRelativeImportPathItemParsingResult VnlcParser::parseRelativeImportPathItem(
             .paths = { VnlcImportDeclarationItem{
                 .nameParts = std::move(nameParts),
                 .alias = std::move(alias),
+            } },
+        };
+    } else if (match(VnlcTokenType::ASTERISK)) {
+        nameParts.emplace_back("*");
+
+        return VnlcRelativeImportPathItemParsingResult{
+            .paths = { VnlcImportDeclarationItem{
+                .nameParts = std::move(nameParts),
+                .alias = std::nullopt,
             } },
         };
     } else {
@@ -3242,15 +3276,8 @@ VnlcSwitchCaseParsingResult VnlcParser::parseSwitchCase() {
     }
 
     static const std::unordered_set<VnlcTokenType> literalStarters = {
-        VnlcTokenType::PLUS,
-        VnlcTokenType::MINUS,
-        VnlcTokenType::TILDE,
-        VnlcTokenType::EXCLAMATION,
-        VnlcTokenType::NUMBER,
-        VnlcTokenType::STRING,
-        VnlcTokenType::CHAR,
-        VnlcTokenType::TRUE,
-        VnlcTokenType::FALSE,
+        VnlcTokenType::PLUS,   VnlcTokenType::MINUS, VnlcTokenType::TILDE, VnlcTokenType::EXCLAMATION, VnlcTokenType::NUMBER,
+        VnlcTokenType::STRING, VnlcTokenType::CHAR,  VnlcTokenType::TRUE,  VnlcTokenType::FALSE,
     };
 
     if (checkAny(literalStarters)) {
