@@ -1,7 +1,12 @@
 func onLoad() {
     world.print("Hello, Vanillang!", @a)
+    return
 }
 
 func onTick() {
     world.print("tick", @a)
+}
+
+func add(a: int, b: int) -> int {
+    return a + b
 }
