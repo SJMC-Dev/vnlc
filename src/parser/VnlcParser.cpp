@@ -3159,7 +3159,7 @@ VnlcReturnStatementParsingResult VnlcParser::parseReturnStatement() {
 
     std::optional<std::unique_ptr<VnlcExpressionNode>> returnValue = std::nullopt;
 
-    if (!(peek().getType() == VnlcTokenType::NEWLINE)) {
+    if (!(peek().getType() == VnlcTokenType::NEWLINE || peek().getType() == VnlcTokenType::RIGHT_BRACE)) {
         auto returnValueResult = parseExpression();
         returnValue = std::move(returnValueResult.expression);
     }
@@ -3186,7 +3186,7 @@ VnlcBreakStatementParsingResult VnlcParser::parseBreakStatement() {
 
     std::optional<std::string> label = std::nullopt;
 
-    if (!(peek().getType() == VnlcTokenType::NEWLINE)) {
+    if (!(peek().getType() == VnlcTokenType::NEWLINE || peek().getType() == VnlcTokenType::RIGHT_BRACE)) {
         if (!check(VnlcTokenType::IDENTIFIER)) {
             throw VnlcSyntaxError("Expected identifier after 'break'", peek().getLine(), peek().getColumn());
         } else {
@@ -3217,7 +3217,7 @@ VnlcContinueStatementParsingResult VnlcParser::parseContinueStatement() {
 
     std::optional<std::string> label = std::nullopt;
 
-    if (!(peek().getType() == VnlcTokenType::NEWLINE)) {
+    if (!(peek().getType() == VnlcTokenType::NEWLINE || peek().getType() == VnlcTokenType::RIGHT_BRACE)) {
         if (!check(VnlcTokenType::IDENTIFIER)) {
             throw VnlcSyntaxError("Expected identifier after 'continue'", peek().getLine(), peek().getColumn());
         } else {
