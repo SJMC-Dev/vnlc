@@ -37,19 +37,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
-VnlcParser::VnlcParser(VnlcLexer&& lexer, unsigned int maxBufferSize) : lexer(std::move(lexer)), tokenBuffer(), currentTokenIndex(0), bufferSize(0) {
-    for (unsigned int i = 0; i < maxBufferSize; i++) {
-        while (lexer.hasNext() && (lexer.next().getType() == VnlcTokenType::BLANK || lexer.next().getType() == VnlcTokenType::SINGLE_LINE_COMMENT ||
-                                   lexer.next().getType() == VnlcTokenType::MULTI_LINE_COMMENT)) {
-            // Skip blank tokens when filling the initial buffer
-        }
-
-        if (lexer.hasNext()) {
-            tokenBuffer.push_back(std::move(lexer.next()));
-        }
-    }
-
-    bufferSize = tokenBuffer.size();
+VnlcParser::VnlcParser(VnlcLexer&& lexer, unsigned int maxBufferSize) : lexer(std::move(lexer)), tokenBuffer(), currentTokenIndex(0), bufferSize(maxBufferSize) {
+    fillBuffer();
 }
 
 bool VnlcParser::hasNextToken() const {
