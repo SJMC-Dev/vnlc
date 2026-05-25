@@ -2640,6 +2640,8 @@ VnlcSelectorParsingResult VnlcParser::parseSelector() {
         throw VnlcSyntaxError("Invalid selector type", peek().getLine(), peek().getColumn());
     }
 
+    advance();
+
     if (match(VnlcTokenType::LEFT_BRACKET)) {
         if (!check(VnlcTokenType::RIGHT_BRACKET)) {
             auto argumentListResult = parseSelectorArgumentList();
