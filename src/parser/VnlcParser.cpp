@@ -177,13 +177,16 @@ VnlcModuleParsingResult VnlcParser::parseModule(VnlcModuleParsingContext context
     std::string name;
     std::string fullName;
 
-    std::string prefix = context.config.packageRootPath.filename().string();
+    std::string prefix = context.config.packageRootPath.string();
     std::string fullPath = context.config.inputFilePath.string();
 
     if (!fullPath.starts_with(prefix)) {
         throw VnlcInternalError("Module file path is outside the package root");
     }
     fullPath.erase(0, prefix.length());
+    if (fullPath.starts_with(std::filesystem::path::preferred_separator)) {
+        fullPath.erase(0, 1);
+    }
 
     if (fullPath.ends_with(".vnl")) {
         fullPath.erase(fullPath.length() - 4);
