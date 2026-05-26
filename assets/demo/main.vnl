@@ -6,7 +6,8 @@
 
 import vanillang.std.{
     self,
-    VnlEntity as Entity
+    VnlEntity as Entity,
+    Random
 }
 
 interface Movable<T> {
@@ -15,7 +16,7 @@ interface Movable<T> {
 
 # the class of player
 metadata(gameversion "1.20.4..26.1.2")
-class VnlPlayer extends Entity {
+class VnlPlayer extends Entity implements Movable<Entity> {
     private name: readonly string
     private health: readonly int
 
@@ -42,7 +43,40 @@ let text: readonly Dict = {
     bold: true
 }
 
+native func setWeatherToClear() -> void
+
 func onLoad() {
+    let entity: Entity = @n[tag="candidate"]
+    switch (entity) {
+        case VnlPlayer when entity.getHealth() >= 10 -> world.print("1", entity)
+        case VnlPlayer -> { world.print("2", entity) }
+        default -> {
+            world.print("error: found non-player candidate", @a)
+            reload
+        }
+    }
+
+    let rand = Random.randint(0..4)
+    switch (rand) {
+        case 1 -> { world.print(1, @p) }
+        case 2 -> {
+            world.print(add(2, 2), @a)
+        }
+        default -> {
+            return
+        }
+    }
+
+    for (let player in @a) {
+        world.print(f"Welcome $(player.getName()) to this world!", @a)
+    }
+
+    while (Random.randint(0, 10) % 2 == 0) {
+        world.showActionbar("even", @a)
+    }
+
+    world.showActionbar(add(Random.randint(), add(Random.randint())), @r, context={ as: @r, at: @p })
+
     world.print("Hello, Vanillang!", @a)
     return
 }
@@ -53,6 +87,8 @@ func onTick() {
     if (worldTime % 24000 == 0) {
         world.print(f"A new day begins. Today is Day $(worldTime // 24000)", @a)
     }
+
+    setWeatherToClear(context={ as: @r })
 }
 
 func add(a: readonly int, b: readonly int) -> int {
