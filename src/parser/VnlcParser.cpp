@@ -2807,7 +2807,7 @@ VnlcStatementParsingResult VnlcParser::parseStatement() {
         throw VnlcSyntaxError("Expected statement", peek().getLine(), peek().getColumn());
     }
 
-    if (!endsWithNewlineOrEOF) {
+    if (!(endsWithNewlineOrEOF || peek().getType() == VnlcTokenType::RIGHT_BRACE)) {
         throw VnlcSyntaxError("Expected newline after statement", peek().getLine(), peek().getColumn());
     }
 
