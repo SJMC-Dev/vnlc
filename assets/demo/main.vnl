@@ -71,11 +71,11 @@ func onLoad() {
         world.print(f"Welcome $(player.getName()) to this world!", @a)
     }
 
-    while (Random.randint(0, 10) % 2 == 0) {
+    while (Random.randint(0..10) % 2 == 0) {
         world.showActionbar("even", @a)
     }
 
-    world.showActionbar(add(Random.randint(), add(Random.randint())), @r, context={ as: @r, at: @p })
+    world.showActionbar(add(Random.randint(), Random.randint()), @r, context={ as: @r, at: @p })
 
     world.print("Hello, Vanillang!", @a)
     return
