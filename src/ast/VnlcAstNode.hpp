@@ -18,7 +18,7 @@ protected:
     unsigned int line;
     unsigned int column;
 
-    VnlcAstNode(const VnlcToken& firstToken, const VnlcToken& lastToken);
+    VnlcAstNode(const VnlcToken& firstToken, const VnlcToken& lastToken); // lastToken is the first token of the next node
 
 public:
     [[nodiscard]] std::pair<unsigned int, unsigned int> locate() const noexcept;
