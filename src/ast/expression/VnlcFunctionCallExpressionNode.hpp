@@ -6,6 +6,7 @@
 #include "VnlcExpressionNode.hpp"
 #include <memory>
 #include <vector>
+#include <optional>
 
 class VnlcFunctionCallExpressionNode : public VnlcExpressionNode {
 private:
@@ -13,6 +14,7 @@ private:
 
     std::unique_ptr<VnlcExpressionNode> callee;
     std::vector<std::unique_ptr<VnlcExpressionNode>> arguments;
+    std::optional<std::unique_ptr<VnlcExpressionNode>> context;
 
 public:
     VnlcFunctionCallExpressionNode(
@@ -22,8 +24,17 @@ public:
         const VnlcToken& lastToken
     ) noexcept;
 
+    VnlcFunctionCallExpressionNode(
+        std::unique_ptr<VnlcExpressionNode>&& callee,
+        std::vector<std::unique_ptr<VnlcExpressionNode>>&& arguments,
+        std::unique_ptr<VnlcExpressionNode>&& context,
+        const VnlcToken& firstToken,
+        const VnlcToken& lastToken
+    ) noexcept;
+
     [[nodiscard]] const VnlcExpressionNode& getCallee() const noexcept;
     [[nodiscard]] const std::vector<std::unique_ptr<VnlcExpressionNode>>& getArguments() const noexcept;
+    [[nodiscard]] const std::optional<std::unique_ptr<VnlcExpressionNode>>& getContext() const noexcept;
 };
 
 #endif // VNLC_FUNCTION_CALL_EXPRESSION_NODE_HPP

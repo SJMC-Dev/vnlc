@@ -2310,10 +2310,12 @@ VnlcPostfixExpressionParsingResult VnlcParser::parsePostfixExpression() {
                 std::make_unique<VnlcMemberAccessExpressionNode>(VnlcMemberAccessExpressionType::OPTIONAL_CHAINING, std::move(currentNode), std::move(nameNode), firstToken, lastToken);
         } else if (match(VnlcTokenType::LEFT_PARENTHESIS)) {
             std::vector<std::unique_ptr<VnlcExpressionNode>> arguments;
+            std::optional<std::unique_ptr<VnlcExpressionNode>> context = std::nullopt;
 
             if (!check(VnlcTokenType::RIGHT_PARENTHESIS)) {
                 auto argumentListResult = parseArgumentList();
                 arguments = std::move(argumentListResult.arguments);
+                context = std::move(argumentListResult.context);
             }
 
             if (!match(VnlcTokenType::RIGHT_PARENTHESIS)) {
@@ -2322,7 +2324,11 @@ VnlcPostfixExpressionParsingResult VnlcParser::parsePostfixExpression() {
 
             VnlcToken lastToken = peek();
 
-            currentNode = std::make_unique<VnlcFunctionCallExpressionNode>(std::move(currentNode), std::move(arguments), firstToken, lastToken);
+            if (context.has_value()) {
+                currentNode = std::make_unique<VnlcFunctionCallExpressionNode>(std::move(currentNode), std::move(arguments), std::move(context.value()), firstToken, lastToken);
+            } else {
+                currentNode = std::make_unique<VnlcFunctionCallExpressionNode>(std::move(currentNode), std::move(arguments), firstToken, lastToken);
+            }
         } else if (match(VnlcTokenType::LEFT_BRACKET)) {
             auto indexResult = parseExpression();
 
@@ -2677,14 +2683,30 @@ VnlcSelectorParsingResult VnlcParser::parseSelector() {
 
 VnlcArgumentListParsingResult VnlcParser::parseArgumentList() {
     std::vector<std::unique_ptr<VnlcExpressionNode>> arguments;
+    std::optional<std::unique_ptr<VnlcExpressionNode>> context = std::nullopt;
 
     do {
+        if (match(VnlcTokenType::CONTEXT)) {
+            if (!match(VnlcTokenType::EQUAL)) {
+                throw VnlcSyntaxError("Expected '=' after 'context'", peek().getLine(), peek().getColumn());
+            }
+
+            auto contextResult = parseExpression();
+            context = std::make_optional(std::move(contextResult.expression));
+
+            return VnlcArgumentListParsingResult{
+                .arguments = std::move(arguments),
+                .context = std::move(context),
+            };
+        }
+
         auto expressionResult = parseExpression();
         arguments.push_back(std::move(expressionResult.expression));
     } while (match(VnlcTokenType::COMMA));
 
     return VnlcArgumentListParsingResult{
         .arguments = std::move(arguments),
+        .context = std::move(context),
     };
 }
 
