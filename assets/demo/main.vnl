@@ -35,7 +35,11 @@ class VnlPlayer extends Entity implements Movable<Entity> {
 }
 
 const foo = 1
-var bar = [I; buz, qux]
+var bar1 = [I; buz, qux]
+var bar2 = [a, b, c]
+var bar3 = [d]
+var bar4 = [1, 2, 3]
+var bar5 = [B;]
 
 let text: readonly Dict = {
     text: "test",
@@ -89,6 +93,13 @@ func onTick() {
     }
 
     setWeatherToClear(context={ as: @r })
+
+    label outer
+    for (let i in 1..5) {
+        for (let j in 1..i) {
+            continue outer
+        }
+    }
 }
 
 func add(a: readonly int, b: readonly int) -> int {
