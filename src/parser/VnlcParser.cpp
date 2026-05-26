@@ -2566,6 +2566,7 @@ VnlcListLikeLiteralParsingResult VnlcParser::parseListLikeLiteral() {
     }
 
     std::vector<std::unique_ptr<VnlcExpressionNode>> elements;
+    bool comma = false;
 
     if (check(VnlcTokenType::IDENTIFIER)) {
         std::string name(peek().getValue());
@@ -2574,7 +2575,7 @@ VnlcListLikeLiteralParsingResult VnlcParser::parseListLikeLiteral() {
         if ((name == "B" || name == "I" || name == "L")) {
             if (!match(VnlcTokenType::SEMICOLON)) {
                 elements.push_back(std::make_unique<VnlcIdentifierExpressionNode>(std::move(name), firstToken, peek()));
-                bool _ = match(VnlcTokenType::COMMA);
+                comma = match(VnlcTokenType::COMMA);
             } else {
                 if (name == "B") {
                     literalType = VnlcListLikeLiteralExpressionType::BYTE_SNBT_ARRAY;
@@ -2586,11 +2587,11 @@ VnlcListLikeLiteralParsingResult VnlcParser::parseListLikeLiteral() {
             }
         } else {
             elements.push_back(std::make_unique<VnlcIdentifierExpressionNode>(std::move(name), firstToken, peek()));
-            bool _ = match(VnlcTokenType::COMMA);
+            comma = match(VnlcTokenType::COMMA);
         }
     }
 
-    if (!check(VnlcTokenType::RIGHT_BRACKET)) {
+    if (comma || !check(VnlcTokenType::RIGHT_BRACKET)) {
         do {
             auto expressionResult = parseExpression();
             elements.push_back(std::move(expressionResult.expression));
