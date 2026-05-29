@@ -2313,6 +2313,8 @@ VnlcPostfixExpressionParsingResult VnlcParser::parsePostfixExpression() {
 
             currentNode =
                 std::make_unique<VnlcMemberAccessExpressionNode>(VnlcMemberAccessExpressionType::OPTIONAL_CHAINING, std::move(currentNode), std::move(nameNode), firstToken, lastToken);
+        } else if (endsWithNewlineOrEOF) {
+            break;
         } else if (match(VnlcTokenType::LEFT_PARENTHESIS)) {
             std::vector<std::unique_ptr<VnlcExpressionNode>> arguments;
             std::optional<std::unique_ptr<VnlcExpressionNode>> context = std::nullopt;
