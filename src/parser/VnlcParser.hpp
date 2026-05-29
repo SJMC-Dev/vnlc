@@ -28,6 +28,7 @@ private:
 
     void fillBuffer();
     void advance();
+    void advanceRaw();
     void skipNewlines();
 
     [[nodiscard]] bool check(VnlcTokenType expectedType);

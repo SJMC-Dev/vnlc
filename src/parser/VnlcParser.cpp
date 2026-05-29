@@ -74,9 +74,9 @@ void VnlcParser::fillBuffer() {
     bufferSize = tokenBuffer.size();
 }
 
-void VnlcParser::advance() {
+void VnlcParser::advanceRaw() {
     if (peek().getType() == VnlcTokenType::END_OF_FILE) {
-        currentTokenIndex = bufferSize; // Move index to the end of the buffer to indicate no more tokens
+        currentTokenIndex = bufferSize;
         return;
     }
 
@@ -87,17 +87,22 @@ void VnlcParser::advance() {
             currentTokenIndex = 0;
         }
     }
+}
 
+void VnlcParser::advance() {
+    advanceRaw();
     skipNewlines();
 }
 
 void VnlcParser::skipNewlines() {
     bool skipped = false;
+
     while (hasNextToken() && peek().getType() == VnlcTokenType::NEWLINE) {
-        advance();
+        advanceRaw();
         skipped = true;
     }
-    endsWithNewlineOrEOF = skipped || (peek().getType() == VnlcTokenType::END_OF_FILE);
+
+    endsWithNewlineOrEOF = skipped || peek().getType() == VnlcTokenType::END_OF_FILE;
 }
 
 bool VnlcParser::check(VnlcTokenType expectedType) {
