@@ -100,6 +100,14 @@ func onTick() {
             continue outer
         }
     }
+
+    f1()
+    (x + y).f2()
+
+    f1()(
+        x + y,
+        z
+    ).f2()
 }
 
 func add(a: readonly int, b: readonly int) -> int {
