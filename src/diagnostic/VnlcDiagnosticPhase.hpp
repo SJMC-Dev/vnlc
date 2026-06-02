@@ -1,0 +1,14 @@
+#pragma once
+
+#ifndef VNLC_DIAGNOSTIC_PHASE_HPP
+#define VNLC_DIAGNOSTIC_PHASE_HPP
+
+enum class VnlcDiagnosticPhase {
+    LEXEME,
+    SYNTAX,
+    SEMANTIC,
+    CODEGEN,
+    INTERNAL,
+};
+
+#endif // VNLC_DIAGNOSTIC_PHASE_HPP
