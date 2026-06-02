@@ -57,6 +57,7 @@ add_executable(
     ast/other/VnlcTypeAnnotationNode.cpp
     ast/other/VnlcTypeNode.cpp
     parser/VnlcParser.cpp
+    diagnostic/VnlcDiagnostic.cpp
 )
 
 target_link_libraries(
