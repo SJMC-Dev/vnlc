@@ -58,6 +58,10 @@ add_executable(
     ast/other/VnlcTypeNode.cpp
     parser/VnlcParser.cpp
     diagnostic/VnlcDiagnostic.cpp
+    semantic/VnlcSymbol.cpp
+    semantic/VnlcSemanticContext.cpp
+    semantic/VnlcSemanticAnalysisResult.cpp
+    semantic/VnlcSemanticAnalyzer.cpp
 )
 
 target_link_libraries(
