@@ -1,0 +1,22 @@
+#pragma once
+
+#ifndef VNLC_SYMBOL_KIND_HPP
+#define VNLC_SYMBOL_KIND_HPP
+
+enum class VnlcSymbolKind {
+    PACKAGE,
+    MODULE,
+    VARIABLE,
+    FUNCTION,
+    CLASS,
+    INTERFACE,
+    ENUM,
+    ENUM_MEMBER,
+    PROPERTY,
+    METHOD,
+    PARAMETER,
+    IMPORT_ALIAS,
+    EXPORT_ALIAS,
+};
+
+#endif // VNLC_SYMBOL_KIND_HPP

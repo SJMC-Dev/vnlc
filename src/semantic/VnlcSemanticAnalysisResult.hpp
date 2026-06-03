@@ -8,10 +8,12 @@
 
 class VnlcSemanticAnalysisResult {
 private:
-    std::vector<VnlcDiagnostic> diagnostics;
+    std::vector<VnlcDiagnostic> errors;
+    std::vector<VnlcDiagnostic> warnings;
+    std::vector<VnlcDiagnostic> notes;
 
 public:
-    VnlcSemanticAnalysisResult();
+    VnlcSemanticAnalysisResult(std::vector<VnlcDiagnostic>&& errors, std::vector<VnlcDiagnostic>&& warnings, std::vector<VnlcDiagnostic>&& notes);
     VnlcSemanticAnalysisResult(const VnlcSemanticAnalysisResult&) = default;
     VnlcSemanticAnalysisResult& operator=(const VnlcSemanticAnalysisResult&) = default;
     VnlcSemanticAnalysisResult(VnlcSemanticAnalysisResult&&) noexcept = default;
@@ -20,7 +22,9 @@ public:
     [[nodiscard]] bool hasErrors() const;
     [[nodiscard]] bool hasWarnings() const;
     [[nodiscard]] bool hasNotes() const;
-    [[nodiscard]] const std::vector<VnlcDiagnostic>& getDiagnostics() const;
+    [[nodiscard]] const std::vector<VnlcDiagnostic>& getErrors() const;
+    [[nodiscard]] const std::vector<VnlcDiagnostic>& getWarnings() const;
+    [[nodiscard]] const std::vector<VnlcDiagnostic>& getNotes() const;
 };
 
 #endif // VNLC_SEMANTIC_ANALYSIS_RESULT_HPP
