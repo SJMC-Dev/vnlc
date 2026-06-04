@@ -62,6 +62,7 @@ add_executable(
     semantic/VnlcSemanticContext.cpp
     semantic/VnlcSemanticAnalysisResult.cpp
     semantic/VnlcSemanticAnalyzer.cpp
+    semantic/VnlcScope.cpp
 )
 
 target_link_libraries(
