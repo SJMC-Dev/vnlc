@@ -16,16 +16,16 @@ private:
     const VnlcModuleNode* module;
     VnlcSemanticContext context;
 
-    void collectTopLevelSymbols();
-    void resolveImports();
-    void collectTypeMembers();
-    void checkDeclarations();
-    void checkExports();
+    void collectSymbols();
 
+    void resolveImport(const VnlcImportDeclarationNode& importDecl);
     void checkDeclaration(const VnlcDeclarationNode& declaration);
     void checkStatement(const VnlcStatementNode& statement);
     void checkExpression(const VnlcExpressionNode& expression);
     void checkType(const VnlcTypeNode& type);
+
+    const VnlcSymbol& inferExpressionType(const VnlcExpressionNode& expression);
+    const VnlcSymbol& inferFunctionReturnType(const VnlcFunctionDeclarationNode& funcDecl);
 
 public:
     explicit VnlcSemanticAnalyzer(const VnlcModuleNode* module);
