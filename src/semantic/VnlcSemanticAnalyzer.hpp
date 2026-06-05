@@ -16,8 +16,6 @@ private:
     const VnlcModuleNode* module;
     VnlcSemanticContext context;
 
-    void collectSymbols();
-
     void resolveImport(const VnlcImportDeclarationNode& importDecl);
     void checkDeclaration(const VnlcDeclarationNode& declaration);
     void checkStatement(const VnlcStatementNode& statement);
