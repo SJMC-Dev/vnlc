@@ -10,8 +10,8 @@
 #include "../diagnostic/VnlcDiagnostic.hpp"
 #include "VnlcScope.hpp"
 #include <memory>
-#include <vector>
 #include <string_view>
+#include <vector>
 
 class VnlcSemanticContext {
 private:
