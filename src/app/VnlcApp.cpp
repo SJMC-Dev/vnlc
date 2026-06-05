@@ -23,6 +23,7 @@ void VnlcApp::run() {
     std::string packageRootPathString;
     std::string inputFilePathString;
     std::string outputDirectoryString;
+    std::string moduleInterfaceOutputDirectoryString;
     std::vector<std::string> dependencyPackageRootPathStrings;
 
     int optimizationLevel = 0;
@@ -65,6 +66,7 @@ void VnlcApp::run() {
         if (requireOutput) {
             subApp->add_option("-o,--output", outputDirectoryString, "Path to the output directory")->required()->check(CLI::ExistingDirectory);
         }
+        subApp->add_option("-m,--module-interface-output", moduleInterfaceOutputDirectoryString, "Path to the module interface output directory")->check(CLI::ExistingDirectory);
     };
 
     addCommonOptions(compileApp, true);
@@ -109,6 +111,7 @@ void VnlcApp::run() {
         .packageRootPath{ std::move(packageRootPath) },
         .inputFilePath{ std::move(inputFilePath) },
         .outputDirectory{ outputDirectory.empty() ? std::nullopt : std::make_optional(std::move(outputDirectory)) },
+        .moduleInterfaceOutputDirectory{ moduleInterfaceOutputDirectoryString.empty() ? std::nullopt : std::make_optional(std::filesystem::canonical(moduleInterfaceOutputDirectoryString)) },
         .dependencyPackageRootPaths{},
         .optimizationLevel = (mode == "compile") ? std::make_optional(optimizationLevel) : std::nullopt,
     };

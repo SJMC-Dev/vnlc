@@ -5,10 +5,10 @@
 
 #include "VnlcRunningMode.hpp"
 
+#include <filesystem>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <filesystem>
 
 struct VnlcConfig {
     VnlcRunningMode mode;
@@ -19,7 +19,10 @@ struct VnlcConfig {
     std::filesystem::path packageRootPath;
     std::filesystem::path inputFilePath;
     std::optional<std::filesystem::path> outputDirectory;
+    // module interface files will not be generated if moduleInterfaceOutputDirectory is std::nullopt
+    std::optional<std::filesystem::path> moduleInterfaceOutputDirectory;
 
+    // should include module interface files (.vni) instead of source files (.vnl)
     std::unordered_map<std::string, std::filesystem::path> dependencyPackageRootPaths;
 
     std::optional<int> optimizationLevel;
