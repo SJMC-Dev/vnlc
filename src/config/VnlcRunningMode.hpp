@@ -9,7 +9,6 @@ enum class VnlcRunningMode {
     LINT,
     FORMAT,
     DUMP_AST,
-    DUMP_IR,
 };
 
 #endif // VNLC_RUNNING_MODE_HPP

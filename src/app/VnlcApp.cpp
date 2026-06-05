@@ -56,7 +56,6 @@ void VnlcApp::run() {
     CLI::App* lintApp = app.add_subcommand("lint", "Check a Vanillang source file for style issues without generating any output");
     CLI::App* formatApp = app.add_subcommand("format", "Format a Vanillang source file according to recommended style guidelines");
     CLI::App* dumpAstApp = app.add_subcommand("dump-ast", "Parse a Vanillang source file and generate a JSON representation of the resulting abstract syntax tree");
-    CLI::App* dumpIrApp = app.add_subcommand("dump-ir", "Compile a Vanillang source file and generate a file of intermediate representation");
 
     auto addCommonOptions = [&](CLI::App* subApp, bool requireOutput = false) {
         subApp->add_option("-i,--input", inputFilePathString, "Path to the input Vanillang source file")->required()->check(CLI::ExistingFile);
@@ -75,14 +74,12 @@ void VnlcApp::run() {
     addCommonOptions(lintApp);
     addCommonOptions(formatApp);
     addCommonOptions(dumpAstApp, true);
-    addCommonOptions(dumpIrApp, true);
 
     compileApp->callback([&]() { mode = "compile"; });
     checkApp->callback([&]() { mode = "check"; });
     lintApp->callback([&]() { mode = "lint"; });
     formatApp->callback([&]() { mode = "format"; });
     dumpAstApp->callback([&]() { mode = "dump-ast"; });
-    dumpIrApp->callback([&]() { mode = "dump-ir"; });
 
     try {
         app.parse(argc, argv);

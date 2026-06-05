@@ -12,8 +12,6 @@ VnlcRunningMode VnlcRunningModeUtil::getRunningMode(std::string_view modeLiteral
         return VnlcRunningMode::FORMAT;
     } else if (modeLiteral == "dump-ast") {
         return VnlcRunningMode::DUMP_AST;
-    } else if (modeLiteral == "dump-ir") {
-        return VnlcRunningMode::DUMP_IR;
     } else {
         throw CLI::ValidationError("Invalid running mode: " + std::string(modeLiteral));
     }
