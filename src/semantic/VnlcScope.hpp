@@ -4,19 +4,23 @@
 #define VNLC_SCOPE_HPP
 
 #include "VnlcSymbol.hpp"
+#include "VnlcScopeKind.hpp"
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 class VnlcScope {
+
 private:
+    VnlcScopeKind kind;
     const VnlcScope* parent;
     std::unordered_map<std::string, std::vector<VnlcSymbol>> symbols;
 
 public:
-    explicit VnlcScope(const VnlcScope* parent = nullptr) noexcept;
+    explicit VnlcScope(VnlcScopeKind kind, const VnlcScope* parent = nullptr) noexcept;
 
     bool declare(VnlcSymbol&& symbol);
+    [[nodiscard]] VnlcScopeKind getKind() const noexcept;
     [[nodiscard]] const std::vector<VnlcSymbol>& lookupLocal(std::string_view name) const;
     [[nodiscard]] const std::vector<VnlcSymbol>& lookup(std::string_view name) const;
 };

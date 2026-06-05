@@ -1,6 +1,6 @@
 #include "VnlcScope.hpp"
 
-VnlcScope::VnlcScope(const VnlcScope* parent) noexcept : parent(parent) {}
+VnlcScope::VnlcScope(VnlcScopeKind kind, const VnlcScope* parent) noexcept : kind(kind), parent(parent) {}
 
 bool VnlcScope::declare(VnlcSymbol&& symbol) {
     auto& symbolList = symbols[std::string(symbol.getName())];
@@ -33,4 +33,8 @@ const std::vector<VnlcSymbol>& VnlcScope::lookup(std::string_view name) const {
     }
     static const std::vector<VnlcSymbol> empty;
     return empty;
+}
+
+VnlcScopeKind VnlcScope::getKind() const noexcept {
+    return kind;
 }
