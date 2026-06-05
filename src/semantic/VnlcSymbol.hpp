@@ -5,19 +5,24 @@
 
 #include "../ast/VnlcAstNode.hpp"
 #include "VnlcSymbolKind.hpp"
+#include "VnlcSymbolOrigin.hpp"
+#include <string>
+#include <string_view>
 
 class VnlcSymbol {
 private:
     VnlcSymbolKind kind;
+    VnlcSymbolOrigin origin;
     std::string name;
-    const VnlcAstNode* declarationNode;
+    const VnlcAstNode* localDeclarationNode;
 
 public:
-    VnlcSymbol(VnlcSymbolKind kind, std::string name, const VnlcAstNode* declarationNode);
+    VnlcSymbol(VnlcSymbolKind kind, VnlcSymbolOrigin origin, std::string name, const VnlcAstNode* localDeclarationNode);
 
     [[nodiscard]] VnlcSymbolKind getKind() const noexcept;
+    [[nodiscard]] VnlcSymbolOrigin getOrigin() const noexcept;
     [[nodiscard]] std::string_view getName() const noexcept;
-    [[nodiscard]] const VnlcAstNode* getDeclarationNode() const noexcept;
+    [[nodiscard]] const VnlcAstNode* getLocalDeclarationNode() const noexcept;
 };
 
 #endif // VNLC_SYMBOL_HPP
