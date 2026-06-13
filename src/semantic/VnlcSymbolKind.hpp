@@ -11,6 +11,7 @@ enum class VnlcSymbolKind {
     CLASS,
     INTERFACE,
     ENUM,
+    TYPE_ALIAS,
     ENUM_MEMBER,
     PROPERTY,
     METHOD,
