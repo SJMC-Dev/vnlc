@@ -63,6 +63,10 @@ add_executable(
     semantic/VnlcSemanticAnalysisResult.cpp
     semantic/VnlcSemanticAnalyzer.cpp
     semantic/VnlcScope.cpp
+    semantic/type/VnlcSemanticType.cpp
+    semantic/type/VnlcPrimitiveType.cpp
+    semantic/type/VnlcReferenceType.cpp
+    semantic/type/VnlcVoidType.cpp
 )
 
 target_link_libraries(
