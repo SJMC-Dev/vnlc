@@ -51,3 +51,23 @@ Testing/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+
+# ==============================================================================
+# Agent Generated Files
+# ==============================================================================
+.claude/
+.aider.chat.history.md
+.aider.input.history
+.aider.llm.history
+.aider.tags.cache*/
+.cursorignore.local
+.clineignore.local
+.rooignore.local
+.geminiignore.local
+**/mcp.local.json
+**/mcp_settings.local.json
+*.local.ai.md
+*.local.agent.md
+*.local.prompt.md
+*.local.rules.md
