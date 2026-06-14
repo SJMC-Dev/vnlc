@@ -10,6 +10,7 @@
 #include "../ast/statement/VnlcStatementNode.hpp"
 #include "VnlcSemanticAnalysisResult.hpp"
 #include "VnlcSemanticContext.hpp"
+#include "type/VnlcSemanticType.hpp"
 
 class VnlcSemanticAnalyzer {
 private:
@@ -22,8 +23,8 @@ private:
     void checkExpression(const VnlcExpressionNode& expression);
     void checkType(const VnlcTypeNode& type);
 
-    const VnlcSymbol& inferExpressionType(const VnlcExpressionNode& expression);
-    const VnlcSymbol& inferFunctionReturnType(const VnlcFunctionDeclarationNode& funcDecl);
+    [[nodiscard]] VnlcSemanticType inferExpressionType(const VnlcExpressionNode& expression);
+    [[nodiscard]] VnlcSemanticType inferFunctionReturnType(const VnlcFunctionDeclarationNode& funcDecl);
 
 public:
     explicit VnlcSemanticAnalyzer(const VnlcModuleNode* module);
