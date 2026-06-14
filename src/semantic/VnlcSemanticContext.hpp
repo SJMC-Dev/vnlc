@@ -8,7 +8,7 @@
 #include "../ast/declaration/VnlcFunctionDeclarationNode.hpp"
 #include "../ast/declaration/VnlcInterfaceDeclarationNode.hpp"
 #include "../diagnostic/VnlcDiagnostic.hpp"
-#include "VnlcScope.hpp"
+#include "scope/VnlcScope.hpp"
 #include <memory>
 #include <string_view>
 #include <vector>

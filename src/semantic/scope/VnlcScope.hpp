@@ -3,7 +3,7 @@
 #ifndef VNLC_SCOPE_HPP
 #define VNLC_SCOPE_HPP
 
-#include "VnlcSymbol.hpp"
+#include "../symbol/VnlcSymbol.hpp"
 #include "VnlcScopeKind.hpp"
 #include <string>
 #include <unordered_map>

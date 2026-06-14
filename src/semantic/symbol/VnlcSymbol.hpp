@@ -3,7 +3,7 @@
 #ifndef VNLC_SYMBOL_HPP
 #define VNLC_SYMBOL_HPP
 
-#include "../ast/VnlcAstNode.hpp"
+#include "../../ast/VnlcAstNode.hpp"
 #include "VnlcSymbolKind.hpp"
 #include "VnlcSymbolOrigin.hpp"
 #include <string>
