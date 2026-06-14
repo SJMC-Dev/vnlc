@@ -12,6 +12,7 @@
 #include <memory>
 #include <string_view>
 #include <vector>
+#include <tuple>
 
 class VnlcSemanticContext {
 private:
@@ -44,6 +45,20 @@ public:
     void popScope();
 
     [[nodiscard]] VnlcScope& currentScope();
+
+    [[nodiscard]] const std::vector<VnlcDiagnostic>& getErrors() const noexcept;
+    [[nodiscard]] const std::vector<VnlcDiagnostic>& getWarnings() const noexcept;
+    [[nodiscard]] const std::vector<VnlcDiagnostic>& getNotes() const noexcept;
+
+    [[nodiscard]] const VnlcFunctionDeclarationNode* getCurrentFunction() const noexcept;
+    [[nodiscard]] const VnlcClassDeclarationNode* getCurrentClass() const noexcept;
+    [[nodiscard]] const VnlcInterfaceDeclarationNode* getCurrentInterface() const noexcept;
+    [[nodiscard]] const VnlcEnumDeclarationNode* getCurrentEnum() const noexcept;
+
+    [[nodiscard]] unsigned int getLoopDepth() const noexcept;
+    [[nodiscard]] unsigned int getSwitchDepth() const noexcept;
+
+    [[nodiscard]] std::tuple<std::vector<VnlcDiagnostic>, std::vector<VnlcDiagnostic>, std::vector<VnlcDiagnostic>> takeDiagnostics();
 };
 
 #endif // VNLC_SEMANTIC_CONTEXT_HPP
