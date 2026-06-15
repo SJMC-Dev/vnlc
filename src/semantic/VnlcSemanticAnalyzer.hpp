@@ -4,10 +4,13 @@
 #define VNLC_SEMANTIC_ANALYZER_HPP
 
 #include "../ast/declaration/VnlcDeclarationNode.hpp"
+#include "../ast/declaration/VnlcExportDeclarationNode.hpp"
+#include "../ast/declaration/VnlcImportDeclarationNode.hpp"
 #include "../ast/expression/VnlcExpressionNode.hpp"
 #include "../ast/module/VnlcModuleNode.hpp"
 #include "../ast/other/VnlcTypeNode.hpp"
 #include "../ast/statement/VnlcStatementNode.hpp"
+#include "../config/VnlcConfig.hpp"
 #include "VnlcSemanticAnalysisResult.hpp"
 #include "VnlcSemanticContext.hpp"
 #include "type/VnlcSemanticType.hpp"
@@ -18,6 +21,7 @@ private:
     VnlcSemanticContext context;
 
     void resolveImport(const VnlcImportDeclarationNode& importDecl);
+    void resolveExport(const VnlcExportDeclarationNode& exportDecl);
     void checkDeclaration(const VnlcDeclarationNode& declaration);
     void checkStatement(const VnlcStatementNode& statement);
     void checkExpression(const VnlcExpressionNode& expression);
