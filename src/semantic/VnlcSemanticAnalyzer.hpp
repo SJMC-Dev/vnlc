@@ -40,7 +40,7 @@ public:
     VnlcSemanticAnalyzer(VnlcSemanticAnalyzer&&) noexcept = default;
     VnlcSemanticAnalyzer& operator=(VnlcSemanticAnalyzer&&) noexcept = default;
 
-    [[nodiscard]] VnlcSemanticAnalysisResult analyze();
+    [[nodiscard]] VnlcSemanticAnalysisResult analyze(const VnlcConfig& config);
 };
 
 #endif // VNLC_SEMANTIC_ANALYZER_HPP
