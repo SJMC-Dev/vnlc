@@ -3,7 +3,7 @@
 #ifndef VNLC_ENUM_MEMBER_DECLARATION_NODE_HPP
 #define VNLC_ENUM_MEMBER_DECLARATION_NODE_HPP
 
-#include "../other/VnlcTypeAnnotationNode.hpp"
+#include "../type/VnlcTypeAnnotationNode.hpp"
 #include "VnlcDeclarationNode.hpp"
 #include <utility>
 #include <vector>

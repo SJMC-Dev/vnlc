@@ -3,7 +3,7 @@
 #ifndef VNLC_REFERENCE_TYPE_HPP
 #define VNLC_REFERENCE_TYPE_HPP
 
-#include "../../ast/other/VnlcTypeNode.hpp"
+#include "../../ast/type/VnlcTypeNode.hpp"
 #include "VnlcReferenceTypeKind.hpp"
 #include "VnlcSemanticType.hpp"
 

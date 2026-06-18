@@ -3,8 +3,8 @@
 #ifndef VNLC_FUNCTION_DECLARATION_NODE_HPP
 #define VNLC_FUNCTION_DECLARATION_NODE_HPP
 
-#include "../other/VnlcTypeAnnotationNode.hpp"
 #include "../statement/VnlcBlockStatementNode.hpp"
+#include "../type/VnlcTypeAnnotationNode.hpp"
 #include "VnlcDeclarationNode.hpp"
 #include "VnlcFunctionDeclarationType.hpp"
 #include <memory>

@@ -4,7 +4,7 @@
 #define VNLC_SWITCH_STATEMENT_ITEM_HPP
 
 #include "../expression/VnlcExpressionNode.hpp"
-#include "../other/VnlcTypeNode.hpp"
+#include "../type/VnlcTypeNode.hpp"
 #include "VnlcStatementNode.hpp"
 #include <memory>
 #include <optional>

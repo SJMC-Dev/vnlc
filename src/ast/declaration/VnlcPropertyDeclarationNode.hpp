@@ -4,7 +4,7 @@
 #define VNLC_PROPERTY_DECLARATION_NODE_HPP
 
 #include "../expression/VnlcExpressionNode.hpp"
-#include "../other/VnlcTypeAnnotationNode.hpp"
+#include "../type/VnlcTypeAnnotationNode.hpp"
 #include "VnlcDeclarationNode.hpp"
 #include "VnlcPropertyDeclarationType.hpp"
 

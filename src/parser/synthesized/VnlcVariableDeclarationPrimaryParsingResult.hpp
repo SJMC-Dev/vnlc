@@ -4,7 +4,7 @@
 #define VNLC_VARIABLE_DECLARATION_PRIMARY_PARSING_RESULT_HPP
 
 #include "../../ast/declaration/VnlcVariableDeclarationType.hpp"
-#include "../../ast/other/VnlcTypeAnnotationNode.hpp"
+#include "../../ast/type/VnlcTypeAnnotationNode.hpp"
 #include <memory>
 #include <optional>
 

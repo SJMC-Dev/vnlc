@@ -3,7 +3,7 @@
 #ifndef VNLC_TYPE_ANNOTATION_PARSING_RESULT_HPP
 #define VNLC_TYPE_ANNOTATION_PARSING_RESULT_HPP
 
-#include "../../ast/other/VnlcTypeAnnotationNode.hpp"
+#include "../../ast/type/VnlcTypeAnnotationNode.hpp"
 #include <memory>
 
 struct VnlcTypeAnnotationParsingResult {

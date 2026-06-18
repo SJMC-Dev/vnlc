@@ -3,7 +3,7 @@
 #ifndef VNLC_FUNCTION_SIGNATURE_PARSING_RESULT_HPP
 #define VNLC_FUNCTION_SIGNATURE_PARSING_RESULT_HPP
 
-#include "../../ast/other/VnlcTypeAnnotationNode.hpp"
+#include "../../ast/type/VnlcTypeAnnotationNode.hpp"
 #include <memory>
 #include <optional>
 #include <string>

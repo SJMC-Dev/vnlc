@@ -4,8 +4,8 @@
 #define VNLC_SWITCH_CASE_PARSING_RESULT_HPP
 
 #include "../../ast/expression/VnlcExpressionNode.hpp"
-#include "../../ast/other/VnlcTypeNode.hpp"
 #include "../../ast/statement/VnlcSwitchStatementType.hpp"
+#include "../../ast/type/VnlcTypeNode.hpp"
 #include <optional>
 
 struct VnlcSwitchCaseParsingResult {

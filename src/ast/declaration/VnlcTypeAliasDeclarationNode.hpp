@@ -3,7 +3,7 @@
 #ifndef VNLC_TYPE_ALIAS_DECLARATION_NODE_HPP
 #define VNLC_TYPE_ALIAS_DECLARATION_NODE_HPP
 
-#include "../other/VnlcTypeNode.hpp"
+#include "../type/VnlcTypeNode.hpp"
 #include "VnlcTypeDeclarationNode.hpp"
 #include <memory>
 #include <vector>

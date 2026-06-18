@@ -5,7 +5,7 @@
 
 #include "../declaration/VnlcVariableDeclarationType.hpp"
 #include "../expression/VnlcExpressionNode.hpp"
-#include "../other/VnlcTypeAnnotationNode.hpp"
+#include "../type/VnlcTypeAnnotationNode.hpp"
 #include "VnlcLoopStatementNode.hpp"
 #include <memory>
 
