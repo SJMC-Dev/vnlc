@@ -58,11 +58,11 @@ add_executable(
     ast/other/VnlcTypeNode.cpp
     parser/VnlcParser.cpp
     diagnostic/VnlcDiagnostic.cpp
-    semantic/VnlcSymbol.cpp
+    semantic/symbol/VnlcSymbol.cpp
     semantic/VnlcSemanticContext.cpp
     semantic/VnlcSemanticAnalysisResult.cpp
     semantic/VnlcSemanticAnalyzer.cpp
-    semantic/VnlcScope.cpp
+    semantic/scope/VnlcScope.cpp
     semantic/type/VnlcSemanticType.cpp
     semantic/type/VnlcPrimitiveType.cpp
     semantic/type/VnlcReferenceType.cpp
