@@ -1,0 +1,28 @@
+{
+    "ExampleClass": {
+        "category": "class",
+        "final": false,
+        "genericParameters": [],
+        "properties": {
+            "ExampleProperty1": {
+                "category": "property",
+                "type": "int",
+                "readonly": true,
+                "static": true,
+                "accessModifier": "private"
+            },
+            "ExampleProperty2": {
+                "category": "property",
+                "type": "vanillang.ui.TextDisplayUi",
+                "readonly": false,
+                "static": false,
+                "accessModifier": "public"
+            },
+            "methods": {
+                "ExampleMethod": {
+                    "category": "method"
+                }
+            }
+        }
+    }
+}

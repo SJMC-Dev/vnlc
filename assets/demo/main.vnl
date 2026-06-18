@@ -10,6 +10,8 @@ import vanillang.std.{
     Random
 }
 
+import module.parent.moduleinterface.demo
+
 interface Movable<T> {
     func move(targetPos: Vec3<T>) -> void
 }
