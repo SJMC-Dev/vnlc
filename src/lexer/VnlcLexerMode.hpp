@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_LEXER_MODE_HPP
 #define VNLC_LEXER_MODE_HPP
 

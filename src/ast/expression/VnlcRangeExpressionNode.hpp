@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_RANGE_EXPRESSION_NODE_HPP
 #define VNLC_RANGE_EXPRESSION_NODE_HPP
 

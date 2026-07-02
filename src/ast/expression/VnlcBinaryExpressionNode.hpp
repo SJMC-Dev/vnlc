@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_BINARY_EXPRESSION_NODE_HPP
 #define VNLC_BINARY_EXPRESSION_NODE_HPP
 

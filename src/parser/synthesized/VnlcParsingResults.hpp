@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_PARSING_RESULTS_HPP
 #define VNLC_PARSING_RESULTS_HPP
 
@@ -47,7 +45,7 @@
 #include "VnlcInterfaceDeclarationParsingResult.hpp"         // IWYU pragma: export
 #include "VnlcInterfaceMethodDeclarationParsingResult.hpp"   // IWYU pragma: export
 #include "VnlcInterpolationParsingResult.hpp"                // IWYU pragma: export
-#include "VnlcListLikeLiteralParsingResult.hpp"                  // IWYU pragma: export
+#include "VnlcListLikeLiteralParsingResult.hpp"              // IWYU pragma: export
 #include "VnlcLiteralParsingResult.hpp"                      // IWYU pragma: export
 #include "VnlcLogicalAndExpressionParsingResult.hpp"         // IWYU pragma: export
 #include "VnlcLogicalOrExpressionParsingResult.hpp"          // IWYU pragma: export

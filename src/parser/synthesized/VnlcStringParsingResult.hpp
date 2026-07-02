@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_STRING_PARSING_RESULT_HPP
 #define VNLC_STRING_PARSING_RESULT_HPP
 

@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_VOID_TYPE_HPP
 #define VNLC_VOID_TYPE_HPP
 

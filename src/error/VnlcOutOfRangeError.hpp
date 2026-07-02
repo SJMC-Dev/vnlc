@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_OUT_OF_RANGE_ERROR_HPP
 #define VNLC_OUT_OF_RANGE_ERROR_HPP
 

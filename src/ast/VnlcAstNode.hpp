@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_AST_NODE_HPP
 #define VNLC_AST_NODE_HPP
 

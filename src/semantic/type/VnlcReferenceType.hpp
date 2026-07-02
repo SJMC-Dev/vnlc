@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_REFERENCE_TYPE_HPP
 #define VNLC_REFERENCE_TYPE_HPP
 

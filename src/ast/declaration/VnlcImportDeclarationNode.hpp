@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_IMPORT_DECLARATION_NODE_HPP
 #define VNLC_IMPORT_DECLARATION_NODE_HPP
 
@@ -15,12 +13,7 @@ private:
     std::vector<VnlcImportDeclarationItem> namePartsListWithAliases;
 
 public:
-    VnlcImportDeclarationNode(
-        bool relative,
-        std::vector<VnlcImportDeclarationItem>&& namePartsListWithAliases,
-        const VnlcToken& firstToken,
-        const VnlcToken& lastToken
-    ) noexcept;
+    VnlcImportDeclarationNode(bool relative, std::vector<VnlcImportDeclarationItem>&& namePartsListWithAliases, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
 
     [[nodiscard]] const bool isRelative() const noexcept;
     [[nodiscard]] const std::vector<VnlcImportDeclarationItem>& getNamePartsListWithAliases() const noexcept;

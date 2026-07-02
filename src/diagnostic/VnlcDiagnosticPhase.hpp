@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_DIAGNOSTIC_PHASE_HPP
 #define VNLC_DIAGNOSTIC_PHASE_HPP
 

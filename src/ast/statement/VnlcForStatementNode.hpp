@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_FOR_STATEMENT_NODE_HPP
 #define VNLC_FOR_STATEMENT_NODE_HPP
 

@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_TOKEN_HPP
 #define VNLC_TOKEN_HPP
 

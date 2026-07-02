@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_SWITCH_STATEMENT_TYPE_HPP
 #define VNLC_SWITCH_STATEMENT_TYPE_HPP
 

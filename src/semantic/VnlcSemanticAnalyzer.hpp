@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_SEMANTIC_ANALYZER_HPP
 #define VNLC_SEMANTIC_ANALYZER_HPP
 

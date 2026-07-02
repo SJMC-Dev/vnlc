@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_SYMBOL_KIND_HPP
 #define VNLC_SYMBOL_KIND_HPP
 

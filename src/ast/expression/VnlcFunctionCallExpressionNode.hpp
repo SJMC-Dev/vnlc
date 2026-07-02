@@ -1,12 +1,10 @@
-#pragma once
-
 #ifndef VNLC_FUNCTION_CALL_EXPRESSION_NODE_HPP
 #define VNLC_FUNCTION_CALL_EXPRESSION_NODE_HPP
 
 #include "VnlcExpressionNode.hpp"
 #include <memory>
-#include <vector>
 #include <optional>
+#include <vector>
 
 class VnlcFunctionCallExpressionNode : public VnlcExpressionNode {
 private:

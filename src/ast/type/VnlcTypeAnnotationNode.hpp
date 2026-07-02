@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_TYPE_ANNOTATION_NODE_HPP
 #define VNLC_TYPE_ANNOTATION_NODE_HPP
 

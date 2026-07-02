@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_BREAK_STATEMENT_NODE_HPP
 #define VNLC_BREAK_STATEMENT_NODE_HPP
 

@@ -1,12 +1,9 @@
-#pragma once
-
 #ifndef VNLC_EXPRESSION_STATEMENT_NODE_HPP
 #define VNLC_EXPRESSION_STATEMENT_NODE_HPP
 
 #include "../expression/VnlcExpressionNode.hpp"
 #include "VnlcStatementNode.hpp"
 #include <memory>
-
 
 class VnlcExpressionStatementNode : public VnlcStatementNode {
 private:

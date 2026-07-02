@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_RUNNING_MODE_UTIL_HPP
 #define VNLC_RUNNING_MODE_UTIL_HPP
 

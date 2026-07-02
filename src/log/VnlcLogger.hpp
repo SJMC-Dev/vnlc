@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_LOGGER_HPP
 #define VNLC_LOGGER_HPP
 

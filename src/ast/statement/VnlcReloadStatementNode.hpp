@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_RELOAD_STATEMENT_NODE_HPP
 #define VNLC_RELOAD_STATEMENT_NODE_HPP
 

@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_SESSION_HPP
 #define VNLC_SESSION_HPP
 

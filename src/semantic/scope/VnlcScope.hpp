@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_SCOPE_HPP
 #define VNLC_SCOPE_HPP
 

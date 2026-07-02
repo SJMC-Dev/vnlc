@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_ILLEGAL_INPUT_ERROR_HPP
 #define VNLC_ILLEGAL_INPUT_ERROR_HPP
 

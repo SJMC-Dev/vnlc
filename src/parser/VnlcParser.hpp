@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_PARSER_HPP
 #define VNLC_PARSER_HPP
 

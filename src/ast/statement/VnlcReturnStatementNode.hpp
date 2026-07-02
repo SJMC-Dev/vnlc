@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_RETURN_STATEMENT_NODE_HPP
 #define VNLC_RETURN_STATEMENT_NODE_HPP
 

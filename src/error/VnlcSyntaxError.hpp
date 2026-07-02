@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_SYNTAX_ERROR_HPP
 #define VNLC_SYNTAX_ERROR_HPP
 

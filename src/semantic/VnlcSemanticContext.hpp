@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_SEMANTIC_CONTEXT_HPP
 #define VNLC_SEMANTIC_CONTEXT_HPP
 
@@ -11,8 +9,8 @@
 #include "scope/VnlcScope.hpp"
 #include <memory>
 #include <string_view>
-#include <vector>
 #include <tuple>
+#include <vector>
 
 class VnlcSemanticContext {
 private:

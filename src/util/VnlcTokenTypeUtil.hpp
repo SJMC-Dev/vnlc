@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef VNLC_TOKEN_TYPE_UTIL_HPP
 #define VNLC_TOKEN_TYPE_UTIL_HPP
 
@@ -9,6 +7,6 @@
 namespace VnlcTokenTypeUtil {
     [[nodiscard]] std::string_view toString(VnlcTokenType type);
     bool isGeneralizedIdentifier(VnlcTokenType type);
-}
+} // namespace VnlcTokenTypeUtil
 
 #endif // VNLC_TOKEN_TYPE_UTIL_HPP
