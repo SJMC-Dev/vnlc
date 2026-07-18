@@ -12,14 +12,16 @@ private:
     VnlcSymbolKind kind;
     VnlcSymbolOrigin origin;
     std::string name;
+    std::string sourceName; // The original name of the symbol as it appears in the source code
     const VnlcAstNode* localDeclarationNode;
 
 public:
-    VnlcSymbol(VnlcSymbolKind kind, VnlcSymbolOrigin origin, std::string_view name, const VnlcAstNode* localDeclarationNode);
+    VnlcSymbol(VnlcSymbolKind kind, VnlcSymbolOrigin origin, std::string_view name, std::string_view sourceName, const VnlcAstNode* localDeclarationNode);
 
     [[nodiscard]] VnlcSymbolKind getKind() const noexcept;
     [[nodiscard]] VnlcSymbolOrigin getOrigin() const noexcept;
     [[nodiscard]] std::string_view getName() const noexcept;
+    [[nodiscard]] std::string_view getSourceName() const noexcept;
     [[nodiscard]] const VnlcAstNode* getLocalDeclarationNode() const noexcept;
 };
 
