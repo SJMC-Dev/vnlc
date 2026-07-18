@@ -1,0 +1,18 @@
+class Foo {
+    private bar: string
+
+    func init(bar: readonly string) {
+        this.bar = bar
+    }
+
+    func baz() {
+        return
+    }
+}
+
+func onLoad() {
+    let foo = Foo("qux")
+    foo.baz()
+}
+
+export Foo
