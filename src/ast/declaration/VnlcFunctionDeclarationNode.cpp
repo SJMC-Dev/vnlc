@@ -57,7 +57,7 @@ void VnlcFunctionDeclarationNode::generateUniqueName() noexcept {
         std::string typeName;
         for (auto it = std::get<1>(param)->getTypeNode().getNameParts().begin(); it != std::get<1>(param)->getTypeNode().getNameParts().end(); it++) {
             if (it != std::get<1>(param)->getTypeNode().getNameParts().begin()) {
-                typeName.push_back('_');
+                typeName.push_back('.');
             }
             typeName.append(*it);
         }
@@ -66,9 +66,9 @@ void VnlcFunctionDeclarationNode::generateUniqueName() noexcept {
 
     uniqueName = functionName;
     if (!parameterTypes.empty()) {
-        uniqueName.push_back('_');
+        uniqueName.push_back('-');
         for (auto& paramType : parameterTypes) {
-            uniqueName.append("__");
+            uniqueName.append("-");
             uniqueName.append(paramType);
         }
     }
