@@ -67,7 +67,6 @@ add_executable(
     semantic/type/VnlcPrimitiveType.cpp
     semantic/type/VnlcReferenceType.cpp
     semantic/type/VnlcVoidType.cpp
-    environment/VnlcEnvironment.cpp
 )
 
 target_link_libraries(
