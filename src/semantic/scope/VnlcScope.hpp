@@ -12,7 +12,7 @@ class VnlcScope {
 private:
     VnlcScopeKind kind;
     const VnlcScope* parent;
-    std::unordered_map<std::string, std::vector<VnlcSymbol>> symbols;
+    std::unordered_map<std::string, VnlcSymbol> symbols;
 
 public:
     explicit VnlcScope(VnlcScopeKind kind, const VnlcScope* parent = nullptr) noexcept;
