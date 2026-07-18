@@ -1105,7 +1105,7 @@ VnlcMetadataTermParsingResult VnlcParser::parseMetadataTerm() {
 }
 
 VnlcFunctionSignatureParsingResult VnlcParser::parseFunctionSignature() {
-    std::unique_ptr<std::string> name;
+    std::string name;
     std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>> parameters;
     std::optional<std::unique_ptr<VnlcTypeAnnotationNode>> returnType;
 
@@ -1116,7 +1116,7 @@ VnlcFunctionSignatureParsingResult VnlcParser::parseFunctionSignature() {
     if (!check(VnlcTokenType::IDENTIFIER)) {
         throw VnlcSyntaxError("Expected function name", peek().getLine(), peek().getColumn());
     } else {
-        name = std::make_unique<std::string>(peek().getValue());
+        name = peek().getValue();
         advance();
     }
 

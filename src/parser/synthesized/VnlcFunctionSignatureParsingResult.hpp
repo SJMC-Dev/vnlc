@@ -8,7 +8,7 @@
 #include <vector>
 
 struct VnlcFunctionSignatureParsingResult {
-    std::unique_ptr<std::string> name;
+    std::string name;
     std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>> parameters;
     std::optional<std::unique_ptr<VnlcTypeAnnotationNode>> returnType;
 };
