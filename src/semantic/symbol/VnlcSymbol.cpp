@@ -1,6 +1,6 @@
 #include "VnlcSymbol.hpp"
 
-VnlcSymbol::VnlcSymbol(VnlcSymbolKind kind, VnlcSymbolOrigin origin, std::string name, const VnlcAstNode* localDeclarationNode)
+VnlcSymbol::VnlcSymbol(VnlcSymbolKind kind, VnlcSymbolOrigin origin, std::string_view name, const VnlcAstNode* localDeclarationNode)
     : kind(kind),
       origin(origin),
       name(std::move(name)),

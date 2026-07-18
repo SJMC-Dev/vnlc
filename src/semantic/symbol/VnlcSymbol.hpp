@@ -15,7 +15,7 @@ private:
     const VnlcAstNode* localDeclarationNode;
 
 public:
-    VnlcSymbol(VnlcSymbolKind kind, VnlcSymbolOrigin origin, std::string name, const VnlcAstNode* localDeclarationNode);
+    VnlcSymbol(VnlcSymbolKind kind, VnlcSymbolOrigin origin, std::string_view name, const VnlcAstNode* localDeclarationNode);
 
     [[nodiscard]] VnlcSymbolKind getKind() const noexcept;
     [[nodiscard]] VnlcSymbolOrigin getOrigin() const noexcept;
