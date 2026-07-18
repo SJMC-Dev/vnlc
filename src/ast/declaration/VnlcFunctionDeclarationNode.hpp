@@ -18,10 +18,13 @@ private:
     VnlcFunctionDeclarationType::AccessModifier accessModifier;
     VnlcFunctionDeclarationType::Binding binding;
 
-    std::unique_ptr<std::string> name;
+    std::string name;
+    std::string uniqueName;
     std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>> parameters;
     std::optional<std::unique_ptr<VnlcTypeAnnotationNode>> returnType;
     std::optional<std::unique_ptr<VnlcBlockStatementNode>> body;
+
+    void generateUniqueName() noexcept;
 
 public:
     VnlcFunctionDeclarationNode(
@@ -56,6 +59,7 @@ public:
     [[nodiscard]] const VnlcFunctionDeclarationType::AccessModifier getAccessModifier() const noexcept;
     [[nodiscard]] const VnlcFunctionDeclarationType::Binding getBinding() const noexcept;
     [[nodiscard]] std::string_view getName() const noexcept;
+    [[nodiscard]] std::string_view getUniqueName() const noexcept;
     [[nodiscard]] const std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>>& getParameters() const noexcept;
     [[nodiscard]] const std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>& getReturnType() const noexcept;
     [[nodiscard]] const std::optional<std::unique_ptr<VnlcBlockStatementNode>>& getBody() const noexcept;
