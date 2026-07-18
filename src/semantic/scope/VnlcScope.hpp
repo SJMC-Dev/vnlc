@@ -5,7 +5,7 @@
 #include "VnlcScopeKind.hpp"
 #include <string>
 #include <unordered_map>
-#include <vector>
+#include <optional>
 
 class VnlcScope {
 
@@ -19,8 +19,8 @@ public:
 
     bool declare(VnlcSymbol&& symbol);
     [[nodiscard]] VnlcScopeKind getKind() const noexcept;
-    [[nodiscard]] const std::vector<VnlcSymbol>& lookupLocal(std::string_view name) const;
-    [[nodiscard]] const std::vector<VnlcSymbol>& lookup(std::string_view name) const;
+    [[nodiscard]] std::optional<const VnlcSymbol*> lookupLocal(std::string_view name) const;
+    [[nodiscard]] std::optional<const VnlcSymbol*> lookup(std::string_view name) const;
 };
 
 #endif // VNLC_SCOPE_HPP
