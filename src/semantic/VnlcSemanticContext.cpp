@@ -52,6 +52,22 @@ const VnlcEnumDeclarationNode* VnlcSemanticContext::getCurrentEnum() const noexc
     return currentEnum;
 }
 
+void VnlcSemanticContext::setCurrentFunction(const VnlcFunctionDeclarationNode* functionDecl) noexcept {
+    currentFunction = functionDecl;
+}
+
+void VnlcSemanticContext::setCurrentClass(const VnlcClassDeclarationNode* classDecl) noexcept {
+    currentClass = classDecl;
+}
+
+void VnlcSemanticContext::setCurrentInterface(const VnlcInterfaceDeclarationNode* interfaceDecl) noexcept {
+    currentInterface = interfaceDecl;
+}
+
+void VnlcSemanticContext::setCurrentEnum(const VnlcEnumDeclarationNode* enumDecl) noexcept {
+    currentEnum = enumDecl;
+}
+
 unsigned int VnlcSemanticContext::getLoopDepth() const noexcept {
     return loopDepth;
 }

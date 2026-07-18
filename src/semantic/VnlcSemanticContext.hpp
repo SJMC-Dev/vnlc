@@ -53,6 +53,11 @@ public:
     [[nodiscard]] const VnlcInterfaceDeclarationNode* getCurrentInterface() const noexcept;
     [[nodiscard]] const VnlcEnumDeclarationNode* getCurrentEnum() const noexcept;
 
+    void setCurrentFunction(const VnlcFunctionDeclarationNode* functionDecl) noexcept;
+    void setCurrentClass(const VnlcClassDeclarationNode* classDecl) noexcept;
+    void setCurrentInterface(const VnlcInterfaceDeclarationNode* interfaceDecl) noexcept;
+    void setCurrentEnum(const VnlcEnumDeclarationNode* enumDecl) noexcept;
+
     [[nodiscard]] unsigned int getLoopDepth() const noexcept;
     [[nodiscard]] unsigned int getSwitchDepth() const noexcept;
 
