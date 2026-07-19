@@ -12,7 +12,7 @@
 #include "../config/VnlcConfig.hpp"
 #include "VnlcSemanticAnalysisResult.hpp"
 #include "VnlcSemanticContext.hpp"
-#include "type/VnlcSemanticType.hpp"
+#include "type/typeinf/VnlcTypeInferenceResult.hpp"
 
 class VnlcSemanticAnalyzer {
 private:
@@ -32,8 +32,8 @@ private:
     void checkExpression(const VnlcExpressionNode& expression);
     void checkType(const VnlcTypeNode& type);
 
-    [[nodiscard]] VnlcSemanticType inferExpressionType(const VnlcExpressionNode& expression);
-    [[nodiscard]] VnlcSemanticType inferFunctionReturnType(const VnlcFunctionDeclarationNode& funcDecl);
+    [[nodiscard]] VnlcTypeInferenceResult inferExpressionType(const VnlcExpressionNode& expression);
+    [[nodiscard]] VnlcTypeInferenceResult inferFunctionReturnType(const VnlcFunctionDeclarationNode& funcDecl);
 
 public:
     explicit VnlcSemanticAnalyzer(const VnlcModuleNode& module);
