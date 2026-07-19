@@ -1,5 +1,9 @@
 #include "VnlcSemanticAnalyzer.hpp"
+#include "../ast/expression/VnlcIdentifierExpressionNode.hpp"
+#include "../ast/expression/VnlcSimpleLiteralExpressionNode.hpp"
+#include "../ast/expression/VnlcStringLiteralExpressionNode.hpp"
 #include <fmt/core.h>
+#include <string_view>
 
 VnlcSemanticAnalyzer::VnlcSemanticAnalyzer(const VnlcModuleNode& module) : module(module) {}
 
@@ -29,7 +33,7 @@ bool VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode) {
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::MODULE, nullptr));
 
     for (const auto& importDecl : moduleNode.getImportDeclarations()) {
-        checkImport(*importDecl);
+        success &= checkImport(*importDecl);
     }
 
     for (const auto& topIdentifierDecl : moduleNode.getTopIdentifierDeclarations()) {
@@ -39,31 +43,37 @@ bool VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode) {
             VnlcSymbol symbol(VnlcSymbolKind::VARIABLE, VnlcSymbolOrigin::LOCAL, varDecl->getName(), varDecl->getName(), varDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
                 context.reportError(*varDecl, fmt::format("Redeclaration of symbol '{}'", varDecl->getName()));
+                success = false;
             }
         } else if (auto* funcDecl = dynamic_cast<VnlcFunctionDeclarationNode*>(declNode)) {
             VnlcSymbol symbol(VnlcSymbolKind::FUNCTION, VnlcSymbolOrigin::LOCAL, funcDecl->getUniqueName(), funcDecl->getName(), funcDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
                 context.reportError(*funcDecl, fmt::format("Redeclaration of symbol '{}'", funcDecl->getName()));
+                success = false;
             }
         } else if (auto* classDecl = dynamic_cast<VnlcClassDeclarationNode*>(declNode)) {
             VnlcSymbol symbol(VnlcSymbolKind::CLASS, VnlcSymbolOrigin::LOCAL, classDecl->getName(), classDecl->getName(), classDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
                 context.reportError(*classDecl, fmt::format("Redeclaration of symbol '{}'", classDecl->getName()));
+                success = false;
             }
         } else if (auto* interfaceDecl = dynamic_cast<VnlcInterfaceDeclarationNode*>(declNode)) {
             VnlcSymbol symbol(VnlcSymbolKind::INTERFACE, VnlcSymbolOrigin::LOCAL, interfaceDecl->getName(), interfaceDecl->getName(), interfaceDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
                 context.reportError(*interfaceDecl, fmt::format("Redeclaration of symbol '{}'", interfaceDecl->getName()));
+                success = false;
             }
         } else if (auto* enumDecl = dynamic_cast<VnlcEnumDeclarationNode*>(declNode)) {
             VnlcSymbol symbol(VnlcSymbolKind::ENUM, VnlcSymbolOrigin::LOCAL, enumDecl->getName(), enumDecl->getName(), enumDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
                 context.reportError(*enumDecl, fmt::format("Redeclaration of symbol '{}'", enumDecl->getName()));
+                success = false;
             }
         } else if (auto* typeAliasDecl = dynamic_cast<VnlcTypeAliasDeclarationNode*>(declNode)) {
             VnlcSymbol symbol(VnlcSymbolKind::TYPE_ALIAS, VnlcSymbolOrigin::LOCAL, typeAliasDecl->getAliasName(), typeAliasDecl->getAliasName(), typeAliasDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
                 context.reportError(*typeAliasDecl, fmt::format("Redeclaration of symbol '{}'", typeAliasDecl->getAliasName()));
+                success = false;
             }
         }
     }
@@ -72,22 +82,22 @@ bool VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode) {
         VnlcDeclarationNode* declNode = topIdentifierDecl.get();
 
         if (auto* varDecl = dynamic_cast<VnlcVariableDeclarationNode*>(declNode)) {
-            checkVariableDeclaration(*varDecl);
+            success &= checkVariableDeclaration(*varDecl);
         } else if (auto* funcDecl = dynamic_cast<VnlcFunctionDeclarationNode*>(declNode)) {
-            checkFunctionDeclaration(*funcDecl);
+            success &= checkFunctionDeclaration(*funcDecl);
         } else if (auto* classDecl = dynamic_cast<VnlcClassDeclarationNode*>(declNode)) {
-            checkClassDeclaration(*classDecl);
+            success &= checkClassDeclaration(*classDecl);
         } else if (auto* interfaceDecl = dynamic_cast<VnlcInterfaceDeclarationNode*>(declNode)) {
-            checkInterfaceDeclaration(*interfaceDecl);
+            success &= checkInterfaceDeclaration(*interfaceDecl);
         } else if (auto* enumDecl = dynamic_cast<VnlcEnumDeclarationNode*>(declNode)) {
-            checkEnumDeclaration(*enumDecl);
+            success &= checkEnumDeclaration(*enumDecl);
         } else if (auto* typeAliasDecl = dynamic_cast<VnlcTypeAliasDeclarationNode*>(declNode)) {
-            checkTypeAliasDeclaration(*typeAliasDecl);
+            success &= checkTypeAliasDeclaration(*typeAliasDecl);
         }
     }
 
     for (const auto& exportDecl : moduleNode.getExportDeclarations()) {
-        checkExport(*exportDecl);
+        success &= checkExport(*exportDecl);
     }
 
     return success;
