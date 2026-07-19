@@ -89,6 +89,41 @@ bool VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode) {
     for (const auto& exportDecl : moduleNode.getExportDeclarations()) {
         checkExport(*exportDecl);
     }
+
+    return success;
+}
+
+bool VnlcSemanticAnalyzer::checkImport(const VnlcImportDeclarationNode& importDecl) {
+    // TODO: Implement import checking logic
+    return true;
+}
+
+bool VnlcSemanticAnalyzer::checkExport(const VnlcExportDeclarationNode& exportDecl) {
+    // TODO: Implement export checking logic
+    return true;
+}
+
+bool VnlcSemanticAnalyzer::checkVariableDeclaration(const VnlcVariableDeclarationNode& varDecl) {
+    bool success = true;
+    if (varDecl.getType() == VnlcVariableDeclarationType::CONST) {
+        const VnlcExpressionNode* initializer = &varDecl.getInitializer();
+        if (const auto* stringLiteral = dynamic_cast<const VnlcStringLiteralExpressionNode*>(initializer)) {
+            if (stringLiteral->getType() == VnlcStringLiteralExpressionType::FORMAT_STRING) {
+                context.reportError(varDecl, "Const variables cannot be initialized with format strings");
+                success = false;
+            } else if (!dynamic_cast<const VnlcSimpleLiteralExpressionNode*>(initializer)) {
+                context.reportError(varDecl, "Const variables must be initialized with simple literals or non-format strings");
+                success = false;
+            }
+        }
+    }
+
+    success &= checkIdentifierName(varDecl.getName(), varDecl);
+    success &= checkExpression(varDecl.getInitializer());
+
+    // TODO: Implement type checking and inference
+
+    return success;
 }
 
 VnlcSemanticAnalysisResult VnlcSemanticAnalyzer::analyze(const VnlcConfig& config) {
