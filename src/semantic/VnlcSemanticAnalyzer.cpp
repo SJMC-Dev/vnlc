@@ -3,7 +3,29 @@
 
 VnlcSemanticAnalyzer::VnlcSemanticAnalyzer(const VnlcModuleNode& module) : module(module) {}
 
-void VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode) {
+bool VnlcSemanticAnalyzer::checkIdentifierName(std::string_view name, const VnlcDeclarationNode& declNode) {
+    if (name.starts_with("__")) {
+        context.reportWarning(declNode, fmt::format("Identifier '{}' starts with '__', which is reserved for internal use", name));
+    }
+
+    return true;
+}
+
+bool VnlcSemanticAnalyzer::checkIdentifierExpressionUse(const VnlcIdentifierExpressionNode& exprNode) {
+    auto symbol = context.currentScope().lookup(exprNode.getName());
+    if (symbol == std::nullopt) {
+        context.reportError(exprNode, fmt::format("Use of undeclared identifier '{}'", exprNode.getName()));
+        return false;
+    } else if (!dynamic_cast<const VnlcVariableDeclarationNode*>(symbol.value()->getLocalDeclarationNode())) {
+        context.reportError(exprNode, fmt::format("Identifier '{}' is not a variable", exprNode.getName()));
+        return false;
+    }
+
+    return true;
+}
+
+bool VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode) {
+    bool success = true;
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::MODULE, nullptr));
 
     for (const auto& importDecl : moduleNode.getImportDeclarations()) {
