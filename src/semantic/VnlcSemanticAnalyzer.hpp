@@ -6,6 +6,7 @@
 #include "../ast/declaration/VnlcTypeAliasDeclarationNode.hpp"
 #include "../ast/declaration/VnlcVariableDeclarationNode.hpp"
 #include "../ast/expression/VnlcExpressionNode.hpp"
+#include "../ast/expression/VnlcIdentifierExpressionNode.hpp"
 #include "../ast/module/VnlcModuleNode.hpp"
 #include "../ast/statement/VnlcStatementNode.hpp"
 #include "../ast/type/VnlcTypeNode.hpp"
