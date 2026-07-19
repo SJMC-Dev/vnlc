@@ -19,18 +19,22 @@ private:
     const VnlcModuleNode& module;
     VnlcSemanticContext context;
 
-    void checkModule(const VnlcModuleNode& moduleNode);
-    void checkImport(const VnlcImportDeclarationNode& importDecl);
-    void checkExport(const VnlcExportDeclarationNode& exportDecl);
-    void checkVariableDeclaration(const VnlcVariableDeclarationNode& varDecl);
-    void checkFunctionDeclaration(const VnlcFunctionDeclarationNode& funcDecl);
-    void checkClassDeclaration(const VnlcClassDeclarationNode& classDecl);
-    void checkInterfaceDeclaration(const VnlcInterfaceDeclarationNode& interfaceDecl);
-    void checkEnumDeclaration(const VnlcEnumDeclarationNode& enumDecl);
-    void checkTypeAliasDeclaration(const VnlcTypeAliasDeclarationNode& typeAliasDecl);
-    void checkStatement(const VnlcStatementNode& statement);
-    void checkExpression(const VnlcExpressionNode& expression);
-    void checkType(const VnlcTypeNode& type);
+    bool checkIdentifierName(std::string_view name, const VnlcDeclarationNode& declNode);
+    bool checkIdentifierExpressionUse(const VnlcIdentifierExpressionNode& exprNode);
+
+    bool checkModule(const VnlcModuleNode& moduleNode);
+    bool checkImport(const VnlcImportDeclarationNode& importDecl);
+    bool checkExport(const VnlcExportDeclarationNode& exportDecl);
+    bool checkVariableDeclaration(const VnlcVariableDeclarationNode& varDecl);
+    bool checkFunctionDeclaration(const VnlcFunctionDeclarationNode& funcDecl);
+    bool checkClassDeclaration(const VnlcClassDeclarationNode& classDecl);
+    bool checkInterfaceDeclaration(const VnlcInterfaceDeclarationNode& interfaceDecl);
+    bool checkEnumDeclaration(const VnlcEnumDeclarationNode& enumDecl);
+    bool checkTypeAliasDeclaration(const VnlcTypeAliasDeclarationNode& typeAliasDecl);
+
+    bool checkStatement(const VnlcStatementNode& statement);
+    bool checkExpression(const VnlcExpressionNode& expression);
+    bool checkType(const VnlcTypeNode& type);
 
     [[nodiscard]] VnlcTypeInferenceResult inferExpressionType(const VnlcExpressionNode& expression);
     [[nodiscard]] VnlcTypeInferenceResult inferFunctionReturnType(const VnlcFunctionDeclarationNode& funcDecl);
