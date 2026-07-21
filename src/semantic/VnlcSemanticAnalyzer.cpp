@@ -137,6 +137,20 @@ bool VnlcSemanticAnalyzer::checkVariableDeclaration(const VnlcVariableDeclaratio
     return success;
 }
 
+bool VnlcSemanticAnalyzer::checkFunctionDeclaration(const VnlcFunctionDeclarationNode& funcDecl) {
+    bool success = true;
+    success &= checkIdentifierName(funcDecl.getName(), funcDecl);
+
+    context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::FUNCTION, &context.currentScope()));
+    for (const auto& param : funcDecl.getParameters()) {
+        // TODO: Check repeated parameter names and then declare them in the current scope
+    }
+
+    // TODO: Implement return type checking and inference
+
+    return success;
+}
+
 VnlcSemanticAnalysisResult VnlcSemanticAnalyzer::analyze(const VnlcConfig& config) {
     checkModule(module);
 
