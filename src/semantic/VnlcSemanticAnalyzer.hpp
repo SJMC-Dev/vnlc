@@ -1,8 +1,12 @@
 #ifndef VNLC_SEMANTIC_ANALYZER_HPP
 #define VNLC_SEMANTIC_ANALYZER_HPP
 
+#include "../ast/declaration/VnlcClassDeclarationNode.hpp"
+#include "../ast/declaration/VnlcEnumDeclarationNode.hpp"
 #include "../ast/declaration/VnlcExportDeclarationNode.hpp"
+#include "../ast/declaration/VnlcFunctionDeclarationNode.hpp"
 #include "../ast/declaration/VnlcImportDeclarationNode.hpp"
+#include "../ast/declaration/VnlcInterfaceDeclarationNode.hpp"
 #include "../ast/declaration/VnlcTypeAliasDeclarationNode.hpp"
 #include "../ast/declaration/VnlcVariableDeclarationNode.hpp"
 #include "../ast/expression/VnlcExpressionNode.hpp"
