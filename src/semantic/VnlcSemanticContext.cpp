@@ -36,38 +36,6 @@ const std::vector<VnlcDiagnostic>& VnlcSemanticContext::getNotes() const noexcep
     return notes;
 }
 
-const VnlcFunctionDeclarationNode* VnlcSemanticContext::getCurrentFunction() const noexcept {
-    return currentFunction;
-}
-
-const VnlcClassDeclarationNode* VnlcSemanticContext::getCurrentClass() const noexcept {
-    return currentClass;
-}
-
-const VnlcInterfaceDeclarationNode* VnlcSemanticContext::getCurrentInterface() const noexcept {
-    return currentInterface;
-}
-
-const VnlcEnumDeclarationNode* VnlcSemanticContext::getCurrentEnum() const noexcept {
-    return currentEnum;
-}
-
-void VnlcSemanticContext::setCurrentFunction(const VnlcFunctionDeclarationNode* functionDecl) noexcept {
-    currentFunction = functionDecl;
-}
-
-void VnlcSemanticContext::setCurrentClass(const VnlcClassDeclarationNode* classDecl) noexcept {
-    currentClass = classDecl;
-}
-
-void VnlcSemanticContext::setCurrentInterface(const VnlcInterfaceDeclarationNode* interfaceDecl) noexcept {
-    currentInterface = interfaceDecl;
-}
-
-void VnlcSemanticContext::setCurrentEnum(const VnlcEnumDeclarationNode* enumDecl) noexcept {
-    currentEnum = enumDecl;
-}
-
 unsigned int VnlcSemanticContext::getLoopDepth() const noexcept {
     return loopDepth;
 }
