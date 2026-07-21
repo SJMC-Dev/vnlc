@@ -3,9 +3,9 @@
 
 #include "../symbol/VnlcSymbol.hpp"
 #include "VnlcScopeKind.hpp"
+#include <optional>
 #include <string>
 #include <unordered_map>
-#include <optional>
 
 class VnlcScope {
 
@@ -21,6 +21,7 @@ public:
     [[nodiscard]] VnlcScopeKind getKind() const noexcept;
     [[nodiscard]] std::optional<const VnlcSymbol*> lookupLocal(std::string_view name) const;
     [[nodiscard]] std::optional<const VnlcSymbol*> lookup(std::string_view name) const;
+    [[nodiscard]] const VnlcScope* findParent() const noexcept;
 };
 
 #endif // VNLC_SCOPE_HPP

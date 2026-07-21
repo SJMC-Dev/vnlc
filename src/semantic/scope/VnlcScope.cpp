@@ -35,3 +35,7 @@ std::optional<const VnlcSymbol*> VnlcScope::lookup(std::string_view name) const 
 VnlcScopeKind VnlcScope::getKind() const noexcept {
     return kind;
 }
+
+const VnlcScope* VnlcScope::findParent() const noexcept {
+    return parent;
+}
