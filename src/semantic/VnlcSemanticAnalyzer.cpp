@@ -20,8 +20,9 @@ bool VnlcSemanticAnalyzer::checkIdentifierExpressionUse(const VnlcIdentifierExpr
     if (symbol == std::nullopt) {
         context.reportError(exprNode, fmt::format("Use of undeclared identifier '{}'", exprNode.getName()));
         return false;
-    } else if (!dynamic_cast<const VnlcVariableDeclarationNode*>(symbol.value()->getLocalDeclarationNode())) {
-        context.reportError(exprNode, fmt::format("Identifier '{}' is not a variable", exprNode.getName()));
+    } else if (!(dynamic_cast<const VnlcVariableDeclarationNode*>(symbol.value()->getLocalDeclarationNode()) ||
+                 dynamic_cast<const VnlcFunctionDeclarationNode*>(symbol.value()->getLocalDeclarationNode()))) {
+        context.reportError(exprNode, fmt::format("Identifier '{}' is not a variable or function", exprNode.getName()));
         return false;
     }
 
