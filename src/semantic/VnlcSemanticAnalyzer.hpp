@@ -8,7 +8,7 @@
 #include "../ast/declaration/VnlcImportDeclarationNode.hpp"
 #include "../ast/declaration/VnlcInterfaceDeclarationNode.hpp"
 #include "../ast/declaration/VnlcTypeAliasDeclarationNode.hpp"
-#include "../ast/declaration/VnlcVariableDeclarationNode.hpp"
+#include "../ast/declaration/VnlcValueDeclarationNode.hpp"
 #include "../ast/expression/VnlcExpressionNode.hpp"
 #include "../ast/expression/VnlcIdentifierExpressionNode.hpp"
 #include "../ast/module/VnlcModuleNode.hpp"
@@ -30,7 +30,7 @@ private:
     bool checkModule(const VnlcModuleNode& moduleNode);
     bool checkImport(const VnlcImportDeclarationNode& importDecl);
     bool checkExport(const VnlcExportDeclarationNode& exportDecl);
-    bool checkVariableDeclaration(const VnlcVariableDeclarationNode& varDecl);
+    bool checkVariableDeclaration(const VnlcValueDeclarationNode& varDecl);
     bool checkFunctionDeclaration(const VnlcFunctionDeclarationNode& funcDecl);
     bool checkClassDeclaration(const VnlcClassDeclarationNode& classDecl);
     bool checkInterfaceDeclaration(const VnlcInterfaceDeclarationNode& interfaceDecl);

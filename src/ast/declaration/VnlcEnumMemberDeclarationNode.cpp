@@ -2,7 +2,7 @@
 
 VnlcEnumMemberDeclarationNode::VnlcEnumMemberDeclarationNode(
     std::string&& name,
-    std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>>&& associatedValues,
+    std::vector<std::unique_ptr<VnlcValueDeclarationNode>>&& associatedValues,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
 ) noexcept
@@ -12,7 +12,7 @@ VnlcEnumMemberDeclarationNode::VnlcEnumMemberDeclarationNode(
 
 VnlcEnumMemberDeclarationNode::VnlcEnumMemberDeclarationNode(
     std::string&& name,
-    std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>>&& associatedValues,
+    std::vector<std::unique_ptr<VnlcValueDeclarationNode>>&& associatedValues,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken,
     std::vector<VnlcDeclarationItem::MetadataTerm>&& metadataTerms
@@ -25,6 +25,6 @@ std::string_view VnlcEnumMemberDeclarationNode::getName() const noexcept {
     return name;
 }
 
-const std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>>& VnlcEnumMemberDeclarationNode::getAssociatedValues() const noexcept {
+const std::vector<std::unique_ptr<VnlcValueDeclarationNode>>& VnlcEnumMemberDeclarationNode::getAssociatedValues() const noexcept {
     return associatedValues;
 }

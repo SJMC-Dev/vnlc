@@ -5,9 +5,9 @@
 #include "../type/VnlcTypeAnnotationNode.hpp"
 #include "VnlcDeclarationNode.hpp"
 #include "VnlcFunctionDeclarationType.hpp"
+#include "VnlcValueDeclarationNode.hpp"
 #include <memory>
 #include <optional>
-#include <utility>
 
 class VnlcFunctionDeclarationNode : public VnlcDeclarationNode {
 private:
@@ -20,11 +20,11 @@ private:
 
     std::string name;
     std::string uniqueName;
-    std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>> parameters;
+    std::vector<std::unique_ptr<VnlcValueDeclarationNode>> parameters;
     std::optional<std::unique_ptr<VnlcTypeAnnotationNode>> returnType;
     std::optional<std::unique_ptr<VnlcBlockStatementNode>> body;
 
-    void generateUniqueName() noexcept;
+    void generateUniqueName();
 
 public:
     VnlcFunctionDeclarationNode(
@@ -33,7 +33,7 @@ public:
         VnlcFunctionDeclarationType::AccessModifier accessModifier,
         VnlcFunctionDeclarationType::Binding binding,
         std::string&& name,
-        std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>>&& parameters,
+        std::vector<std::unique_ptr<VnlcValueDeclarationNode>>&& parameters,
         std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& returnType,
         std::optional<std::unique_ptr<VnlcBlockStatementNode>>&& body,
         const VnlcToken& firstToken,
@@ -46,7 +46,7 @@ public:
         VnlcFunctionDeclarationType::AccessModifier accessModifier,
         VnlcFunctionDeclarationType::Binding binding,
         std::string&& name,
-        std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>>&& parameters,
+        std::vector<std::unique_ptr<VnlcValueDeclarationNode>>&& parameters,
         std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& returnType,
         std::optional<std::unique_ptr<VnlcBlockStatementNode>>&& body,
         const VnlcToken& firstToken,
@@ -60,7 +60,7 @@ public:
     [[nodiscard]] const VnlcFunctionDeclarationType::Binding getBinding() const noexcept;
     [[nodiscard]] std::string_view getName() const noexcept;
     [[nodiscard]] std::string_view getUniqueName() const noexcept;
-    [[nodiscard]] const std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>>& getParameters() const noexcept;
+    [[nodiscard]] const std::vector<std::unique_ptr<VnlcValueDeclarationNode>>& getParameters() const noexcept;
     [[nodiscard]] const std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>& getReturnType() const noexcept;
     [[nodiscard]] const std::optional<std::unique_ptr<VnlcBlockStatementNode>>& getBody() const noexcept;
 };

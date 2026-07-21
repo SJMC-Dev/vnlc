@@ -1,13 +1,13 @@
 #include "VnlcVariableDeclarationStatementNode.hpp"
 
 VnlcVariableDeclarationStatementNode::VnlcVariableDeclarationStatementNode(
-    std::unique_ptr<VnlcVariableDeclarationNode>&& variableDeclaration,
+    std::unique_ptr<VnlcValueDeclarationNode>&& variableDeclaration,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
 ) noexcept
     : VnlcStatementNode(firstToken, lastToken),
       variableDeclaration(std::move(variableDeclaration)) {}
 
-const VnlcVariableDeclarationNode& VnlcVariableDeclarationStatementNode::getVariableDeclaration() const noexcept {
+const VnlcValueDeclarationNode& VnlcVariableDeclarationStatementNode::getVariableDeclaration() const noexcept {
     return *variableDeclaration;
 }

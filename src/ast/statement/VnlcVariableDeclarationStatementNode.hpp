@@ -1,7 +1,7 @@
 #ifndef VNLC_VARIABLE_DECLARATION_STATEMENT_NODE_HPP
 #define VNLC_VARIABLE_DECLARATION_STATEMENT_NODE_HPP
 
-#include "../declaration/VnlcVariableDeclarationNode.hpp"
+#include "../declaration/VnlcValueDeclarationNode.hpp"
 #include "VnlcStatementNode.hpp"
 #include <memory>
 
@@ -9,12 +9,12 @@ class VnlcVariableDeclarationStatementNode : public VnlcStatementNode {
 private:
     VnlcVariableDeclarationStatementNode() = delete;
 
-    std::unique_ptr<VnlcVariableDeclarationNode> variableDeclaration;
+    std::unique_ptr<VnlcValueDeclarationNode> variableDeclaration;
 
 public:
-    VnlcVariableDeclarationStatementNode(std::unique_ptr<VnlcVariableDeclarationNode>&& variableDeclaration, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
+    VnlcVariableDeclarationStatementNode(std::unique_ptr<VnlcValueDeclarationNode>&& variableDeclaration, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
 
-    [[nodiscard]] const VnlcVariableDeclarationNode& getVariableDeclaration() const noexcept;
+    [[nodiscard]] const VnlcValueDeclarationNode& getVariableDeclaration() const noexcept;
 };
 
 #endif // VNLC_VARIABLE_DECLARATION_STATEMENT_NODE_HPP

@@ -20,7 +20,7 @@ bool VnlcSemanticAnalyzer::checkIdentifierExpressionUse(const VnlcIdentifierExpr
     if (symbol == std::nullopt) {
         context.reportError(exprNode, fmt::format("Use of undeclared identifier '{}'", exprNode.getName()));
         return false;
-    } else if (!(dynamic_cast<const VnlcVariableDeclarationNode*>(symbol.value()->getLocalDeclarationNode()) ||
+    } else if (!(dynamic_cast<const VnlcValueDeclarationNode*>(symbol.value()->getLocalDeclarationNode()) ||
                  dynamic_cast<const VnlcFunctionDeclarationNode*>(symbol.value()->getLocalDeclarationNode()))) {
         context.reportError(exprNode, fmt::format("Identifier '{}' is not a variable or function", exprNode.getName()));
         return false;
@@ -40,7 +40,7 @@ bool VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode) {
     for (const auto& topIdentifierDecl : moduleNode.getTopIdentifierDeclarations()) {
         VnlcDeclarationNode* declNode = topIdentifierDecl.get();
 
-        if (auto* varDecl = dynamic_cast<VnlcVariableDeclarationNode*>(declNode)) {
+        if (auto* varDecl = dynamic_cast<VnlcValueDeclarationNode*>(declNode)) {
             VnlcSymbol symbol(VnlcSymbolKind::VARIABLE, VnlcSymbolOrigin::LOCAL, varDecl->getName(), varDecl->getName(), varDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
                 context.reportError(*varDecl, fmt::format("Redeclaration of symbol '{}'", varDecl->getName()));
@@ -82,7 +82,7 @@ bool VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode) {
     for (const auto& topIdentifierDecl : moduleNode.getTopIdentifierDeclarations()) {
         VnlcDeclarationNode* declNode = topIdentifierDecl.get();
 
-        if (auto* varDecl = dynamic_cast<VnlcVariableDeclarationNode*>(declNode)) {
+        if (auto* varDecl = dynamic_cast<VnlcValueDeclarationNode*>(declNode)) {
             success &= checkVariableDeclaration(*varDecl);
         } else if (auto* funcDecl = dynamic_cast<VnlcFunctionDeclarationNode*>(declNode)) {
             success &= checkFunctionDeclaration(*funcDecl);
@@ -114,10 +114,10 @@ bool VnlcSemanticAnalyzer::checkExport(const VnlcExportDeclarationNode& exportDe
     return true;
 }
 
-bool VnlcSemanticAnalyzer::checkVariableDeclaration(const VnlcVariableDeclarationNode& varDecl) {
+bool VnlcSemanticAnalyzer::checkVariableDeclaration(const VnlcValueDeclarationNode& varDecl) {
     bool success = true;
-    if (varDecl.getType() == VnlcVariableDeclarationType::CONST) {
-        const VnlcExpressionNode* initializer = &varDecl.getInitializer();
+    if (varDecl.getKind() == VnlcValueDeclarationType::Kind::CONST) {
+        const VnlcExpressionNode* initializer = varDecl.getInitializer().value().get();
         if (const auto* stringLiteral = dynamic_cast<const VnlcStringLiteralExpressionNode*>(initializer)) {
             if (stringLiteral->getType() == VnlcStringLiteralExpressionType::FORMAT_STRING) {
                 context.reportError(varDecl, "Const variables cannot be initialized with format strings");
@@ -130,7 +130,7 @@ bool VnlcSemanticAnalyzer::checkVariableDeclaration(const VnlcVariableDeclaratio
     }
 
     success &= checkIdentifierName(varDecl.getName(), varDecl);
-    success &= checkExpression(varDecl.getInitializer());
+    success &= checkExpression(*varDecl.getInitializer().value());
 
     // TODO: Implement type checking and inference
 

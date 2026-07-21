@@ -1,6 +1,7 @@
 #ifndef VNLC_FUNCTION_SIGNATURE_PARSING_RESULT_HPP
 #define VNLC_FUNCTION_SIGNATURE_PARSING_RESULT_HPP
 
+#include "../../ast/declaration/VnlcValueDeclarationNode.hpp"
 #include "../../ast/type/VnlcTypeAnnotationNode.hpp"
 #include <memory>
 #include <optional>
@@ -9,7 +10,7 @@
 
 struct VnlcFunctionSignatureParsingResult {
     std::string name;
-    std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>> parameters;
+    std::vector<std::unique_ptr<VnlcValueDeclarationNode>> parameters;
     std::optional<std::unique_ptr<VnlcTypeAnnotationNode>> returnType;
 };
 

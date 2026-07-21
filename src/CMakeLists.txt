@@ -31,7 +31,7 @@ add_executable(
     ast/declaration/VnlcDeclarationNode.cpp
     ast/declaration/VnlcTypeDeclarationNode.cpp
     ast/declaration/VnlcFunctionDeclarationNode.cpp
-    ast/declaration/VnlcVariableDeclarationNode.cpp
+    ast/declaration/VnlcValueDeclarationNode.cpp
     ast/declaration/VnlcTypeAliasDeclarationNode.cpp
     ast/declaration/VnlcPropertyDeclarationNode.cpp
     ast/declaration/VnlcClassDeclarationNode.cpp

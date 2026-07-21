@@ -1,17 +1,12 @@
 #ifndef VNLC_PARAMETER_LIST_PARSING_RESULT_HPP
 #define VNLC_PARAMETER_LIST_PARSING_RESULT_HPP
 
-#include "../../ast/type/VnlcTypeAnnotationNode.hpp"
+#include "../../ast/declaration/VnlcValueDeclarationNode.hpp"
 #include <memory>
-#include <string>
 #include <vector>
 
 struct VnlcParameterListParsingResult {
-    struct Parameter {
-        std::string name;
-        std::unique_ptr<VnlcTypeAnnotationNode> typeAnnotation;
-    };
-    std::vector<Parameter> parameters;
+    std::vector<std::unique_ptr<VnlcValueDeclarationNode>> parameters;
 };
 
 #endif // VNLC_PARAMETER_LIST_PARSING_RESULT_HPP

@@ -6,7 +6,7 @@ VnlcFunctionDeclarationNode::VnlcFunctionDeclarationNode(
     VnlcFunctionDeclarationType::AccessModifier accessModifier,
     VnlcFunctionDeclarationType::Binding binding,
     std::string&& name,
-    std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>>&& parameters,
+    std::vector<std::unique_ptr<VnlcValueDeclarationNode>>&& parameters,
     std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& returnType,
     std::optional<std::unique_ptr<VnlcBlockStatementNode>>&& body,
     const VnlcToken& firstToken,
@@ -30,7 +30,7 @@ VnlcFunctionDeclarationNode::VnlcFunctionDeclarationNode(
     VnlcFunctionDeclarationType::AccessModifier accessModifier,
     VnlcFunctionDeclarationType::Binding binding,
     std::string&& name,
-    std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>>&& parameters,
+    std::vector<std::unique_ptr<VnlcValueDeclarationNode>>&& parameters,
     std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& returnType,
     std::optional<std::unique_ptr<VnlcBlockStatementNode>>&& body,
     const VnlcToken& firstToken,
@@ -49,14 +49,14 @@ VnlcFunctionDeclarationNode::VnlcFunctionDeclarationNode(
     generateUniqueName();
 }
 
-void VnlcFunctionDeclarationNode::generateUniqueName() noexcept {
+void VnlcFunctionDeclarationNode::generateUniqueName() {
     std::string functionName = name;
     std::vector<std::string> parameterTypes;
 
     for (const auto& param : parameters) {
         std::string typeName;
-        for (auto it = std::get<1>(param)->getTypeNode().getNameParts().begin(); it != std::get<1>(param)->getTypeNode().getNameParts().end(); it++) {
-            if (it != std::get<1>(param)->getTypeNode().getNameParts().begin()) {
+        for (auto it = param->getTypeAnnotation().value()->getTypeNode().getNameParts().begin(); it != param->getTypeAnnotation().value()->getTypeNode().getNameParts().end(); it++) {
+            if (it != param->getTypeAnnotation().value()->getTypeNode().getNameParts().begin()) {
                 typeName.push_back('.');
             }
             typeName.append(*it);
@@ -98,7 +98,7 @@ std::string_view VnlcFunctionDeclarationNode::getUniqueName() const noexcept {
     return uniqueName;
 }
 
-const std::vector<std::pair<std::string, std::unique_ptr<VnlcTypeAnnotationNode>>>& VnlcFunctionDeclarationNode::getParameters() const noexcept {
+const std::vector<std::unique_ptr<VnlcValueDeclarationNode>>& VnlcFunctionDeclarationNode::getParameters() const noexcept {
     return parameters;
 }
 
