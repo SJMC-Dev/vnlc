@@ -143,7 +143,13 @@ bool VnlcSemanticAnalyzer::checkFunctionDeclaration(const VnlcFunctionDeclaratio
 
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::FUNCTION, &context.currentScope()));
     for (const auto& param : funcDecl.getParameters()) {
-        // TODO: Check repeated parameter names and then declare them in the current scope
+        VnlcSymbol paramSymbol(VnlcSymbolKind::VARIABLE, VnlcSymbolOrigin::LOCAL, param->getName(), param->getName(), param.get());
+        if (!context.currentScope().declare(std::move(paramSymbol))) {
+            context.reportError(*param, fmt::format("Redeclaration of parameter '{}'", param->getName()));
+            success = false;
+        }
+        success &= checkIdentifierName(param->getName(), *param);
+        success &= checkType(param->getTypeAnnotation().value()->getTypeNode());
     }
 
     // TODO: Implement return type checking and inference
