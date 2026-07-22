@@ -117,7 +117,7 @@ void VnlcSemanticAnalyzer::checkValueDeclaration(const VnlcValueDeclarationNode&
             }
         } else if (!dynamic_cast<const VnlcSimpleLiteralExpressionNode*>(varDecl.getInitializer().value().get())) {
             context.reportError(varDecl, "Const variables must be initialized with a simple literal or a non-format string literal expression");
-            }
+        }
     } else if (kind == VnlcValueDeclarationType::Kind::STATIC_PROPERTY) {
         if (!varDecl.getInitializer().has_value()) {
             context.reportError(varDecl, "Static properties must be initialized");
@@ -125,7 +125,7 @@ void VnlcSemanticAnalyzer::checkValueDeclaration(const VnlcValueDeclarationNode&
     }
 
     if (varDecl.getInitializer().has_value()) {
-    checkExpression(*varDecl.getInitializer().value());
+        checkExpression(*varDecl.getInitializer().value());
     }
 
     // TODO: Implement type checking and inference
@@ -136,12 +136,12 @@ void VnlcSemanticAnalyzer::checkFunctionDeclaration(const VnlcFunctionDeclaratio
 
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::FUNCTION, &context.currentScope()));
     for (const auto& param : funcDecl.getParameters()) {
-        VnlcSymbol paramSymbol(VnlcSymbolKind::VARIABLE, VnlcSymbolOrigin::LOCAL, param->getName(), param->getName(), param.get());
+        VnlcSymbol paramSymbol(VnlcSymbolKind::PARAMETER, VnlcSymbolOrigin::LOCAL, param->getName(), param->getName(), param.get());
         if (!context.currentScope().declare(std::move(paramSymbol))) {
             context.reportError(*param, fmt::format("Redeclaration of parameter '{}'", param->getName()));
         }
-        checkIdentifierName(param->getName(), *param);
-        checkType(param->getTypeAnnotation().value()->getTypeNode());
+
+        checkValueDeclaration(*param);
     }
 
     if (funcDecl.getKind() == VnlcFunctionDeclarationType::Kind::REGULAR && funcDecl.getContext() != VnlcFunctionDeclarationType::Context::INTERFACE) {
