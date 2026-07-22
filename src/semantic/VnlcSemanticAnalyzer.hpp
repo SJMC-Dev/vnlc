@@ -27,8 +27,8 @@ private:
     void checkIdentifierName(std::string_view name, const VnlcDeclarationNode& declNode);
     void checkIdentifierExpressionUse(const VnlcIdentifierExpressionNode& exprNode);
 
-    void checkModule(const VnlcModuleNode& moduleNode);
-    void checkImport(const VnlcImportDeclarationNode& importDecl);
+    void checkModule(const VnlcModuleNode& moduleNode, const VnlcConfig& config);
+    void checkImport(const VnlcImportDeclarationNode& importDecl, const VnlcConfig& config);
     void checkExport(const VnlcExportDeclarationNode& exportDecl);
     void checkVariableDeclaration(const VnlcValueDeclarationNode& varDecl);
     void checkFunctionDeclaration(const VnlcFunctionDeclarationNode& funcDecl);

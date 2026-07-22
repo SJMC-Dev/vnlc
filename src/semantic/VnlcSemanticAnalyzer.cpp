@@ -23,11 +23,11 @@ void VnlcSemanticAnalyzer::checkIdentifierExpressionUse(const VnlcIdentifierExpr
     }
 }
 
-void VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode) {
+void VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode, const VnlcConfig& config) {
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::MODULE, nullptr));
 
     for (const auto& importDecl : moduleNode.getImportDeclarations()) {
-        checkImport(*importDecl);
+        checkImport(*importDecl, config);
     }
 
     for (const auto& topIdentifierDecl : moduleNode.getTopIdentifierDeclarations()) {
@@ -92,9 +92,11 @@ void VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode) {
     for (const auto& exportDecl : moduleNode.getExportDeclarations()) {
         checkExport(*exportDecl);
     }
+
+    context.popScope();
 }
 
-void VnlcSemanticAnalyzer::checkImport(const VnlcImportDeclarationNode& importDecl) {
+void VnlcSemanticAnalyzer::checkImport(const VnlcImportDeclarationNode& importDecl, const VnlcConfig& config) {
     // TODO: Implement import checking logic
 }
 
@@ -114,7 +116,6 @@ void VnlcSemanticAnalyzer::checkVariableDeclaration(const VnlcValueDeclarationNo
         if (const auto* stringLiteral = dynamic_cast<const VnlcStringLiteralExpressionNode*>(initializer)) {
             if (stringLiteral->getType() == VnlcStringLiteralExpressionType::FORMAT_STRING) {
                 context.reportError(varDecl, "Const variables cannot be initialized with format strings");
-
             } else if (!dynamic_cast<const VnlcSimpleLiteralExpressionNode*>(initializer)) {
                 context.reportError(varDecl, "Const variables must be initialized with simple literals or non-format strings");
             }
@@ -154,7 +155,7 @@ void VnlcSemanticAnalyzer::checkFunctionDeclaration(const VnlcFunctionDeclaratio
 }
 
 VnlcSemanticAnalysisResult VnlcSemanticAnalyzer::analyze(const VnlcConfig& config) {
-    checkModule(module);
+    checkModule(module, config);
 
     auto diagnostics = context.takeDiagnostics();
     return VnlcSemanticAnalysisResult(std::move(std::get<0>(diagnostics)), std::move(std::get<1>(diagnostics)), std::move(std::get<2>(diagnostics)));
