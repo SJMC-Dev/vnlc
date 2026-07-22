@@ -24,6 +24,78 @@ VnlcScope& VnlcSemanticContext::currentScope() {
     return *scopeStack.back();
 }
 
+const VnlcScope* VnlcSemanticContext::currentModule() {
+    const VnlcScope* current = &currentScope();
+    while (current != nullptr) {
+        if (current->getKind() == VnlcScopeKind::MODULE) {
+            return current;
+        }
+        current = current->findParent();
+    }
+
+    return nullptr;
+}
+
+const VnlcScope* VnlcSemanticContext::currentFunction() {
+    const VnlcScope* current = &currentScope();
+    while (current != nullptr) {
+        if (current->getKind() == VnlcScopeKind::FUNCTION) {
+            return current;
+        }
+        current = current->findParent();
+    }
+
+    return nullptr;
+}
+
+const VnlcScope* VnlcSemanticContext::currentClass() {
+    const VnlcScope* current = &currentScope();
+    while (current != nullptr) {
+        if (current->getKind() == VnlcScopeKind::CLASS) {
+            return current;
+        }
+        current = current->findParent();
+    }
+
+    return nullptr;
+}
+
+const VnlcScope* VnlcSemanticContext::currentInterface() {
+    const VnlcScope* current = &currentScope();
+    while (current != nullptr) {
+        if (current->getKind() == VnlcScopeKind::INTERFACE) {
+            return current;
+        }
+        current = current->findParent();
+    }
+
+    return nullptr;
+}
+
+const VnlcScope* VnlcSemanticContext::currentEnum() {
+    const VnlcScope* current = &currentScope();
+    while (current != nullptr) {
+        if (current->getKind() == VnlcScopeKind::ENUM) {
+            return current;
+        }
+        current = current->findParent();
+    }
+
+    return nullptr;
+}
+
+const VnlcScope* VnlcSemanticContext::currentBlock() {
+    const VnlcScope* current = &currentScope();
+    while (current != nullptr) {
+        if (current->getKind() == VnlcScopeKind::BLOCK) {
+            return current;
+        }
+        current = current->findParent();
+    }
+
+    return nullptr;
+}
+
 const std::vector<VnlcDiagnostic>& VnlcSemanticContext::getErrors() const noexcept {
     return errors;
 }

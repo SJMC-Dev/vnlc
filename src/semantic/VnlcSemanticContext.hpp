@@ -35,6 +35,13 @@ public:
 
     [[nodiscard]] VnlcScope& currentScope();
 
+    [[nodiscard]] const VnlcScope* currentModule();
+    [[nodiscard]] const VnlcScope* currentFunction();
+    [[nodiscard]] const VnlcScope* currentClass();
+    [[nodiscard]] const VnlcScope* currentInterface();
+    [[nodiscard]] const VnlcScope* currentEnum();
+    [[nodiscard]] const VnlcScope* currentBlock();
+
     [[nodiscard]] const std::vector<VnlcDiagnostic>& getErrors() const noexcept;
     [[nodiscard]] const std::vector<VnlcDiagnostic>& getWarnings() const noexcept;
     [[nodiscard]] const std::vector<VnlcDiagnostic>& getNotes() const noexcept;
