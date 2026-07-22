@@ -140,7 +140,17 @@ void VnlcSemanticAnalyzer::checkFunctionDeclaration(const VnlcFunctionDeclaratio
         checkType(param->getTypeAnnotation().value()->getTypeNode());
     }
 
+    if (funcDecl.getKind() == VnlcFunctionDeclarationType::Kind::REGULAR && funcDecl.getContext() != VnlcFunctionDeclarationType::Context::INTERFACE) {
+        if (funcDecl.getBody().has_value()) {
+            checkStatement(*funcDecl.getBody().value());
+        } else {
+            context.reportError(funcDecl, "Regular functions must have a body");
+        }
+    }
+
     // TODO: Implement return type checking and inference
+
+    context.popScope();
 }
 
 VnlcSemanticAnalysisResult VnlcSemanticAnalyzer::analyze(const VnlcConfig& config) {
