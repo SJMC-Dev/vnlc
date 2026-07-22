@@ -15,7 +15,7 @@ void VnlcSemanticAnalyzer::checkIdentifierName(std::string_view name, const Vnlc
 
 void VnlcSemanticAnalyzer::checkIdentifierExpressionUse(const VnlcIdentifierExpressionNode& exprNode) {
     auto symbol = context.currentScope().lookup(exprNode.getName());
-    if (symbol == std::nullopt) {
+    if (!symbol.has_value()) {
         context.reportError(exprNode, fmt::format("Use of undeclared identifier '{}'", exprNode.getName()));
     } else if (!(dynamic_cast<const VnlcValueDeclarationNode*>(symbol.value()->getLocalDeclarationNode()) ||
                  dynamic_cast<const VnlcFunctionDeclarationNode*>(symbol.value()->getLocalDeclarationNode()))) {
