@@ -72,7 +72,7 @@ void VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode, const V
         if (auto* varDecl = dynamic_cast<VnlcValueDeclarationNode*>(declNode)) {
             if (varDecl->getKind() == VnlcValueDeclarationType::Kind::VAR || varDecl->getKind() == VnlcValueDeclarationType::Kind::LET ||
                 varDecl->getKind() == VnlcValueDeclarationType::Kind::CONST) {
-                checkVariableDeclaration(*varDecl);
+                checkValueDeclaration(*varDecl);
             } else {
                 context.reportError(*varDecl, fmt::format("Top-level value declaration must be a variable"));
             }
@@ -104,26 +104,29 @@ void VnlcSemanticAnalyzer::checkExport(const VnlcExportDeclarationNode& exportDe
     // TODO: Implement export checking logic
 }
 
-void VnlcSemanticAnalyzer::checkVariableDeclaration(const VnlcValueDeclarationNode& varDecl) {
-    auto& initializerOptional = varDecl.getInitializer();
+void VnlcSemanticAnalyzer::checkValueDeclaration(const VnlcValueDeclarationNode& varDecl) {
+    checkIdentifierName(varDecl.getName(), varDecl);
     auto kind = varDecl.getKind();
 
-    if (!initializerOptional.has_value()) {
-        context.reportError(varDecl, "Variables must be initialized");
-
-    } else if (kind == VnlcValueDeclarationType::Kind::CONST) {
-        const VnlcExpressionNode* initializer = initializerOptional.value().get();
-        if (const auto* stringLiteral = dynamic_cast<const VnlcStringLiteralExpressionNode*>(initializer)) {
+    if (kind == VnlcValueDeclarationType::Kind::CONST) {
+        if (!varDecl.getInitializer().has_value()) {
+            context.reportError(varDecl, "Const variables must be initialized");
+        } else if (const auto* stringLiteral = dynamic_cast<const VnlcStringLiteralExpressionNode*>(varDecl.getInitializer().value().get())) {
             if (stringLiteral->getType() == VnlcStringLiteralExpressionType::FORMAT_STRING) {
-                context.reportError(varDecl, "Const variables cannot be initialized with format strings");
-            } else if (!dynamic_cast<const VnlcSimpleLiteralExpressionNode*>(initializer)) {
-                context.reportError(varDecl, "Const variables must be initialized with simple literals or non-format strings");
+                context.reportError(varDecl, "Const variables can't be initialized with a format string");
             }
+        } else if (!dynamic_cast<const VnlcSimpleLiteralExpressionNode*>(varDecl.getInitializer().value().get())) {
+            context.reportError(varDecl, "Const variables must be initialized with a simple literal or a non-format string literal expression");
+            }
+    } else if (kind == VnlcValueDeclarationType::Kind::STATIC_PROPERTY) {
+        if (!varDecl.getInitializer().has_value()) {
+            context.reportError(varDecl, "Static properties must be initialized");
         }
     }
 
-    checkIdentifierName(varDecl.getName(), varDecl);
+    if (varDecl.getInitializer().has_value()) {
     checkExpression(*varDecl.getInitializer().value());
+    }
 
     // TODO: Implement type checking and inference
 }

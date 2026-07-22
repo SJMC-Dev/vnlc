@@ -30,7 +30,7 @@ private:
     void checkModule(const VnlcModuleNode& moduleNode, const VnlcConfig& config);
     void checkImport(const VnlcImportDeclarationNode& importDecl, const VnlcConfig& config);
     void checkExport(const VnlcExportDeclarationNode& exportDecl);
-    void checkVariableDeclaration(const VnlcValueDeclarationNode& varDecl);
+    void checkValueDeclaration(const VnlcValueDeclarationNode& varDecl);
     void checkFunctionDeclaration(const VnlcFunctionDeclarationNode& funcDecl);
     void checkClassDeclaration(const VnlcClassDeclarationNode& classDecl);
     void checkInterfaceDeclaration(const VnlcInterfaceDeclarationNode& interfaceDecl);
