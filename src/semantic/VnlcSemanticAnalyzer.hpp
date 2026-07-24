@@ -26,6 +26,7 @@ private:
 
     void checkIdentifierName(std::string_view name, const VnlcDeclarationNode& declNode);
     void checkIdentifierExpressionUse(const VnlcIdentifierExpressionNode& exprNode);
+    void checkMetadata(const std::vector<VnlcDeclarationItem::MetadataTerm>& metadataTerms, const VnlcDeclarationNode& declNode);
 
     void checkModule(const VnlcModuleNode& moduleNode, const VnlcConfig& config);
     void checkImport(const VnlcImportDeclarationNode& importDecl, const VnlcConfig& config);

@@ -23,6 +23,10 @@ void VnlcSemanticAnalyzer::checkIdentifierExpressionUse(const VnlcIdentifierExpr
     }
 }
 
+void VnlcSemanticAnalyzer::checkMetadata(const std::vector<VnlcDeclarationItem::MetadataTerm>& metadataTerms, const VnlcDeclarationNode& declNode) {
+    // TODO: Implement metadata checking
+}
+
 void VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode, const VnlcConfig& config) {
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::MODULE, nullptr));
 
