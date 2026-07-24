@@ -161,6 +161,23 @@ void VnlcSemanticAnalyzer::checkFunctionDeclaration(const VnlcFunctionDeclaratio
     context.popScope();
 }
 
+void VnlcSemanticAnalyzer::checkClassDeclaration(const VnlcClassDeclarationNode& classDecl) {
+    checkIdentifierName(classDecl.getName(), classDecl);
+
+    context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::CLASS, &context.currentScope()));
+    for (const auto& member : classDecl.getMemberDeclarations()) {
+        if (auto* varDecl = dynamic_cast<VnlcValueDeclarationNode*>(member.get())) {
+            checkValueDeclaration(*varDecl);
+        } else if (auto* funcDecl = dynamic_cast<VnlcFunctionDeclarationNode*>(member.get())) {
+            checkFunctionDeclaration(*funcDecl);
+        } else {
+            context.reportError(*member, "Invalid class member declaration");
+        }
+    }
+
+    context.popScope();
+}
+
 VnlcSemanticAnalysisResult VnlcSemanticAnalyzer::analyze(const VnlcConfig& config) {
     checkModule(module, config);
 
