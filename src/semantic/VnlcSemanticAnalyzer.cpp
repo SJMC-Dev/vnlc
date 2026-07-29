@@ -7,13 +7,13 @@
 
 VnlcSemanticAnalyzer::VnlcSemanticAnalyzer(const VnlcModuleNode& module) : module(module) {}
 
-void VnlcSemanticAnalyzer::checkIdentifierName(std::string_view name, const VnlcDeclarationNode& declNode) {
+void VnlcSemanticAnalyzer::checkIdentifierName(std::string_view name, const VnlcDeclarationNode& declNode, VnlcMetadataInfo metadataInfo) {
     if (name.starts_with("__")) {
         context.reportWarning(declNode, fmt::format("Identifier '{}' starts with '__', which is reserved for internal use", name));
     }
 }
 
-void VnlcSemanticAnalyzer::checkIdentifierExpressionUse(const VnlcIdentifierExpressionNode& exprNode) {
+void VnlcSemanticAnalyzer::checkIdentifierExpressionUse(const VnlcIdentifierExpressionNode& exprNode, VnlcMetadataInfo metadataInfo) {
     auto symbol = context.currentScope().lookup(exprNode.getName());
     if (!symbol.has_value()) {
         context.reportError(exprNode, fmt::format("Use of undeclared identifier '{}'", exprNode.getName()));
@@ -23,8 +23,24 @@ void VnlcSemanticAnalyzer::checkIdentifierExpressionUse(const VnlcIdentifierExpr
     }
 }
 
-void VnlcSemanticAnalyzer::checkMetadata(const std::vector<VnlcDeclarationItem::MetadataTerm>& metadataTerms, const VnlcDeclarationNode& declNode) {
-    // TODO: Implement metadata checking
+VnlcMetadataInfo VnlcSemanticAnalyzer::checkMetadata(const std::vector<VnlcDeclarationItem::MetadataTerm>& metadataTerms, const VnlcDeclarationNode& declNode) {
+    bool noWarnings = false;
+    bool deprecated = false;
+
+    for (const auto& term : metadataTerms) {
+        if (term.key == "nowarnings") {
+            noWarnings = true;
+        } else if (term.key == "deprecated") {
+            deprecated = true;
+        } else {
+            context.reportError(declNode, fmt::format("Unknown metadata term '{}'", term.key));
+        }
+    }
+
+    return VnlcMetadataInfo{
+        noWarnings,
+        deprecated,
+    };
 }
 
 void VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode, const VnlcConfig& config) {
@@ -108,8 +124,8 @@ void VnlcSemanticAnalyzer::checkExport(const VnlcExportDeclarationNode& exportDe
     // TODO: Implement export checking logic
 }
 
-void VnlcSemanticAnalyzer::checkValueDeclaration(const VnlcValueDeclarationNode& varDecl) {
-    checkIdentifierName(varDecl.getName(), varDecl);
+void VnlcSemanticAnalyzer::checkValueDeclaration(const VnlcValueDeclarationNode& varDecl, VnlcMetadataInfo metadataInfo) {
+    checkIdentifierName(varDecl.getName(), varDecl, metadataInfo);
     auto kind = varDecl.getKind();
 
     if (kind == VnlcValueDeclarationType::Kind::CONST) {
@@ -135,8 +151,8 @@ void VnlcSemanticAnalyzer::checkValueDeclaration(const VnlcValueDeclarationNode&
     // TODO: Implement type checking and inference
 }
 
-void VnlcSemanticAnalyzer::checkFunctionDeclaration(const VnlcFunctionDeclarationNode& funcDecl) {
-    checkIdentifierName(funcDecl.getName(), funcDecl);
+void VnlcSemanticAnalyzer::checkFunctionDeclaration(const VnlcFunctionDeclarationNode& funcDecl, VnlcMetadataInfo metadataInfo) {
+    checkIdentifierName(funcDecl.getName(), funcDecl, metadataInfo);
 
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::FUNCTION, &context.currentScope()));
     for (const auto& param : funcDecl.getParameters()) {
@@ -161,8 +177,8 @@ void VnlcSemanticAnalyzer::checkFunctionDeclaration(const VnlcFunctionDeclaratio
     context.popScope();
 }
 
-void VnlcSemanticAnalyzer::checkClassDeclaration(const VnlcClassDeclarationNode& classDecl) {
-    checkIdentifierName(classDecl.getName(), classDecl);
+void VnlcSemanticAnalyzer::checkClassDeclaration(const VnlcClassDeclarationNode& classDecl, VnlcMetadataInfo metadataInfo) {
+    checkIdentifierName(classDecl.getName(), classDecl, metadataInfo);
 
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::CLASS, &context.currentScope()));
     for (const auto& member : classDecl.getMemberDeclarations()) {
