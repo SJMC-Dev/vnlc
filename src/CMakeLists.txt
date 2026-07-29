@@ -68,6 +68,7 @@ add_executable(
     semantic/type/VnlcReferenceType.cpp
     semantic/type/VnlcVoidType.cpp
     semantic/type/typeinf/VnlcTypeInferenceResult.cpp
+    semantic/metadata/VnlcMetadataInfo.cpp
 )
 
 target_link_libraries(
