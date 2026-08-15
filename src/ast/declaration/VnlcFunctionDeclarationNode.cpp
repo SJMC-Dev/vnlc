@@ -20,9 +20,7 @@ VnlcFunctionDeclarationNode::VnlcFunctionDeclarationNode(
       name(std::move(name)),
       parameters(std::move(parameters)),
       returnType(std::move(returnType)),
-      body(std::move(body)) {
-    generateUniqueName();
-}
+      body(std::move(body)) {}
 
 VnlcFunctionDeclarationNode::VnlcFunctionDeclarationNode(
     VnlcFunctionDeclarationType::Kind kind,
@@ -45,34 +43,7 @@ VnlcFunctionDeclarationNode::VnlcFunctionDeclarationNode(
       name(std::move(name)),
       parameters(std::move(parameters)),
       returnType(std::move(returnType)),
-      body(std::move(body)) {
-    generateUniqueName();
-}
-
-void VnlcFunctionDeclarationNode::generateUniqueName() {
-    std::string functionName = name;
-    std::vector<std::string> parameterTypes;
-
-    for (const auto& param : parameters) {
-        std::string typeName;
-        for (auto it = param->getTypeAnnotation().value()->getTypeNode().getNameParts().begin(); it != param->getTypeAnnotation().value()->getTypeNode().getNameParts().end(); it++) {
-            if (it != param->getTypeAnnotation().value()->getTypeNode().getNameParts().begin()) {
-                typeName.push_back('.');
-            }
-            typeName.append(*it);
-        }
-        parameterTypes.push_back(typeName);
-    }
-
-    uniqueName = functionName;
-    if (!parameterTypes.empty()) {
-        uniqueName.push_back('-');
-        for (auto& paramType : parameterTypes) {
-            uniqueName.append("-");
-            uniqueName.append(paramType);
-        }
-    }
-}
+      body(std::move(body)) {}
 
 const VnlcFunctionDeclarationType::Kind VnlcFunctionDeclarationNode::getKind() const noexcept {
     return kind;
@@ -92,10 +63,6 @@ const VnlcFunctionDeclarationType::Binding VnlcFunctionDeclarationNode::getBindi
 
 std::string_view VnlcFunctionDeclarationNode::getName() const noexcept {
     return name;
-}
-
-std::string_view VnlcFunctionDeclarationNode::getUniqueName() const noexcept {
-    return uniqueName;
 }
 
 const std::vector<std::unique_ptr<VnlcValueDeclarationNode>>& VnlcFunctionDeclarationNode::getParameters() const noexcept {

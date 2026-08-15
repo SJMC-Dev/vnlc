@@ -54,32 +54,32 @@ void VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode, const V
         VnlcDeclarationNode* declNode = topIdentifierDecl.get();
 
         if (auto* varDecl = dynamic_cast<VnlcValueDeclarationNode*>(declNode)) {
-            VnlcSymbol symbol(VnlcSymbolKind::VARIABLE, VnlcSymbolOrigin::LOCAL, varDecl->getName(), varDecl->getName(), varDecl);
+            VnlcSymbol symbol(VnlcSymbolKind::VARIABLE, VnlcSymbolOrigin::LOCAL, varDecl->getName(), varDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
                 context.reportError(*varDecl, fmt::format("Redeclaration of symbol '{}'", varDecl->getName()));
             }
         } else if (auto* funcDecl = dynamic_cast<VnlcFunctionDeclarationNode*>(declNode)) {
-            VnlcSymbol symbol(VnlcSymbolKind::FUNCTION, VnlcSymbolOrigin::LOCAL, funcDecl->getUniqueName(), funcDecl->getName(), funcDecl);
+            VnlcSymbol symbol(VnlcSymbolKind::FUNCTION, VnlcSymbolOrigin::LOCAL, funcDecl->getName(), funcDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
                 context.reportError(*funcDecl, fmt::format("Redeclaration of symbol '{}'", funcDecl->getName()));
             }
         } else if (auto* classDecl = dynamic_cast<VnlcClassDeclarationNode*>(declNode)) {
-            VnlcSymbol symbol(VnlcSymbolKind::CLASS, VnlcSymbolOrigin::LOCAL, classDecl->getName(), classDecl->getName(), classDecl);
+            VnlcSymbol symbol(VnlcSymbolKind::CLASS, VnlcSymbolOrigin::LOCAL, classDecl->getName(), classDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
                 context.reportError(*classDecl, fmt::format("Redeclaration of symbol '{}'", classDecl->getName()));
             }
         } else if (auto* interfaceDecl = dynamic_cast<VnlcInterfaceDeclarationNode*>(declNode)) {
-            VnlcSymbol symbol(VnlcSymbolKind::INTERFACE, VnlcSymbolOrigin::LOCAL, interfaceDecl->getName(), interfaceDecl->getName(), interfaceDecl);
+            VnlcSymbol symbol(VnlcSymbolKind::INTERFACE, VnlcSymbolOrigin::LOCAL, interfaceDecl->getName(), interfaceDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
                 context.reportError(*interfaceDecl, fmt::format("Redeclaration of symbol '{}'", interfaceDecl->getName()));
             }
         } else if (auto* enumDecl = dynamic_cast<VnlcEnumDeclarationNode*>(declNode)) {
-            VnlcSymbol symbol(VnlcSymbolKind::ENUM, VnlcSymbolOrigin::LOCAL, enumDecl->getName(), enumDecl->getName(), enumDecl);
+            VnlcSymbol symbol(VnlcSymbolKind::ENUM, VnlcSymbolOrigin::LOCAL, enumDecl->getName(), enumDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
                 context.reportError(*enumDecl, fmt::format("Redeclaration of symbol '{}'", enumDecl->getName()));
             }
         } else if (auto* typeAliasDecl = dynamic_cast<VnlcTypeAliasDeclarationNode*>(declNode)) {
-            VnlcSymbol symbol(VnlcSymbolKind::TYPE_ALIAS, VnlcSymbolOrigin::LOCAL, typeAliasDecl->getAliasName(), typeAliasDecl->getAliasName(), typeAliasDecl);
+            VnlcSymbol symbol(VnlcSymbolKind::TYPE_ALIAS, VnlcSymbolOrigin::LOCAL, typeAliasDecl->getAliasName(), typeAliasDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
                 context.reportError(*typeAliasDecl, fmt::format("Redeclaration of symbol '{}'", typeAliasDecl->getAliasName()));
             }
@@ -156,7 +156,7 @@ void VnlcSemanticAnalyzer::checkFunctionDeclaration(const VnlcFunctionDeclaratio
 
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::FUNCTION, &context.currentScope()));
     for (const auto& param : funcDecl.getParameters()) {
-        VnlcSymbol paramSymbol(VnlcSymbolKind::PARAMETER, VnlcSymbolOrigin::LOCAL, param->getName(), param->getName(), param.get());
+        VnlcSymbol paramSymbol(VnlcSymbolKind::PARAMETER, VnlcSymbolOrigin::LOCAL, param->getName(), param.get());
         if (!context.currentScope().declare(std::move(paramSymbol))) {
             context.reportError(*param, fmt::format("Redeclaration of parameter '{}'", param->getName()));
         }
