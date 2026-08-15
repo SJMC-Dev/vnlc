@@ -213,6 +213,61 @@ void VnlcSemanticAnalyzer::checkClassDeclaration(const VnlcClassDeclarationNode&
     context.popScope();
 }
 
+void VnlcSemanticAnalyzer::checkInterfaceDeclaration(const VnlcInterfaceDeclarationNode& interfaceDecl, VnlcMetadataInfo metadataInfo) {
+    checkIdentifierName(interfaceDecl.getName(), interfaceDecl, metadataInfo);
+
+    context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::INTERFACE, &context.currentScope()));
+
+    for (const auto& member : interfaceDecl.getMethodDeclarations()) {
+        VnlcSymbol memberSymbol(VnlcSymbolKind::METHOD, VnlcSymbolOrigin::LOCAL, member->getName(), member.get());
+        if (!context.currentScope().declare(std::move(memberSymbol))) {
+            context.reportError(*member, fmt::format("Redeclaration of interface method '{}'", member->getName()));
+        }
+    }
+
+    for (const auto& member : interfaceDecl.getMethodDeclarations()) {
+        if (auto* funcDecl = dynamic_cast<VnlcFunctionDeclarationNode*>(member.get())) {
+            checkFunctionDeclaration(*funcDecl);
+        } else {
+            context.reportError(*member, "Invalid interface member declaration");
+        }
+    }
+
+    context.popScope();
+}
+
+void VnlcSemanticAnalyzer::checkEnumDeclaration(const VnlcEnumDeclarationNode& enumDecl, VnlcMetadataInfo metadataInfo) {
+    checkIdentifierName(enumDecl.getName(), enumDecl, metadataInfo);
+
+    context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::ENUM, &context.currentScope()));
+
+    for (const auto& member : enumDecl.getMemberDeclarations()) {
+        VnlcSymbol memberSymbol(VnlcSymbolKind::ENUM_MEMBER, VnlcSymbolOrigin::LOCAL, member->getName(), member.get());
+        if (!context.currentScope().declare(std::move(memberSymbol))) {
+            context.reportError(*member, fmt::format("Redeclaration of enum member '{}'", member->getName()));
+        }
+    }
+
+    for (const auto& member : enumDecl.getMemberDeclarations()) {
+        context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::ENUM_MEMBER, &context.currentScope()));
+
+        for (auto& associatedValue : member->getAssociatedValues()) {
+            VnlcSymbol associatedValueSymbol(VnlcSymbolKind::PROPERTY, VnlcSymbolOrigin::LOCAL, associatedValue->getName(), associatedValue.get());
+            if (!context.currentScope().declare(std::move(associatedValueSymbol))) {
+                context.reportError(*associatedValue, fmt::format("Redeclaration of enum member associated value '{}'", associatedValue->getName()));
+            }
+        }
+
+        for (auto& associatedValue : member->getAssociatedValues()) {
+            checkValueDeclaration(*associatedValue);
+        }
+
+        context.popScope();
+    }
+
+    context.popScope();
+}
+
 VnlcSemanticAnalysisResult VnlcSemanticAnalyzer::analyze(const VnlcConfig& config) {
     checkModule(module, config);
 
