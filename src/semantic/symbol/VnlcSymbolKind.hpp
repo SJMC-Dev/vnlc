@@ -16,6 +16,7 @@ enum class VnlcSymbolKind {
     PARAMETER,
     IMPORT_ALIAS,
     EXPORT_ALIAS,
+    GENERIC_PARAMETER,
 };
 
 #endif // VNLC_SYMBOL_KIND_HPP

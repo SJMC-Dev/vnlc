@@ -200,6 +200,13 @@ void VnlcSemanticAnalyzer::checkClassDeclaration(const VnlcClassDeclarationNode&
         }
     }
 
+    for (const auto& genericParamName : classDecl.getGenericParameterNames()) {
+        VnlcSymbol genericParamSymbol(VnlcSymbolKind::GENERIC_PARAMETER, VnlcSymbolOrigin::LOCAL, genericParamName, nullptr);
+        if (!context.currentScope().declare(std::move(genericParamSymbol))) {
+            context.reportError(classDecl, fmt::format("Redeclaration of generic parameter '{}'", genericParamName));
+        }
+    }
+
     for (const auto& member : classDecl.getMemberDeclarations()) {
         if (auto* varDecl = dynamic_cast<VnlcValueDeclarationNode*>(member.get())) {
             checkValueDeclaration(*varDecl);
@@ -225,6 +232,13 @@ void VnlcSemanticAnalyzer::checkInterfaceDeclaration(const VnlcInterfaceDeclarat
         }
     }
 
+    for (const auto& genericParamName : interfaceDecl.getGenericParameterNames()) {
+        VnlcSymbol genericParamSymbol(VnlcSymbolKind::GENERIC_PARAMETER, VnlcSymbolOrigin::LOCAL, genericParamName, nullptr);
+        if (!context.currentScope().declare(std::move(genericParamSymbol))) {
+            context.reportError(interfaceDecl, fmt::format("Redeclaration of generic parameter '{}'", genericParamName));
+        }
+    }
+
     for (const auto& member : interfaceDecl.getMethodDeclarations()) {
         if (auto* funcDecl = dynamic_cast<VnlcFunctionDeclarationNode*>(member.get())) {
             checkFunctionDeclaration(*funcDecl);
@@ -245,6 +259,13 @@ void VnlcSemanticAnalyzer::checkEnumDeclaration(const VnlcEnumDeclarationNode& e
         VnlcSymbol memberSymbol(VnlcSymbolKind::ENUM_MEMBER, VnlcSymbolOrigin::LOCAL, member->getName(), member.get());
         if (!context.currentScope().declare(std::move(memberSymbol))) {
             context.reportError(*member, fmt::format("Redeclaration of enum member '{}'", member->getName()));
+        }
+    }
+
+    for (const auto& genericParamName : enumDecl.getGenericParameterNames()) {
+        VnlcSymbol genericParamSymbol(VnlcSymbolKind::GENERIC_PARAMETER, VnlcSymbolOrigin::LOCAL, genericParamName, nullptr);
+        if (!context.currentScope().declare(std::move(genericParamSymbol))) {
+            context.reportError(enumDecl, fmt::format("Redeclaration of generic parameter '{}'", genericParamName));
         }
     }
 
