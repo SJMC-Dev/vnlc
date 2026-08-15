@@ -289,6 +289,23 @@ void VnlcSemanticAnalyzer::checkEnumDeclaration(const VnlcEnumDeclarationNode& e
     context.popScope();
 }
 
+void VnlcSemanticAnalyzer::checkTypeAliasDeclaration(const VnlcTypeAliasDeclarationNode& typeAliasDecl, VnlcMetadataInfo metadataInfo) {
+    checkIdentifierName(typeAliasDecl.getAliasName(), typeAliasDecl, metadataInfo);
+
+    context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::TYPE_ALIAS, &context.currentScope()));
+
+    for (const auto& genericParamName : typeAliasDecl.getGenericParameterNames()) {
+        VnlcSymbol genericParamSymbol(VnlcSymbolKind::GENERIC_PARAMETER, VnlcSymbolOrigin::LOCAL, genericParamName, nullptr);
+        if (!context.currentScope().declare(std::move(genericParamSymbol))) {
+            context.reportError(typeAliasDecl, fmt::format("Redeclaration of generic parameter '{}'", genericParamName));
+        }
+    }
+
+    checkType(typeAliasDecl.getOriginalType());
+
+    context.popScope();
+}
+
 VnlcSemanticAnalysisResult VnlcSemanticAnalyzer::analyze(const VnlcConfig& config) {
     checkModule(module, config);
 
