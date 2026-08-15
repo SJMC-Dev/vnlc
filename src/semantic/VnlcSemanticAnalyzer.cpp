@@ -181,6 +181,23 @@ void VnlcSemanticAnalyzer::checkClassDeclaration(const VnlcClassDeclarationNode&
     checkIdentifierName(classDecl.getName(), classDecl, metadataInfo);
 
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::CLASS, &context.currentScope()));
+
+    for (const auto& member : classDecl.getMemberDeclarations()) {
+        if (auto* varDecl = dynamic_cast<VnlcValueDeclarationNode*>(member.get())) {
+            VnlcSymbol memberSymbol(VnlcSymbolKind::PROPERTY, VnlcSymbolOrigin::LOCAL, varDecl->getName(), varDecl);
+            if (!context.currentScope().declare(std::move(memberSymbol))) {
+                context.reportError(*varDecl, fmt::format("Redeclaration of class member '{}'", varDecl->getName()));
+            }
+        } else if (auto* funcDecl = dynamic_cast<VnlcFunctionDeclarationNode*>(member.get())) {
+            VnlcSymbol memberSymbol(VnlcSymbolKind::METHOD, VnlcSymbolOrigin::LOCAL, funcDecl->getName(), funcDecl);
+            if (!context.currentScope().declare(std::move(memberSymbol))) {
+                context.reportError(*funcDecl, fmt::format("Redeclaration of class member '{}'", funcDecl->getName()));
+            }
+        } else {
+            context.reportError(*member, "Invalid class member declaration");
+        }
+    }
+
     for (const auto& member : classDecl.getMemberDeclarations()) {
         if (auto* varDecl = dynamic_cast<VnlcValueDeclarationNode*>(member.get())) {
             checkValueDeclaration(*varDecl);
