@@ -7,6 +7,7 @@ enum class VnlcScopeKind {
     INTERFACE,
     ENUM,
     ENUM_MEMBER,
+    TYPE_ALIAS,
     FUNCTION,
     BLOCK,
 };
