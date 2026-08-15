@@ -160,7 +160,9 @@ void VnlcSemanticAnalyzer::checkFunctionDeclaration(const VnlcFunctionDeclaratio
         if (!context.currentScope().declare(std::move(paramSymbol))) {
             context.reportError(*param, fmt::format("Redeclaration of parameter '{}'", param->getName()));
         }
+    }
 
+    for (const auto& param : funcDecl.getParameters()) {
         checkValueDeclaration(*param);
     }
 
