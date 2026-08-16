@@ -15,13 +15,13 @@ private:
     VnlcSwitchStatementType switchType;
     std::vector<VnlcSwitchStatementItem::LiteralMatchItem> literalMatchItems; // empty if switchType is TYPE_MATCH
     std::vector<VnlcSwitchStatementItem::TypeMatchItem> typeMatchItems;       // empty if switchType is LITERAL_MATCH
-    std::unique_ptr<VnlcStatementNode> defaultCaseBody;
+    std::optional<std::unique_ptr<VnlcStatementNode>> defaultCaseBody;
 
 public:
     VnlcSwitchStatementNode(
         std::unique_ptr<VnlcExpressionNode>&& switchExpression,
         std::vector<VnlcSwitchStatementItem::LiteralMatchItem>&& literalMatchItems,
-        std::unique_ptr<VnlcStatementNode>&& defaultCaseBody,
+        std::optional<std::unique_ptr<VnlcStatementNode>>&& defaultCaseBody,
         const VnlcToken& firstToken,
         const VnlcToken& lastToken
     ) noexcept;
@@ -29,7 +29,7 @@ public:
     VnlcSwitchStatementNode(
         std::unique_ptr<VnlcExpressionNode>&& switchExpression,
         std::vector<VnlcSwitchStatementItem::TypeMatchItem>&& typeMatchItems,
-        std::unique_ptr<VnlcStatementNode>&& defaultCaseBody,
+        std::optional<std::unique_ptr<VnlcStatementNode>>&& defaultCaseBody,
         const VnlcToken& firstToken,
         const VnlcToken& lastToken
     ) noexcept;
@@ -38,7 +38,7 @@ public:
     [[nodiscard]] const VnlcSwitchStatementType getSwitchType() const noexcept;
     [[nodiscard]] const std::vector<VnlcSwitchStatementItem::LiteralMatchItem>& getLiteralMatchItems() const noexcept;
     [[nodiscard]] const std::vector<VnlcSwitchStatementItem::TypeMatchItem>& getTypeMatchItems() const noexcept;
-    [[nodiscard]] const VnlcStatementNode& getDefaultCaseBody() const noexcept;
+    [[nodiscard]] const std::optional<std::unique_ptr<VnlcStatementNode>>& getDefaultCaseBody() const noexcept;
 };
 
 #endif // VNLC_SWITCH_STATEMENT_NODE_HPP

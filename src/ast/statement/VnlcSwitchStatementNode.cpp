@@ -3,7 +3,7 @@
 VnlcSwitchStatementNode::VnlcSwitchStatementNode(
     std::unique_ptr<VnlcExpressionNode>&& switchExpression,
     std::vector<VnlcSwitchStatementItem::LiteralMatchItem>&& literalMatchItems,
-    std::unique_ptr<VnlcStatementNode>&& defaultCaseBody,
+    std::optional<std::unique_ptr<VnlcStatementNode>>&& defaultCaseBody,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
 ) noexcept
@@ -17,7 +17,7 @@ VnlcSwitchStatementNode::VnlcSwitchStatementNode(
 VnlcSwitchStatementNode::VnlcSwitchStatementNode(
     std::unique_ptr<VnlcExpressionNode>&& switchExpression,
     std::vector<VnlcSwitchStatementItem::TypeMatchItem>&& typeMatchItems,
-    std::unique_ptr<VnlcStatementNode>&& defaultCaseBody,
+    std::optional<std::unique_ptr<VnlcStatementNode>>&& defaultCaseBody,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
 ) noexcept
@@ -44,6 +44,6 @@ const std::vector<VnlcSwitchStatementItem::TypeMatchItem>& VnlcSwitchStatementNo
     return typeMatchItems;
 }
 
-const VnlcStatementNode& VnlcSwitchStatementNode::getDefaultCaseBody() const noexcept {
-    return *defaultCaseBody;
+const std::optional<std::unique_ptr<VnlcStatementNode>>& VnlcSwitchStatementNode::getDefaultCaseBody() const noexcept {
+    return defaultCaseBody;
 }

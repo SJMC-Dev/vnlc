@@ -3055,7 +3055,7 @@ VnlcSwitchStatementParsingResult VnlcParser::parseSwitchStatement() {
     VnlcSwitchStatementType switchType = VnlcSwitchStatementType::LITERAL_MATCH;
     std::vector<VnlcSwitchStatementItem::LiteralMatchItem> literalMatchItems;
     std::vector<VnlcSwitchStatementItem::TypeMatchItem> typeMatchItems;
-    std::unique_ptr<VnlcStatementNode> defaultCase = nullptr;
+    std::optional<std::unique_ptr<VnlcStatementNode>> defaultCase = std::nullopt;
 
     if (!match(VnlcTokenType::SWITCH)) {
         throw VnlcSyntaxError("Expected 'switch' to start switch statement", peek().getLine(), peek().getColumn());
@@ -3109,7 +3109,7 @@ VnlcSwitchStatementParsingResult VnlcParser::parseSwitchStatement() {
 
         auto defaultBodyResult = parseStatement();
 
-        defaultCase = std::move(defaultBodyResult.statement);
+        defaultCase = std::make_optional<std::unique_ptr<VnlcStatementNode>>(std::move(defaultBodyResult.statement));
     }
 
     if (!match(VnlcTokenType::RIGHT_BRACE)) {
