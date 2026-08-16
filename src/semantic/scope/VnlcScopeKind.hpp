@@ -10,6 +10,8 @@ enum class VnlcScopeKind {
     TYPE_ALIAS,
     FUNCTION,
     BLOCK,
+    LOOP,
+    SWITCH,
 };
 
 #endif // VNLC_SCOPE_KIND_HPP

@@ -41,6 +41,8 @@ public:
     [[nodiscard]] const VnlcScope* currentInterface();
     [[nodiscard]] const VnlcScope* currentEnum();
     [[nodiscard]] const VnlcScope* currentBlock();
+    [[nodiscard]] const VnlcScope* currentLoop();
+    [[nodiscard]] const VnlcScope* currentSwitch();
 
     [[nodiscard]] const std::vector<VnlcDiagnostic>& getErrors() const noexcept;
     [[nodiscard]] const std::vector<VnlcDiagnostic>& getWarnings() const noexcept;

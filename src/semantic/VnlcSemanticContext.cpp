@@ -96,6 +96,30 @@ const VnlcScope* VnlcSemanticContext::currentBlock() {
     return nullptr;
 }
 
+const VnlcScope* VnlcSemanticContext::currentLoop() {
+    const VnlcScope* current = &currentScope();
+    while (current != nullptr) {
+        if (current->getKind() == VnlcScopeKind::LOOP) {
+            return current;
+        }
+        current = current->findParent();
+    }
+
+    return nullptr;
+}
+
+const VnlcScope* VnlcSemanticContext::currentSwitch() {
+    const VnlcScope* current = &currentScope();
+    while (current != nullptr) {
+        if (current->getKind() == VnlcScopeKind::SWITCH) {
+            return current;
+        }
+        current = current->findParent();
+    }
+
+    return nullptr;
+}
+
 const std::vector<VnlcDiagnostic>& VnlcSemanticContext::getErrors() const noexcept {
     return errors;
 }
