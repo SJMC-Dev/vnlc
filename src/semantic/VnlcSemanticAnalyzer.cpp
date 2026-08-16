@@ -2,6 +2,16 @@
 #include "../ast/expression/VnlcIdentifierExpressionNode.hpp"
 #include "../ast/expression/VnlcSimpleLiteralExpressionNode.hpp"
 #include "../ast/expression/VnlcStringLiteralExpressionNode.hpp"
+#include "../ast/statement/VnlcBlockStatementNode.hpp"
+#include "../ast/statement/VnlcBreakStatementNode.hpp"
+#include "../ast/statement/VnlcContinueStatementNode.hpp"
+#include "../ast/statement/VnlcExpressionStatementNode.hpp"
+#include "../ast/statement/VnlcForStatementNode.hpp"
+#include "../ast/statement/VnlcIfStatementNode.hpp"
+#include "../ast/statement/VnlcReturnStatementNode.hpp"
+#include "../ast/statement/VnlcSwitchStatementNode.hpp"
+#include "../ast/statement/VnlcVariableDeclarationStatementNode.hpp"
+#include "../ast/statement/VnlcWhileStatementNode.hpp"
 #include <fmt/core.h>
 #include <string_view>
 
@@ -304,6 +314,116 @@ void VnlcSemanticAnalyzer::checkTypeAliasDeclaration(const VnlcTypeAliasDeclarat
     checkType(typeAliasDecl.getOriginalType());
 
     context.popScope();
+}
+
+void VnlcSemanticAnalyzer::checkStatement(const VnlcStatementNode& statement) {
+    if (auto* stmt = dynamic_cast<const VnlcBlockStatementNode*>(&statement)) {
+        context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::BLOCK, &context.currentScope()));
+
+        for (const auto& child : stmt->getStatements()) {
+            checkStatement(*child);
+        }
+
+        context.popScope();
+    } else if (auto* stmt = dynamic_cast<const VnlcBreakStatementNode*>(&statement)) {
+        if (!context.currentLoop()) {
+            context.reportError(*stmt, "Break statement not within a loop");
+        }
+
+        auto label = stmt->getLabel();
+        if (label.has_value()) {
+            auto labelSymbol = context.currentScope().lookup(label.value());
+            if (!labelSymbol.has_value()) {
+                context.reportError(*stmt, fmt::format("Label '{}' does not exist", label.value()));
+            } else if (labelSymbol.value()->getKind() != VnlcSymbolKind::LOOP_LABEL) {
+                context.reportError(*stmt, fmt::format("Identifier '{}' is not a loop label", label.value()));
+            }
+        }
+    } else if (auto* stmt = dynamic_cast<const VnlcContinueStatementNode*>(&statement)) {
+        if (!context.currentLoop()) {
+            context.reportError(*stmt, "Continue statement not within a loop");
+        }
+
+        auto label = stmt->getLabel();
+        if (label.has_value()) {
+            auto labelSymbol = context.currentScope().lookup(label.value());
+            if (!labelSymbol.has_value()) {
+                context.reportError(*stmt, fmt::format("Label '{}' does not exist", label.value()));
+            } else if (labelSymbol.value()->getKind() != VnlcSymbolKind::LOOP_LABEL) {
+                context.reportError(*stmt, fmt::format("Identifier '{}' is not a loop label", label.value()));
+            }
+        }
+    } else if (auto* stmt = dynamic_cast<const VnlcExpressionStatementNode*>(&statement)) {
+        checkExpression(stmt->getExpression());
+    } else if (auto* stmt = dynamic_cast<const VnlcForStatementNode*>(&statement)) {
+        context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::LOOP, &context.currentScope()));
+
+        auto label = stmt->getLabel();
+        if (label.has_value()) {
+            VnlcSymbol labelSymbol(VnlcSymbolKind::LOOP_LABEL, VnlcSymbolOrigin::LOCAL, label.value(), nullptr);
+
+            if (!context.currentScope().declare(std::move(labelSymbol))) {
+                context.reportError(*stmt, fmt::format("Redeclaration of identifier '{}'", label.value()));
+            }
+        }
+
+        checkValueDeclaration(stmt->getLoopVariable());
+        checkExpression(stmt->getIterableExpression());
+        checkStatement(stmt->getBody());
+
+        context.popScope();
+    } else if (auto* stmt = dynamic_cast<const VnlcIfStatementNode*>(&statement)) {
+        checkExpression(stmt->getCondition());
+        checkStatement(stmt->getThenBranch());
+        if (stmt->getElseBranch().has_value()) {
+            checkStatement(*stmt->getElseBranch().value());
+        }
+    } else if (auto* stmt = dynamic_cast<const VnlcReturnStatementNode*>(&statement)) {
+        if (stmt->getReturnValue().has_value()) {
+            checkExpression(*stmt->getReturnValue().value());
+        }
+    } else if (auto* stmt = dynamic_cast<const VnlcSwitchStatementNode*>(&statement)) {
+        context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::SWITCH, &context.currentScope()));
+
+        checkExpression(stmt->getSwitchExpression());
+
+        if (stmt->getSwitchType() == VnlcSwitchStatementType::LITERAL_MATCH) {
+            for (const auto& item : stmt->getLiteralMatchItems()) {
+                checkStatement(*item.body);
+            }
+        } else if (stmt->getSwitchType() == VnlcSwitchStatementType::TYPE_MATCH) {
+            for (const auto& item : stmt->getTypeMatchItems()) {
+                checkType(*item.type);
+                checkStatement(*item.body);
+            }
+        }
+
+        if (stmt->getDefaultCaseBody().has_value()) {
+            checkStatement(*stmt->getDefaultCaseBody().value());
+        }
+
+        context.popScope();
+    } else if (auto* stmt = dynamic_cast<const VnlcVariableDeclarationStatementNode*>(&statement)) {
+        checkValueDeclaration(stmt->getVariableDeclaration());
+    } else if (auto* stmt = dynamic_cast<const VnlcWhileStatementNode*>(&statement)) {
+        context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::LOOP, &context.currentScope()));
+
+        auto label = stmt->getLabel();
+        if (label.has_value()) {
+            VnlcSymbol labelSymbol(VnlcSymbolKind::LOOP_LABEL, VnlcSymbolOrigin::LOCAL, label.value(), nullptr);
+
+            if (!context.currentScope().declare(std::move(labelSymbol))) {
+                context.reportError(*stmt, fmt::format("Redeclaration of identifier '{}'", label.value()));
+            }
+        }
+
+        checkExpression(stmt->getCondition());
+        checkStatement(stmt->getBody());
+
+        context.popScope();
+    } else {
+        context.reportError(statement, "Unknown statement type");
+    }
 }
 
 VnlcSemanticAnalysisResult VnlcSemanticAnalyzer::analyze(const VnlcConfig& config) {
