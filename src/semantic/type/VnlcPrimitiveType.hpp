@@ -22,14 +22,14 @@ private:
 public:
     [[nodiscard]] VnlcPrimitiveTypeKind getPrimitiveKind() const noexcept;
 
-    [[nodiscard]] static const VnlcPrimitiveType* getByteType();
-    [[nodiscard]] static const VnlcPrimitiveType* getShortType();
-    [[nodiscard]] static const VnlcPrimitiveType* getIntType();
-    [[nodiscard]] static const VnlcPrimitiveType* getLongType();
-    [[nodiscard]] static const VnlcPrimitiveType* getFloatType();
-    [[nodiscard]] static const VnlcPrimitiveType* getDoubleType();
-    [[nodiscard]] static const VnlcPrimitiveType* getBooleanType();
-    [[nodiscard]] static const VnlcPrimitiveType* getStringType();
+    [[nodiscard]] static const VnlcPrimitiveType* byteType();
+    [[nodiscard]] static const VnlcPrimitiveType* shortType();
+    [[nodiscard]] static const VnlcPrimitiveType* intType();
+    [[nodiscard]] static const VnlcPrimitiveType* longType();
+    [[nodiscard]] static const VnlcPrimitiveType* floatType();
+    [[nodiscard]] static const VnlcPrimitiveType* doubleType();
+    [[nodiscard]] static const VnlcPrimitiveType* booleanType();
+    [[nodiscard]] static const VnlcPrimitiveType* stringType();
 };
 
 #endif // VNLC_PRIMITIVE_TYPE_HPP

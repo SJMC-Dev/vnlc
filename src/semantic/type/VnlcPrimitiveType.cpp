@@ -15,56 +15,56 @@ const VnlcPrimitiveType* VnlcPrimitiveType::DOUBLE_TYPE = nullptr;
 const VnlcPrimitiveType* VnlcPrimitiveType::BOOLEAN_TYPE = nullptr;
 const VnlcPrimitiveType* VnlcPrimitiveType::STRING_TYPE = nullptr;
 
-const VnlcPrimitiveType* VnlcPrimitiveType::getByteType() {
+const VnlcPrimitiveType* VnlcPrimitiveType::byteType() {
     if (BYTE_TYPE == nullptr) {
         BYTE_TYPE = new VnlcPrimitiveType(false, VnlcPrimitiveTypeKind::BYTE);
     }
     return BYTE_TYPE;
 }
 
-const VnlcPrimitiveType* VnlcPrimitiveType::getShortType() {
+const VnlcPrimitiveType* VnlcPrimitiveType::shortType() {
     if (SHORT_TYPE == nullptr) {
         SHORT_TYPE = new VnlcPrimitiveType(false, VnlcPrimitiveTypeKind::SHORT);
     }
     return SHORT_TYPE;
 }
 
-const VnlcPrimitiveType* VnlcPrimitiveType::getIntType() {
+const VnlcPrimitiveType* VnlcPrimitiveType::intType() {
     if (INT_TYPE == nullptr) {
         INT_TYPE = new VnlcPrimitiveType(false, VnlcPrimitiveTypeKind::INT);
     }
     return INT_TYPE;
 }
 
-const VnlcPrimitiveType* VnlcPrimitiveType::getLongType() {
+const VnlcPrimitiveType* VnlcPrimitiveType::longType() {
     if (LONG_TYPE == nullptr) {
         LONG_TYPE = new VnlcPrimitiveType(false, VnlcPrimitiveTypeKind::LONG);
     }
     return LONG_TYPE;
 }
 
-const VnlcPrimitiveType* VnlcPrimitiveType::getFloatType() {
+const VnlcPrimitiveType* VnlcPrimitiveType::floatType() {
     if (FLOAT_TYPE == nullptr) {
         FLOAT_TYPE = new VnlcPrimitiveType(false, VnlcPrimitiveTypeKind::FLOAT);
     }
     return FLOAT_TYPE;
 }
 
-const VnlcPrimitiveType* VnlcPrimitiveType::getDoubleType() {
+const VnlcPrimitiveType* VnlcPrimitiveType::doubleType() {
     if (DOUBLE_TYPE == nullptr) {
         DOUBLE_TYPE = new VnlcPrimitiveType(false, VnlcPrimitiveTypeKind::DOUBLE);
     }
     return DOUBLE_TYPE;
 }
 
-const VnlcPrimitiveType* VnlcPrimitiveType::getBooleanType() {
+const VnlcPrimitiveType* VnlcPrimitiveType::booleanType() {
     if (BOOLEAN_TYPE == nullptr) {
         BOOLEAN_TYPE = new VnlcPrimitiveType(false, VnlcPrimitiveTypeKind::BOOLEAN);
     }
     return BOOLEAN_TYPE;
 }
 
-const VnlcPrimitiveType* VnlcPrimitiveType::getStringType() {
+const VnlcPrimitiveType* VnlcPrimitiveType::stringType() {
     if (STRING_TYPE == nullptr) {
         STRING_TYPE = new VnlcPrimitiveType(false, VnlcPrimitiveTypeKind::STRING);
     }
