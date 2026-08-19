@@ -12,6 +12,8 @@
 #include "../ast/statement/VnlcSwitchStatementNode.hpp"
 #include "../ast/statement/VnlcVariableDeclarationStatementNode.hpp"
 #include "../ast/statement/VnlcWhileStatementNode.hpp"
+#include "symbol/VnlcSymbolKind.hpp"
+#include "symbol/VnlcSymbolOrigin.hpp"
 #include <fmt/core.h>
 #include <string_view>
 
@@ -131,7 +133,19 @@ void VnlcSemanticAnalyzer::checkImport(const VnlcImportDeclarationNode& importDe
 }
 
 void VnlcSemanticAnalyzer::checkExport(const VnlcExportDeclarationNode& exportDecl) {
-    // TODO: Implement export checking logic
+    for (auto& item : exportDecl.getNamesListWithAliases()) {
+        if (!context.currentScope().lookup(item.name).has_value()) {
+            context.reportError(exportDecl, fmt::format("Undefined symbol {}", item.name));
+        }
+
+        if (item.alias.has_value()) {
+            VnlcSymbol aliasSymbol(VnlcSymbolKind::EXPORT_ALIAS, VnlcSymbolOrigin::LOCAL, item.alias.value(), &exportDecl);
+
+            if (!context.currentScope().declare(std::move(aliasSymbol))) {
+                context.reportError(exportDecl, fmt::format("Redeclaration of symbol {}", item.alias.value()));
+            }
+        }
+    }
 }
 
 void VnlcSemanticAnalyzer::checkValueDeclaration(const VnlcValueDeclarationNode& varDecl, VnlcMetadataInfo metadataInfo) {
