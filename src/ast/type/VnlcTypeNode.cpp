@@ -2,7 +2,7 @@
 
 VnlcTypeNode::VnlcTypeNode(
     bool questionMarkSuffix,
-    std::vector<std::string>&& nameParts,
+    std::vector<std::unique_ptr<VnlcIdentifierNode>>&& nameParts,
     std::vector<std::unique_ptr<VnlcTypeNode>>&& genericArguments,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
@@ -16,7 +16,7 @@ const bool VnlcTypeNode::hasQuestionMarkSuffix() const noexcept {
     return questionMarkSuffix;
 }
 
-const std::vector<std::string>& VnlcTypeNode::getNameParts() const noexcept {
+const std::vector<std::unique_ptr<VnlcIdentifierNode>>& VnlcTypeNode::getNameParts() const noexcept {
     return nameParts;
 }
 

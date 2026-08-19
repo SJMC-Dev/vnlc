@@ -1,12 +1,13 @@
 #ifndef VNLC_EXPORT_DECLARATION_ITEM_HPP
 #define VNLC_EXPORT_DECLARATION_ITEM_HPP
 
+#include "../identifier/VnlcIdentifierNode.hpp"
+#include <memory>
 #include <optional>
-#include <string>
 
 struct VnlcExportDeclarationItem {
-    std::string name;
-    std::optional<std::string> alias; // nullopt if no alias
+    std::unique_ptr<VnlcIdentifierNode> name;
+    std::optional<std::unique_ptr<VnlcIdentifierNode>> alias; // nullopt if no alias
 };
 
 #endif // VNLC_EXPORT_DECLARATION_ITEM_HPP

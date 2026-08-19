@@ -56,6 +56,7 @@ add_executable(
     ast/statement/VnlcSwitchStatementNode.cpp
     ast/type/VnlcTypeAnnotationNode.cpp
     ast/type/VnlcTypeNode.cpp
+    ast/identifier/VnlcIdentifierNode.cpp
     parser/VnlcParser.cpp
     diagnostic/VnlcDiagnostic.cpp
     semantic/symbol/VnlcSymbol.cpp

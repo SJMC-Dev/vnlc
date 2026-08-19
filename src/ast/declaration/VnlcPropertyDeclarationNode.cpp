@@ -3,7 +3,7 @@
 VnlcPropertyDeclarationNode::VnlcPropertyDeclarationNode(
     VnlcPropertyDeclarationType::AccessModifier accessModifier,
     VnlcPropertyDeclarationType::Binding binding,
-    std::string&& name,
+    std::unique_ptr<VnlcIdentifierNode>&& name,
     std::unique_ptr<VnlcTypeAnnotationNode>&& typeAnnotation,
     std::optional<std::unique_ptr<VnlcExpressionNode>>&& initializer,
     const VnlcToken& firstToken,
@@ -19,7 +19,7 @@ VnlcPropertyDeclarationNode::VnlcPropertyDeclarationNode(
 VnlcPropertyDeclarationNode::VnlcPropertyDeclarationNode(
     VnlcPropertyDeclarationType::AccessModifier accessModifier,
     VnlcPropertyDeclarationType::Binding binding,
-    std::string&& name,
+    std::unique_ptr<VnlcIdentifierNode>&& name,
     std::unique_ptr<VnlcTypeAnnotationNode>&& typeAnnotation,
     std::optional<std::unique_ptr<VnlcExpressionNode>>&& initializer,
     const VnlcToken& firstToken,
@@ -41,8 +41,8 @@ const VnlcPropertyDeclarationType::Binding VnlcPropertyDeclarationNode::getBindi
     return binding;
 }
 
-std::string_view VnlcPropertyDeclarationNode::getName() const noexcept {
-    return name;
+const VnlcIdentifierNode& VnlcPropertyDeclarationNode::getName() const noexcept {
+    return *name;
 }
 
 const VnlcTypeAnnotationNode& VnlcPropertyDeclarationNode::getTypeAnnotation() const noexcept {

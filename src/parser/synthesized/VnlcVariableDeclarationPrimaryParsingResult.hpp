@@ -8,7 +8,7 @@
 
 struct VnlcVariableDeclarationPrimaryParsingResult {
     VnlcValueDeclarationType::Kind kind;
-    std::string name;
+    std::unique_ptr<VnlcIdentifierNode> name;
     std::optional<std::unique_ptr<VnlcTypeAnnotationNode>> typeAnnotation;
 };
 

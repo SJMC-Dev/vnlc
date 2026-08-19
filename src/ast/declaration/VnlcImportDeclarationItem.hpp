@@ -1,13 +1,16 @@
 #ifndef VNLC_IMPORT_DECLARATION_ITEM_HPP
 #define VNLC_IMPORT_DECLARATION_ITEM_HPP
 
+#include "../identifier/VnlcIdentifierNode.hpp"
+#include <memory>
 #include <optional>
-#include <string>
 #include <vector>
 
 struct VnlcImportDeclarationItem {
-    std::vector<std::string> nameParts;
-    std::optional<std::string> alias; // nullopt if no alias or wildcard import
+    std::vector<std::unique_ptr<VnlcIdentifierNode>> namePrefix;
+    std::optional<std::vector<std::unique_ptr<VnlcImportDeclarationItem>>> nameSuffices;
+    std::optional<std::unique_ptr<VnlcIdentifierNode>> alias;
+    bool wildcard = false;
 };
 
 #endif // VNLC_IMPORT_DECLARATION_ITEM_HPP

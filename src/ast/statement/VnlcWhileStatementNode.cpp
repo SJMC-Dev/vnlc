@@ -11,7 +11,7 @@ VnlcWhileStatementNode::VnlcWhileStatementNode(
       body(std::move(body)) {}
 
 VnlcWhileStatementNode::VnlcWhileStatementNode(
-    std::string&& label,
+    std::unique_ptr<VnlcIdentifierNode>&& label,
     std::unique_ptr<VnlcExpressionNode>&& condition,
     std::unique_ptr<VnlcStatementNode>&& body,
     const VnlcToken& firstToken,

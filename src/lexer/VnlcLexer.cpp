@@ -50,8 +50,6 @@ const std::unordered_map<std::string_view, VnlcTokenType> VnlcLexer::keywords{
     { "import", VnlcTokenType::IMPORT },
     { "export", VnlcTokenType::EXPORT },
     { "as", VnlcTokenType::AS },
-    { "module", VnlcTokenType::MODULE },
-    { "parent", VnlcTokenType::PARENT },
     { "self", VnlcTokenType::SELF },
     { "lambda", VnlcTokenType::LAMBDA },
     { "command", VnlcTokenType::COMMAND },

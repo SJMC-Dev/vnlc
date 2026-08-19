@@ -1,7 +1,7 @@
 #include "VnlcEnumMemberDeclarationNode.hpp"
 
 VnlcEnumMemberDeclarationNode::VnlcEnumMemberDeclarationNode(
-    std::string&& name,
+    std::unique_ptr<VnlcIdentifierNode>&& name,
     std::vector<std::unique_ptr<VnlcValueDeclarationNode>>&& associatedValues,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
@@ -11,7 +11,7 @@ VnlcEnumMemberDeclarationNode::VnlcEnumMemberDeclarationNode(
       associatedValues(std::move(associatedValues)) {}
 
 VnlcEnumMemberDeclarationNode::VnlcEnumMemberDeclarationNode(
-    std::string&& name,
+    std::unique_ptr<VnlcIdentifierNode>&& name,
     std::vector<std::unique_ptr<VnlcValueDeclarationNode>>&& associatedValues,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken,
@@ -21,8 +21,8 @@ VnlcEnumMemberDeclarationNode::VnlcEnumMemberDeclarationNode(
       name(std::move(name)),
       associatedValues(std::move(associatedValues)) {}
 
-std::string_view VnlcEnumMemberDeclarationNode::getName() const noexcept {
-    return name;
+const VnlcIdentifierNode& VnlcEnumMemberDeclarationNode::getName() const noexcept {
+    return *name;
 }
 
 const std::vector<std::unique_ptr<VnlcValueDeclarationNode>>& VnlcEnumMemberDeclarationNode::getAssociatedValues() const noexcept {

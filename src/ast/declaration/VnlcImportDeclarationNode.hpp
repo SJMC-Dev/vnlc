@@ -3,20 +3,17 @@
 
 #include "VnlcDeclarationNode.hpp"
 #include "VnlcImportDeclarationItem.hpp"
-#include <vector>
 
 class VnlcImportDeclarationNode : public VnlcDeclarationNode {
 private:
     VnlcImportDeclarationNode() = delete;
 
-    bool relative;
-    std::vector<VnlcImportDeclarationItem> namePartsListWithAliases;
+    std::unique_ptr<VnlcImportDeclarationItem> paths;
 
 public:
-    VnlcImportDeclarationNode(bool relative, std::vector<VnlcImportDeclarationItem>&& namePartsListWithAliases, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
+    VnlcImportDeclarationNode(std::unique_ptr<VnlcImportDeclarationItem>&& paths, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
 
-    [[nodiscard]] const bool isRelative() const noexcept;
-    [[nodiscard]] const std::vector<VnlcImportDeclarationItem>& getNamePartsListWithAliases() const noexcept;
+    [[nodiscard]] const VnlcImportDeclarationItem& getNamePartsListWithAliases() const noexcept;
 };
 
 #endif // VNLC_IMPORT_DECLARATION_NODE_HPP

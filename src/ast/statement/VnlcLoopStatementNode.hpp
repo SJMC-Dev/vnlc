@@ -1,20 +1,22 @@
 #ifndef VNLC_LOOP_STATEMENT_NODE_HPP
 #define VNLC_LOOP_STATEMENT_NODE_HPP
 
+#include "../identifier/VnlcIdentifierNode.hpp"
 #include "VnlcControlFlowStatementNode.hpp"
+#include <memory>
 #include <optional>
 
 class VnlcLoopStatementNode : public VnlcControlFlowStatementNode {
 private:
     VnlcLoopStatementNode() = delete;
 
-    std::optional<std::string> label; // nullopt if no label
+    std::optional<std::unique_ptr<VnlcIdentifierNode>> label; // nullopt if no label
 
 protected:
-    VnlcLoopStatementNode(std::optional<std::string>&& label, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
+    VnlcLoopStatementNode(std::optional<std::unique_ptr<VnlcIdentifierNode>>&& label, const VnlcToken& firstToken, const VnlcToken& lastToken) noexcept;
 
 public:
-    [[nodiscard]] const std::optional<std::string>& getLabel() const noexcept;
+    [[nodiscard]] const std::optional<std::unique_ptr<VnlcIdentifierNode>>& getLabel() const noexcept;
 };
 
 #endif // VNLC_LOOP_STATEMENT_NODE_HPP

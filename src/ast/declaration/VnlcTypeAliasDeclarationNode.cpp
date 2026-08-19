@@ -1,8 +1,8 @@
 #include "VnlcTypeAliasDeclarationNode.hpp"
 
 VnlcTypeAliasDeclarationNode::VnlcTypeAliasDeclarationNode(
-    std::string&& aliasName,
-    std::vector<std::string>&& genericParameterNames,
+    std::unique_ptr<VnlcIdentifierNode>&& aliasName,
+    std::vector<std::unique_ptr<VnlcIdentifierNode>>&& genericParameterNames,
     std::unique_ptr<VnlcTypeNode>&& originalType,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
@@ -13,8 +13,8 @@ VnlcTypeAliasDeclarationNode::VnlcTypeAliasDeclarationNode(
       originalType(std::move(originalType)) {}
 
 VnlcTypeAliasDeclarationNode::VnlcTypeAliasDeclarationNode(
-    std::string&& aliasName,
-    std::vector<std::string>&& genericParameterNames,
+    std::unique_ptr<VnlcIdentifierNode>&& aliasName,
+    std::vector<std::unique_ptr<VnlcIdentifierNode>>&& genericParameterNames,
     std::unique_ptr<VnlcTypeNode>&& originalType,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken,
@@ -25,11 +25,11 @@ VnlcTypeAliasDeclarationNode::VnlcTypeAliasDeclarationNode(
       genericParameterNames(std::move(genericParameterNames)),
       originalType(std::move(originalType)) {}
 
-std::string_view VnlcTypeAliasDeclarationNode::getAliasName() const noexcept {
-    return aliasName;
+const VnlcIdentifierNode& VnlcTypeAliasDeclarationNode::getAliasName() const noexcept {
+    return *aliasName;
 }
 
-const std::vector<std::string>& VnlcTypeAliasDeclarationNode::getGenericParameterNames() const noexcept {
+const std::vector<std::unique_ptr<VnlcIdentifierNode>>& VnlcTypeAliasDeclarationNode::getGenericParameterNames() const noexcept {
     return genericParameterNames;
 }
 

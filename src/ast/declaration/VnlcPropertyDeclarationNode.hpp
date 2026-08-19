@@ -12,7 +12,7 @@ private:
 
     VnlcPropertyDeclarationType::AccessModifier accessModifier;
     VnlcPropertyDeclarationType::Binding binding;
-    std::string name;
+    std::unique_ptr<VnlcIdentifierNode> name;
     std::unique_ptr<VnlcTypeAnnotationNode> typeAnnotation;
     std::optional<std::unique_ptr<VnlcExpressionNode>> initializer;
 
@@ -20,7 +20,7 @@ public:
     VnlcPropertyDeclarationNode(
         VnlcPropertyDeclarationType::AccessModifier accessModifier,
         VnlcPropertyDeclarationType::Binding binding,
-        std::string&& name,
+        std::unique_ptr<VnlcIdentifierNode>&& name,
         std::unique_ptr<VnlcTypeAnnotationNode>&& typeAnnotation,
         std::optional<std::unique_ptr<VnlcExpressionNode>>&& initializer,
         const VnlcToken& firstToken,
@@ -30,7 +30,7 @@ public:
     VnlcPropertyDeclarationNode(
         VnlcPropertyDeclarationType::AccessModifier accessModifier,
         VnlcPropertyDeclarationType::Binding binding,
-        std::string&& name,
+        std::unique_ptr<VnlcIdentifierNode>&& name,
         std::unique_ptr<VnlcTypeAnnotationNode>&& typeAnnotation,
         std::optional<std::unique_ptr<VnlcExpressionNode>>&& initializer,
         const VnlcToken& firstToken,
@@ -40,7 +40,7 @@ public:
 
     [[nodiscard]] const VnlcPropertyDeclarationType::AccessModifier getAccessModifier() const noexcept;
     [[nodiscard]] const VnlcPropertyDeclarationType::Binding getBinding() const noexcept;
-    [[nodiscard]] std::string_view getName() const noexcept;
+    [[nodiscard]] const VnlcIdentifierNode& getName() const noexcept;
     [[nodiscard]] const VnlcTypeAnnotationNode& getTypeAnnotation() const noexcept;
     [[nodiscard]] const std::optional<std::unique_ptr<VnlcExpressionNode>>& getInitializer() const noexcept;
 };

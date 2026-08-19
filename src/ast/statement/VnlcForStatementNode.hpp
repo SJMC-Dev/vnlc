@@ -24,7 +24,7 @@ public:
     ) noexcept;
 
     VnlcForStatementNode(
-        std::string&& label,
+        std::unique_ptr<VnlcIdentifierNode>&& label,
         std::unique_ptr<VnlcValueDeclarationNode>&& loopVariable,
         std::unique_ptr<VnlcExpressionNode>&& iterableExpression,
         std::unique_ptr<VnlcStatementNode>&& body,

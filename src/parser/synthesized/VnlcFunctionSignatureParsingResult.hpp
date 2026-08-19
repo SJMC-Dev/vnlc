@@ -5,11 +5,10 @@
 #include "../../ast/type/VnlcTypeAnnotationNode.hpp"
 #include <memory>
 #include <optional>
-#include <string>
 #include <vector>
 
 struct VnlcFunctionSignatureParsingResult {
-    std::string name;
+    std::unique_ptr<VnlcIdentifierNode> name;
     std::vector<std::unique_ptr<VnlcValueDeclarationNode>> parameters;
     std::optional<std::unique_ptr<VnlcTypeAnnotationNode>> returnType;
 };

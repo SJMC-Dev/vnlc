@@ -2,11 +2,10 @@
 #define VNLC_IMPORT_PATH_PARSING_RESULT_HPP
 
 #include "../../ast/declaration/VnlcImportDeclarationItem.hpp"
-#include <vector>
+#include <memory>
 
 struct VnlcImportPathParsingResult {
-    bool relative;
-    std::vector<VnlcImportDeclarationItem> paths;
+    std::unique_ptr<VnlcImportDeclarationItem> paths;
 };
 
 #endif // VNLC_IMPORT_PATH_PARSING_RESULT_HPP

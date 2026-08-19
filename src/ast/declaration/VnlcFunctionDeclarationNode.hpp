@@ -18,7 +18,7 @@ private:
     VnlcFunctionDeclarationType::AccessModifier accessModifier;
     VnlcFunctionDeclarationType::Binding binding;
 
-    std::string name;
+    std::unique_ptr<VnlcIdentifierNode> name;
     std::vector<std::unique_ptr<VnlcValueDeclarationNode>> parameters;
     std::optional<std::unique_ptr<VnlcTypeAnnotationNode>> returnType;
     std::optional<std::unique_ptr<VnlcBlockStatementNode>> body;
@@ -29,7 +29,7 @@ public:
         VnlcFunctionDeclarationType::Context context,
         VnlcFunctionDeclarationType::AccessModifier accessModifier,
         VnlcFunctionDeclarationType::Binding binding,
-        std::string&& name,
+        std::unique_ptr<VnlcIdentifierNode>&& name,
         std::vector<std::unique_ptr<VnlcValueDeclarationNode>>&& parameters,
         std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& returnType,
         std::optional<std::unique_ptr<VnlcBlockStatementNode>>&& body,
@@ -42,7 +42,7 @@ public:
         VnlcFunctionDeclarationType::Context context,
         VnlcFunctionDeclarationType::AccessModifier accessModifier,
         VnlcFunctionDeclarationType::Binding binding,
-        std::string&& name,
+        std::unique_ptr<VnlcIdentifierNode>&& name,
         std::vector<std::unique_ptr<VnlcValueDeclarationNode>>&& parameters,
         std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& returnType,
         std::optional<std::unique_ptr<VnlcBlockStatementNode>>&& body,
@@ -55,7 +55,7 @@ public:
     [[nodiscard]] const VnlcFunctionDeclarationType::Context getContext() const noexcept;
     [[nodiscard]] const VnlcFunctionDeclarationType::AccessModifier getAccessModifier() const noexcept;
     [[nodiscard]] const VnlcFunctionDeclarationType::Binding getBinding() const noexcept;
-    [[nodiscard]] std::string_view getName() const noexcept;
+    [[nodiscard]] const VnlcIdentifierNode& getName() const noexcept;
     [[nodiscard]] const std::vector<std::unique_ptr<VnlcValueDeclarationNode>>& getParameters() const noexcept;
     [[nodiscard]] const std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>& getReturnType() const noexcept;
     [[nodiscard]] const std::optional<std::unique_ptr<VnlcBlockStatementNode>>& getBody() const noexcept;

@@ -1,8 +1,8 @@
 #include "VnlcInterfaceDeclarationNode.hpp"
 
 VnlcInterfaceDeclarationNode::VnlcInterfaceDeclarationNode(
-    std::string&& name,
-    std::vector<std::string>&& genericParameterNames,
+    std::unique_ptr<VnlcIdentifierNode>&& name,
+    std::vector<std::unique_ptr<VnlcIdentifierNode>>&& genericParameterNames,
     std::vector<std::unique_ptr<VnlcFunctionDeclarationNode>>&& methodDeclarations,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
@@ -13,8 +13,8 @@ VnlcInterfaceDeclarationNode::VnlcInterfaceDeclarationNode(
       methodDeclarations(std::move(methodDeclarations)) {}
 
 VnlcInterfaceDeclarationNode::VnlcInterfaceDeclarationNode(
-    std::string&& name,
-    std::vector<std::string>&& genericParameterNames,
+    std::unique_ptr<VnlcIdentifierNode>&& name,
+    std::vector<std::unique_ptr<VnlcIdentifierNode>>&& genericParameterNames,
     std::vector<std::unique_ptr<VnlcFunctionDeclarationNode>>&& methodDeclarations,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken,
@@ -25,11 +25,11 @@ VnlcInterfaceDeclarationNode::VnlcInterfaceDeclarationNode(
       genericParameterNames(std::move(genericParameterNames)),
       methodDeclarations(std::move(methodDeclarations)) {}
 
-std::string_view VnlcInterfaceDeclarationNode::getName() const noexcept {
-    return name;
+const VnlcIdentifierNode& VnlcInterfaceDeclarationNode::getName() const noexcept {
+    return *name;
 }
 
-const std::vector<std::string>& VnlcInterfaceDeclarationNode::getGenericParameterNames() const noexcept {
+const std::vector<std::unique_ptr<VnlcIdentifierNode>>& VnlcInterfaceDeclarationNode::getGenericParameterNames() const noexcept {
     return genericParameterNames;
 }
 

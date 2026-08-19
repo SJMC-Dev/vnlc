@@ -5,7 +5,7 @@ VnlcValueDeclarationNode::VnlcValueDeclarationNode(
     VnlcValueDeclarationType::Kind kind,
     VnlcValueDeclarationType::Context context,
     VnlcValueDeclarationType::AccessModifier accessModifier,
-    std::string&& name,
+    std::unique_ptr<VnlcIdentifierNode>&& name,
     std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& typeAnnotation,
     std::optional<std::unique_ptr<VnlcExpressionNode>>&& initializer,
     const VnlcToken& firstToken,
@@ -23,7 +23,7 @@ VnlcValueDeclarationNode::VnlcValueDeclarationNode(
     VnlcValueDeclarationType::Kind kind,
     VnlcValueDeclarationType::Context context,
     VnlcValueDeclarationType::AccessModifier accessModifier,
-    std::string&& name,
+    std::unique_ptr<VnlcIdentifierNode>&& name,
     std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& typeAnnotation,
     std::optional<std::unique_ptr<VnlcExpressionNode>>&& initializer,
     const VnlcToken& firstToken,
@@ -50,8 +50,8 @@ const VnlcValueDeclarationType::AccessModifier VnlcValueDeclarationNode::getAcce
     return accessModifier;
 }
 
-std::string_view VnlcValueDeclarationNode::getName() const noexcept {
-    return name;
+const VnlcIdentifierNode& VnlcValueDeclarationNode::getName() const noexcept {
+    return *name;
 }
 
 const std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>& VnlcValueDeclarationNode::getTypeAnnotation() const noexcept {

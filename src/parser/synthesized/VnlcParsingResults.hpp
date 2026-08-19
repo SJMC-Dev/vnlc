@@ -1,9 +1,6 @@
 #ifndef VNLC_PARSING_RESULTS_HPP
 #define VNLC_PARSING_RESULTS_HPP
 
-#include "VnlcAbsoluteImportPathItemParsingResult.hpp"       // IWYU pragma: export
-#include "VnlcAbsoluteImportPathListParsingResult.hpp"       // IWYU pragma: export
-#include "VnlcAbsoluteImportPathParsingResult.hpp"           // IWYU pragma: export
 #include "VnlcAdditiveExpressionParsingResult.hpp"           // IWYU pragma: export
 #include "VnlcArgumentListParsingResult.hpp"                 // IWYU pragma: export
 #include "VnlcAssignmentExpressionParsingResult.hpp"         // IWYU pragma: export
@@ -40,6 +37,9 @@
 #include "VnlcGenericParameterListParsingResult.hpp"         // IWYU pragma: export
 #include "VnlcIfStatementParsingResult.hpp"                  // IWYU pragma: export
 #include "VnlcImportDeclarationParsingResult.hpp"            // IWYU pragma: export
+#include "VnlcImportPathItemParsingResult.hpp"               // IWYU pragma: export
+#include "VnlcImportPathListParsingResult.hpp"               // IWYU pragma: export
+#include "VnlcImportPathParsingResult.hpp"                   // IWYU pragma: export
 #include "VnlcImportPathParsingResult.hpp"                   // IWYU pragma: export
 #include "VnlcInterfaceBodyParsingResult.hpp"                // IWYU pragma: export
 #include "VnlcInterfaceDeclarationParsingResult.hpp"         // IWYU pragma: export
@@ -63,9 +63,6 @@
 #include "VnlcRangeExpressionParsingResult.hpp"              // IWYU pragma: export
 #include "VnlcRegularFunctionDeclarationParsingResult.hpp"   // IWYU pragma: export
 #include "VnlcRelationalExpressionParsingResult.hpp"         // IWYU pragma: export
-#include "VnlcRelativeImportPathItemParsingResult.hpp"       // IWYU pragma: export
-#include "VnlcRelativeImportPathListParsingResult.hpp"       // IWYU pragma: export
-#include "VnlcRelativeImportPathParsingResult.hpp"           // IWYU pragma: export
 #include "VnlcReloadStatementParsingResult.hpp"              // IWYU pragma: export
 #include "VnlcReturnStatementParsingResult.hpp"              // IWYU pragma: export
 #include "VnlcSelectorArgumentListParsingResult.hpp"         // IWYU pragma: export

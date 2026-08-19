@@ -2,10 +2,10 @@
 
 VnlcClassDeclarationNode::VnlcClassDeclarationNode(
     bool final,
-    std::string&& name,
+    std::unique_ptr<VnlcIdentifierNode>&& name,
     std::optional<std::unique_ptr<VnlcTypeNode>>&& baseClass,
     std::vector<std::unique_ptr<VnlcTypeNode>>&& implementedInterfaces,
-    std::vector<std::string>&& genericParameterNames,
+    std::vector<std::unique_ptr<VnlcIdentifierNode>>&& genericParameterNames,
     std::vector<std::unique_ptr<VnlcDeclarationNode>>&& memberDeclarations,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
@@ -20,10 +20,10 @@ VnlcClassDeclarationNode::VnlcClassDeclarationNode(
 
 VnlcClassDeclarationNode::VnlcClassDeclarationNode(
     bool final,
-    std::string&& name,
+    std::unique_ptr<VnlcIdentifierNode>&& name,
     std::optional<std::unique_ptr<VnlcTypeNode>>&& baseClass,
     std::vector<std::unique_ptr<VnlcTypeNode>>&& implementedInterfaces,
-    std::vector<std::string>&& genericParameterNames,
+    std::vector<std::unique_ptr<VnlcIdentifierNode>>&& genericParameterNames,
     std::vector<std::unique_ptr<VnlcDeclarationNode>>&& memberDeclarations,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken,
@@ -41,8 +41,8 @@ const bool VnlcClassDeclarationNode::isFinal() const noexcept {
     return final;
 }
 
-std::string_view VnlcClassDeclarationNode::getName() const noexcept {
-    return name;
+const VnlcIdentifierNode& VnlcClassDeclarationNode::getName() const noexcept {
+    return *name;
 }
 
 const std::optional<std::unique_ptr<VnlcTypeNode>>& VnlcClassDeclarationNode::getBaseClass() const noexcept {
@@ -53,7 +53,7 @@ const std::vector<std::unique_ptr<VnlcTypeNode>>& VnlcClassDeclarationNode::getI
     return implementedInterfaces;
 }
 
-const std::vector<std::string>& VnlcClassDeclarationNode::getGenericParameterNames() const noexcept {
+const std::vector<std::unique_ptr<VnlcIdentifierNode>>& VnlcClassDeclarationNode::getGenericParameterNames() const noexcept {
     return genericParameterNames;
 }
 

@@ -36,6 +36,8 @@ private:
     [[nodiscard]] bool matchAny(const std::unordered_set<VnlcTokenType>& expectedTypes);
     [[nodiscard]] bool consumeRightAngleInType();
 
+    [[nodiscard]] std::unique_ptr<VnlcIdentifierNode> constructCurrentIdentifierNode();
+
     [[nodiscard]] VnlcModuleParsingResult parseModule(VnlcModuleParsingContext context);
     [[nodiscard]] VnlcTopIdentifierDeclarationParsingResult parseTopIdentifierDeclaration();
     [[nodiscard]] VnlcImportDeclarationParsingResult parseImportDeclaration();
@@ -59,20 +61,16 @@ private:
     [[nodiscard]] VnlcExportListParsingResult parseExportList();
     [[nodiscard]] VnlcMetadataTermParsingResult parseMetadataTerm();
     [[nodiscard]] VnlcFunctionSignatureParsingResult parseFunctionSignature();
-    [[nodiscard]] VnlcAbsoluteImportPathParsingResult parseAbsoluteImportPath();
-    [[nodiscard]] VnlcRelativeImportPathParsingResult parseRelativeImportPath();
     [[nodiscard]] VnlcTypeParsingResult parseType();
     [[nodiscard]] VnlcParameterParsingResult parseParameter();
     [[nodiscard]] VnlcGenericParameterListParsingResult parseGenericParameterList();
     [[nodiscard]] VnlcGenericArgumentListParsingResult parseGenericArgumentList();
-    [[nodiscard]] VnlcAbsoluteImportPathListParsingResult parseAbsoluteImportPathList();
-    [[nodiscard]] VnlcRelativeImportPathListParsingResult parseRelativeImportPathList();
+    [[nodiscard]] VnlcImportPathListParsingResult parseImportPathList();
     [[nodiscard]] VnlcFunctionBodyParsingResult parseFunctionBody();
     [[nodiscard]] VnlcClassBodyParsingResult parseClassBody();
     [[nodiscard]] VnlcInterfaceBodyParsingResult parseInterfaceBody();
     [[nodiscard]] VnlcEnumBodyParsingResult parseEnumBody();
-    [[nodiscard]] VnlcAbsoluteImportPathItemParsingResult parseAbsoluteImportPathItem();
-    [[nodiscard]] VnlcRelativeImportPathItemParsingResult parseRelativeImportPathItem();
+    [[nodiscard]] VnlcImportPathItemParsingResult parseImportPathItem();
     [[nodiscard]] VnlcClassMemberParsingResult parseClassMember();
     [[nodiscard]] VnlcEnumMemberDeclarationParsingResult parseEnumMemberDeclaration();
     [[nodiscard]] VnlcEnumAssociatedValueListParsingResult parseEnumAssociatedValueList();

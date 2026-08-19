@@ -5,7 +5,7 @@ VnlcFunctionDeclarationNode::VnlcFunctionDeclarationNode(
     VnlcFunctionDeclarationType::Context context,
     VnlcFunctionDeclarationType::AccessModifier accessModifier,
     VnlcFunctionDeclarationType::Binding binding,
-    std::string&& name,
+    std::unique_ptr<VnlcIdentifierNode>&& name,
     std::vector<std::unique_ptr<VnlcValueDeclarationNode>>&& parameters,
     std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& returnType,
     std::optional<std::unique_ptr<VnlcBlockStatementNode>>&& body,
@@ -27,7 +27,7 @@ VnlcFunctionDeclarationNode::VnlcFunctionDeclarationNode(
     VnlcFunctionDeclarationType::Context context,
     VnlcFunctionDeclarationType::AccessModifier accessModifier,
     VnlcFunctionDeclarationType::Binding binding,
-    std::string&& name,
+    std::unique_ptr<VnlcIdentifierNode>&& name,
     std::vector<std::unique_ptr<VnlcValueDeclarationNode>>&& parameters,
     std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& returnType,
     std::optional<std::unique_ptr<VnlcBlockStatementNode>>&& body,
@@ -61,8 +61,8 @@ const VnlcFunctionDeclarationType::Binding VnlcFunctionDeclarationNode::getBindi
     return binding;
 }
 
-std::string_view VnlcFunctionDeclarationNode::getName() const noexcept {
-    return name;
+const VnlcIdentifierNode& VnlcFunctionDeclarationNode::getName() const noexcept {
+    return *name;
 }
 
 const std::vector<std::unique_ptr<VnlcValueDeclarationNode>>& VnlcFunctionDeclarationNode::getParameters() const noexcept {
