@@ -1,4 +1,4 @@
 #include "VnlcTypeInferenceResult.hpp"
 #include <utility>
 
-VnlcTypeInferenceResult::VnlcTypeInferenceResult(VnlcSemanticType type, bool success) : type(std::move(type)), success(success) {}
+VnlcTypeInferenceResult::VnlcTypeInferenceResult(std::optional<VnlcSemanticType> type) : type(std::move(type)) {}
