@@ -3,11 +3,12 @@
 VnlcScope::VnlcScope(VnlcScopeKind kind, const VnlcScope* parent) noexcept : kind(kind), parent(parent) {}
 
 bool VnlcScope::declare(VnlcSymbol&& symbol) {
-    VnlcSymbol existingSymbol = symbols[std::string(symbol.getName())];
-    if (existingSymbol.getName() == symbol.getName()) {
+    auto existingSymbolIterator = symbols.find(std::string(symbol.getName()));
+
+    if (existingSymbolIterator != symbols.end()) {
         return false;
     } else {
-        symbols[std::string(symbol.getName())] = std::move(symbol);
+        symbols.emplace(std::move(symbol));
         return true;
     }
 }
