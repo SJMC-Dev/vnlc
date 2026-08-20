@@ -14,6 +14,7 @@
 #include "../ast/statement/VnlcWhileStatementNode.hpp"
 #include "symbol/VnlcSymbolKind.hpp"
 #include "symbol/VnlcSymbolOrigin.hpp"
+#include "type/typeinf/VnlcTypeInferenceResult.hpp"
 #include <fmt/core.h>
 #include <string_view>
 
@@ -438,6 +439,26 @@ void VnlcSemanticAnalyzer::checkStatement(const VnlcStatementNode& statement) {
     } else {
         context.reportError(statement, "Unknown statement type");
     }
+}
+
+void VnlcSemanticAnalyzer::checkExpression(const VnlcExpressionNode& expression) {
+    // TODO: Implement expression checking process
+}
+
+void VnlcSemanticAnalyzer::checkType(const VnlcTypeNode& type) {
+    // TODO: Implement type checking process
+}
+
+VnlcTypeInferenceResult VnlcSemanticAnalyzer::inferExpressionType(const VnlcExpressionNode& expression) {
+    // TODO: Implement expression type inference
+
+    return VnlcTypeInferenceResult::failed();
+}
+
+VnlcTypeInferenceResult VnlcSemanticAnalyzer::inferFunctionReturnType(const VnlcFunctionDeclarationNode& funcDecl) {
+    // TODO: Implement function return type inference
+
+    return VnlcTypeInferenceResult::failed();
 }
 
 VnlcSemanticAnalysisResult VnlcSemanticAnalyzer::analyze(const VnlcConfig& config) {
