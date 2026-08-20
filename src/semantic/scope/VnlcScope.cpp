@@ -8,7 +8,7 @@ bool VnlcScope::declare(VnlcSymbol&& symbol) {
     if (existingSymbolIterator != symbols.end()) {
         return false;
     } else {
-        symbols.emplace(std::move(symbol));
+        symbols.emplace(symbol.getName(), std::move(symbol));
         return true;
     }
 }
