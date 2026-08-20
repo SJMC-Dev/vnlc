@@ -26,12 +26,12 @@ void VnlcSemanticAnalyzer::checkIdentifierName(std::string_view name, const Vnlc
 }
 
 void VnlcSemanticAnalyzer::checkIdentifierExpressionUse(const VnlcIdentifierExpressionNode& exprNode, VnlcMetadataInfo metadataInfo) {
-    auto symbol = context.currentScope().lookup(exprNode.getName());
+    auto symbol = context.currentScope().lookup(exprNode.getName().getIdentifierString());
     if (!symbol.has_value()) {
-        context.reportError(exprNode, fmt::format("Use of undeclared identifier '{}'", exprNode.getName()));
+        context.reportError(exprNode, fmt::format("Use of undeclared identifier '{}'", exprNode.getName().getIdentifierString()));
     } else if (!(dynamic_cast<const VnlcValueDeclarationNode*>(symbol.value()->getLocalDeclarationNode()) ||
                  dynamic_cast<const VnlcFunctionDeclarationNode*>(symbol.value()->getLocalDeclarationNode()))) {
-        context.reportError(exprNode, fmt::format("Identifier '{}' is not a variable or function", exprNode.getName()));
+        context.reportError(exprNode, fmt::format("Identifier '{}' is not a variable or function", exprNode.getName().getIdentifierString()));
     }
 }
 
@@ -40,12 +40,12 @@ VnlcMetadataInfo VnlcSemanticAnalyzer::checkMetadata(const std::vector<VnlcDecla
     bool deprecated = false;
 
     for (const auto& term : metadataTerms) {
-        if (term.key == "nowarnings") {
+        if (term.key->getIdentifierString() == "nowarnings") {
             noWarnings = true;
-        } else if (term.key == "deprecated") {
+        } else if (term.key->getIdentifierString() == "deprecated") {
             deprecated = true;
         } else {
-            context.reportError(declNode, fmt::format("Unknown metadata term '{}'", term.key));
+            context.reportError(declNode, fmt::format("Unknown metadata term '{}'", term.key->getIdentifierString()));
         }
     }
 
@@ -66,34 +66,34 @@ void VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode, const V
         VnlcDeclarationNode* declNode = topIdentifierDecl.get();
 
         if (auto* varDecl = dynamic_cast<VnlcValueDeclarationNode*>(declNode)) {
-            VnlcSymbol symbol(VnlcSymbolKind::VARIABLE, VnlcSymbolOrigin::LOCAL, varDecl->getName(), varDecl);
+            VnlcSymbol symbol(VnlcSymbolKind::VARIABLE, VnlcSymbolOrigin::LOCAL, varDecl->getName().getIdentifierString(), varDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
-                context.reportError(*varDecl, fmt::format("Redeclaration of symbol '{}'", varDecl->getName()));
+                context.reportError(*varDecl, fmt::format("Redeclaration of symbol '{}'", varDecl->getName().getIdentifierString()));
             }
         } else if (auto* funcDecl = dynamic_cast<VnlcFunctionDeclarationNode*>(declNode)) {
-            VnlcSymbol symbol(VnlcSymbolKind::FUNCTION, VnlcSymbolOrigin::LOCAL, funcDecl->getName(), funcDecl);
+            VnlcSymbol symbol(VnlcSymbolKind::FUNCTION, VnlcSymbolOrigin::LOCAL, funcDecl->getName().getIdentifierString(), funcDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
-                context.reportError(*funcDecl, fmt::format("Redeclaration of symbol '{}'", funcDecl->getName()));
+                context.reportError(*funcDecl, fmt::format("Redeclaration of symbol '{}'", funcDecl->getName().getIdentifierString()));
             }
         } else if (auto* classDecl = dynamic_cast<VnlcClassDeclarationNode*>(declNode)) {
-            VnlcSymbol symbol(VnlcSymbolKind::CLASS, VnlcSymbolOrigin::LOCAL, classDecl->getName(), classDecl);
+            VnlcSymbol symbol(VnlcSymbolKind::CLASS, VnlcSymbolOrigin::LOCAL, classDecl->getName().getIdentifierString(), classDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
-                context.reportError(*classDecl, fmt::format("Redeclaration of symbol '{}'", classDecl->getName()));
+                context.reportError(*classDecl, fmt::format("Redeclaration of symbol '{}'", classDecl->getName().getIdentifierString()));
             }
         } else if (auto* interfaceDecl = dynamic_cast<VnlcInterfaceDeclarationNode*>(declNode)) {
-            VnlcSymbol symbol(VnlcSymbolKind::INTERFACE, VnlcSymbolOrigin::LOCAL, interfaceDecl->getName(), interfaceDecl);
+            VnlcSymbol symbol(VnlcSymbolKind::INTERFACE, VnlcSymbolOrigin::LOCAL, interfaceDecl->getName().getIdentifierString(), interfaceDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
-                context.reportError(*interfaceDecl, fmt::format("Redeclaration of symbol '{}'", interfaceDecl->getName()));
+                context.reportError(*interfaceDecl, fmt::format("Redeclaration of symbol '{}'", interfaceDecl->getName().getIdentifierString()));
             }
         } else if (auto* enumDecl = dynamic_cast<VnlcEnumDeclarationNode*>(declNode)) {
-            VnlcSymbol symbol(VnlcSymbolKind::ENUM, VnlcSymbolOrigin::LOCAL, enumDecl->getName(), enumDecl);
+            VnlcSymbol symbol(VnlcSymbolKind::ENUM, VnlcSymbolOrigin::LOCAL, enumDecl->getName().getIdentifierString(), enumDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
-                context.reportError(*enumDecl, fmt::format("Redeclaration of symbol '{}'", enumDecl->getName()));
+                context.reportError(*enumDecl, fmt::format("Redeclaration of symbol '{}'", enumDecl->getName().getIdentifierString()));
             }
         } else if (auto* typeAliasDecl = dynamic_cast<VnlcTypeAliasDeclarationNode*>(declNode)) {
-            VnlcSymbol symbol(VnlcSymbolKind::TYPE_ALIAS, VnlcSymbolOrigin::LOCAL, typeAliasDecl->getAliasName(), typeAliasDecl);
+            VnlcSymbol symbol(VnlcSymbolKind::TYPE_ALIAS, VnlcSymbolOrigin::LOCAL, typeAliasDecl->getAliasName().getIdentifierString(), typeAliasDecl);
             if (!context.currentScope().declare(std::move(symbol))) {
-                context.reportError(*typeAliasDecl, fmt::format("Redeclaration of symbol '{}'", typeAliasDecl->getAliasName()));
+                context.reportError(*typeAliasDecl, fmt::format("Redeclaration of symbol '{}'", typeAliasDecl->getAliasName().getIdentifierString()));
             }
         }
     }
@@ -134,22 +134,22 @@ void VnlcSemanticAnalyzer::checkImport(const VnlcImportDeclarationNode& importDe
 
 void VnlcSemanticAnalyzer::checkExport(const VnlcExportDeclarationNode& exportDecl) {
     for (auto& item : exportDecl.getNamesListWithAliases()) {
-        if (!context.currentScope().lookup(item.name).has_value()) {
-            context.reportError(exportDecl, fmt::format("Undefined symbol {}", item.name));
+        if (!context.currentScope().lookup(item.name->getIdentifierString()).has_value()) {
+            context.reportError(exportDecl, fmt::format("Undefined symbol {}", item.name->getIdentifierString()));
         }
 
         if (item.alias.has_value()) {
-            VnlcSymbol aliasSymbol(VnlcSymbolKind::EXPORT_ALIAS, VnlcSymbolOrigin::LOCAL, item.alias.value(), &exportDecl);
+            VnlcSymbol aliasSymbol(VnlcSymbolKind::EXPORT_ALIAS, VnlcSymbolOrigin::LOCAL, item.alias.value()->getIdentifierString(), &exportDecl);
 
             if (!context.currentScope().declare(std::move(aliasSymbol))) {
-                context.reportError(exportDecl, fmt::format("Redeclaration of symbol {}", item.alias.value()));
+                context.reportError(exportDecl, fmt::format("Redeclaration of symbol {}", item.alias.value()->getIdentifierString()));
             }
         }
     }
 }
 
 void VnlcSemanticAnalyzer::checkValueDeclaration(const VnlcValueDeclarationNode& varDecl, VnlcMetadataInfo metadataInfo) {
-    checkIdentifierName(varDecl.getName(), varDecl, metadataInfo);
+    checkIdentifierName(varDecl.getName().getIdentifierString(), varDecl, metadataInfo);
     auto kind = varDecl.getKind();
 
     if (kind == VnlcValueDeclarationType::Kind::CONST) {
@@ -176,13 +176,13 @@ void VnlcSemanticAnalyzer::checkValueDeclaration(const VnlcValueDeclarationNode&
 }
 
 void VnlcSemanticAnalyzer::checkFunctionDeclaration(const VnlcFunctionDeclarationNode& funcDecl, VnlcMetadataInfo metadataInfo) {
-    checkIdentifierName(funcDecl.getName(), funcDecl, metadataInfo);
+    checkIdentifierName(funcDecl.getName().getIdentifierString(), funcDecl, metadataInfo);
 
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::FUNCTION, &context.currentScope()));
     for (const auto& param : funcDecl.getParameters()) {
-        VnlcSymbol paramSymbol(VnlcSymbolKind::PARAMETER, VnlcSymbolOrigin::LOCAL, param->getName(), param.get());
+        VnlcSymbol paramSymbol(VnlcSymbolKind::PARAMETER, VnlcSymbolOrigin::LOCAL, param->getName().getIdentifierString(), param.get());
         if (!context.currentScope().declare(std::move(paramSymbol))) {
-            context.reportError(*param, fmt::format("Redeclaration of parameter '{}'", param->getName()));
+            context.reportError(*param, fmt::format("Redeclaration of parameter '{}'", param->getName().getIdentifierString()));
         }
     }
 
@@ -204,20 +204,20 @@ void VnlcSemanticAnalyzer::checkFunctionDeclaration(const VnlcFunctionDeclaratio
 }
 
 void VnlcSemanticAnalyzer::checkClassDeclaration(const VnlcClassDeclarationNode& classDecl, VnlcMetadataInfo metadataInfo) {
-    checkIdentifierName(classDecl.getName(), classDecl, metadataInfo);
+    checkIdentifierName(classDecl.getName().getIdentifierString(), classDecl, metadataInfo);
 
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::CLASS, &context.currentScope()));
 
     for (const auto& member : classDecl.getMemberDeclarations()) {
         if (auto* varDecl = dynamic_cast<VnlcValueDeclarationNode*>(member.get())) {
-            VnlcSymbol memberSymbol(VnlcSymbolKind::PROPERTY, VnlcSymbolOrigin::LOCAL, varDecl->getName(), varDecl);
+            VnlcSymbol memberSymbol(VnlcSymbolKind::PROPERTY, VnlcSymbolOrigin::LOCAL, varDecl->getName().getIdentifierString(), varDecl);
             if (!context.currentScope().declare(std::move(memberSymbol))) {
-                context.reportError(*varDecl, fmt::format("Redeclaration of class member '{}'", varDecl->getName()));
+                context.reportError(*varDecl, fmt::format("Redeclaration of class member '{}'", varDecl->getName().getIdentifierString()));
             }
         } else if (auto* funcDecl = dynamic_cast<VnlcFunctionDeclarationNode*>(member.get())) {
-            VnlcSymbol memberSymbol(VnlcSymbolKind::METHOD, VnlcSymbolOrigin::LOCAL, funcDecl->getName(), funcDecl);
+            VnlcSymbol memberSymbol(VnlcSymbolKind::METHOD, VnlcSymbolOrigin::LOCAL, funcDecl->getName().getIdentifierString(), funcDecl);
             if (!context.currentScope().declare(std::move(memberSymbol))) {
-                context.reportError(*funcDecl, fmt::format("Redeclaration of class member '{}'", funcDecl->getName()));
+                context.reportError(*funcDecl, fmt::format("Redeclaration of class member '{}'", funcDecl->getName().getIdentifierString()));
             }
         } else {
             context.reportError(*member, "Invalid class member declaration");
@@ -225,9 +225,9 @@ void VnlcSemanticAnalyzer::checkClassDeclaration(const VnlcClassDeclarationNode&
     }
 
     for (const auto& genericParamName : classDecl.getGenericParameterNames()) {
-        VnlcSymbol genericParamSymbol(VnlcSymbolKind::GENERIC_PARAMETER, VnlcSymbolOrigin::LOCAL, genericParamName, nullptr);
+        VnlcSymbol genericParamSymbol(VnlcSymbolKind::GENERIC_PARAMETER, VnlcSymbolOrigin::LOCAL, genericParamName->getIdentifierString(), nullptr);
         if (!context.currentScope().declare(std::move(genericParamSymbol))) {
-            context.reportError(classDecl, fmt::format("Redeclaration of generic parameter '{}'", genericParamName));
+            context.reportError(classDecl, fmt::format("Redeclaration of generic parameter '{}'", genericParamName->getIdentifierString()));
         }
     }
 
@@ -245,21 +245,21 @@ void VnlcSemanticAnalyzer::checkClassDeclaration(const VnlcClassDeclarationNode&
 }
 
 void VnlcSemanticAnalyzer::checkInterfaceDeclaration(const VnlcInterfaceDeclarationNode& interfaceDecl, VnlcMetadataInfo metadataInfo) {
-    checkIdentifierName(interfaceDecl.getName(), interfaceDecl, metadataInfo);
+    checkIdentifierName(interfaceDecl.getName().getIdentifierString(), interfaceDecl, metadataInfo);
 
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::INTERFACE, &context.currentScope()));
 
     for (const auto& member : interfaceDecl.getMethodDeclarations()) {
-        VnlcSymbol memberSymbol(VnlcSymbolKind::METHOD, VnlcSymbolOrigin::LOCAL, member->getName(), member.get());
+        VnlcSymbol memberSymbol(VnlcSymbolKind::METHOD, VnlcSymbolOrigin::LOCAL, member->getName().getIdentifierString(), member.get());
         if (!context.currentScope().declare(std::move(memberSymbol))) {
-            context.reportError(*member, fmt::format("Redeclaration of interface method '{}'", member->getName()));
+            context.reportError(*member, fmt::format("Redeclaration of interface method '{}'", member->getName().getIdentifierString()));
         }
     }
 
     for (const auto& genericParamName : interfaceDecl.getGenericParameterNames()) {
-        VnlcSymbol genericParamSymbol(VnlcSymbolKind::GENERIC_PARAMETER, VnlcSymbolOrigin::LOCAL, genericParamName, nullptr);
+        VnlcSymbol genericParamSymbol(VnlcSymbolKind::GENERIC_PARAMETER, VnlcSymbolOrigin::LOCAL, genericParamName->getIdentifierString(), nullptr);
         if (!context.currentScope().declare(std::move(genericParamSymbol))) {
-            context.reportError(interfaceDecl, fmt::format("Redeclaration of generic parameter '{}'", genericParamName));
+            context.reportError(interfaceDecl, fmt::format("Redeclaration of generic parameter '{}'", genericParamName->getIdentifierString()));
         }
     }
 
@@ -275,21 +275,21 @@ void VnlcSemanticAnalyzer::checkInterfaceDeclaration(const VnlcInterfaceDeclarat
 }
 
 void VnlcSemanticAnalyzer::checkEnumDeclaration(const VnlcEnumDeclarationNode& enumDecl, VnlcMetadataInfo metadataInfo) {
-    checkIdentifierName(enumDecl.getName(), enumDecl, metadataInfo);
+    checkIdentifierName(enumDecl.getName().getIdentifierString(), enumDecl, metadataInfo);
 
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::ENUM, &context.currentScope()));
 
     for (const auto& member : enumDecl.getMemberDeclarations()) {
-        VnlcSymbol memberSymbol(VnlcSymbolKind::ENUM_MEMBER, VnlcSymbolOrigin::LOCAL, member->getName(), member.get());
+        VnlcSymbol memberSymbol(VnlcSymbolKind::ENUM_MEMBER, VnlcSymbolOrigin::LOCAL, member->getName().getIdentifierString(), member.get());
         if (!context.currentScope().declare(std::move(memberSymbol))) {
-            context.reportError(*member, fmt::format("Redeclaration of enum member '{}'", member->getName()));
+            context.reportError(*member, fmt::format("Redeclaration of enum member '{}'", member->getName().getIdentifierString()));
         }
     }
 
     for (const auto& genericParamName : enumDecl.getGenericParameterNames()) {
-        VnlcSymbol genericParamSymbol(VnlcSymbolKind::GENERIC_PARAMETER, VnlcSymbolOrigin::LOCAL, genericParamName, nullptr);
+        VnlcSymbol genericParamSymbol(VnlcSymbolKind::GENERIC_PARAMETER, VnlcSymbolOrigin::LOCAL, genericParamName->getIdentifierString(), nullptr);
         if (!context.currentScope().declare(std::move(genericParamSymbol))) {
-            context.reportError(enumDecl, fmt::format("Redeclaration of generic parameter '{}'", genericParamName));
+            context.reportError(enumDecl, fmt::format("Redeclaration of generic parameter '{}'", genericParamName->getIdentifierString()));
         }
     }
 
@@ -297,9 +297,9 @@ void VnlcSemanticAnalyzer::checkEnumDeclaration(const VnlcEnumDeclarationNode& e
         context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::ENUM_MEMBER, &context.currentScope()));
 
         for (auto& associatedValue : member->getAssociatedValues()) {
-            VnlcSymbol associatedValueSymbol(VnlcSymbolKind::PROPERTY, VnlcSymbolOrigin::LOCAL, associatedValue->getName(), associatedValue.get());
+            VnlcSymbol associatedValueSymbol(VnlcSymbolKind::PROPERTY, VnlcSymbolOrigin::LOCAL, associatedValue->getName().getIdentifierString(), associatedValue.get());
             if (!context.currentScope().declare(std::move(associatedValueSymbol))) {
-                context.reportError(*associatedValue, fmt::format("Redeclaration of enum member associated value '{}'", associatedValue->getName()));
+                context.reportError(*associatedValue, fmt::format("Redeclaration of enum member associated value '{}'", associatedValue->getName().getIdentifierString()));
             }
         }
 
@@ -314,14 +314,14 @@ void VnlcSemanticAnalyzer::checkEnumDeclaration(const VnlcEnumDeclarationNode& e
 }
 
 void VnlcSemanticAnalyzer::checkTypeAliasDeclaration(const VnlcTypeAliasDeclarationNode& typeAliasDecl, VnlcMetadataInfo metadataInfo) {
-    checkIdentifierName(typeAliasDecl.getAliasName(), typeAliasDecl, metadataInfo);
+    checkIdentifierName(typeAliasDecl.getAliasName().getIdentifierString(), typeAliasDecl, metadataInfo);
 
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::TYPE_ALIAS, &context.currentScope()));
 
     for (const auto& genericParamName : typeAliasDecl.getGenericParameterNames()) {
-        VnlcSymbol genericParamSymbol(VnlcSymbolKind::GENERIC_PARAMETER, VnlcSymbolOrigin::LOCAL, genericParamName, nullptr);
+        VnlcSymbol genericParamSymbol(VnlcSymbolKind::GENERIC_PARAMETER, VnlcSymbolOrigin::LOCAL, genericParamName->getIdentifierString(), nullptr);
         if (!context.currentScope().declare(std::move(genericParamSymbol))) {
-            context.reportError(typeAliasDecl, fmt::format("Redeclaration of generic parameter '{}'", genericParamName));
+            context.reportError(typeAliasDecl, fmt::format("Redeclaration of generic parameter '{}'", genericParamName->getIdentifierString()));
         }
     }
 
@@ -344,13 +344,13 @@ void VnlcSemanticAnalyzer::checkStatement(const VnlcStatementNode& statement) {
             context.reportError(*stmt, "Break statement not within a loop");
         }
 
-        auto label = stmt->getLabel();
+        const auto& label = stmt->getLabel();
         if (label.has_value()) {
-            auto labelSymbol = context.currentScope().lookup(label.value());
+            const auto& labelSymbol = context.currentScope().lookup(label.value()->getIdentifierString());
             if (!labelSymbol.has_value()) {
-                context.reportError(*stmt, fmt::format("Label '{}' does not exist", label.value()));
+                context.reportError(*stmt, fmt::format("Label '{}' does not exist", label.value()->getIdentifierString()));
             } else if (labelSymbol.value()->getKind() != VnlcSymbolKind::LOOP_LABEL) {
-                context.reportError(*stmt, fmt::format("Identifier '{}' is not a loop label", label.value()));
+                context.reportError(*stmt, fmt::format("Identifier '{}' is not a loop label", label.value()->getIdentifierString()));
             }
         }
     } else if (auto* stmt = dynamic_cast<const VnlcContinueStatementNode*>(&statement)) {
@@ -358,13 +358,13 @@ void VnlcSemanticAnalyzer::checkStatement(const VnlcStatementNode& statement) {
             context.reportError(*stmt, "Continue statement not within a loop");
         }
 
-        auto label = stmt->getLabel();
+        const auto& label = stmt->getLabel();
         if (label.has_value()) {
-            auto labelSymbol = context.currentScope().lookup(label.value());
+            const auto& labelSymbol = context.currentScope().lookup(label.value()->getIdentifierString());
             if (!labelSymbol.has_value()) {
-                context.reportError(*stmt, fmt::format("Label '{}' does not exist", label.value()));
+                context.reportError(*stmt, fmt::format("Label '{}' does not exist", label.value()->getIdentifierString()));
             } else if (labelSymbol.value()->getKind() != VnlcSymbolKind::LOOP_LABEL) {
-                context.reportError(*stmt, fmt::format("Identifier '{}' is not a loop label", label.value()));
+                context.reportError(*stmt, fmt::format("Identifier '{}' is not a loop label", label.value()->getIdentifierString()));
             }
         }
     } else if (auto* stmt = dynamic_cast<const VnlcExpressionStatementNode*>(&statement)) {
@@ -372,12 +372,12 @@ void VnlcSemanticAnalyzer::checkStatement(const VnlcStatementNode& statement) {
     } else if (auto* stmt = dynamic_cast<const VnlcForStatementNode*>(&statement)) {
         context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::LOOP, &context.currentScope()));
 
-        auto label = stmt->getLabel();
+        const auto& label = stmt->getLabel();
         if (label.has_value()) {
-            VnlcSymbol labelSymbol(VnlcSymbolKind::LOOP_LABEL, VnlcSymbolOrigin::LOCAL, label.value(), nullptr);
+            VnlcSymbol labelSymbol(VnlcSymbolKind::LOOP_LABEL, VnlcSymbolOrigin::LOCAL, label.value()->getIdentifierString(), nullptr);
 
             if (!context.currentScope().declare(std::move(labelSymbol))) {
-                context.reportError(*stmt, fmt::format("Redeclaration of identifier '{}'", label.value()));
+                context.reportError(*stmt, fmt::format("Redeclaration of identifier '{}'", label.value()->getIdentifierString()));
             }
         }
 
@@ -422,12 +422,12 @@ void VnlcSemanticAnalyzer::checkStatement(const VnlcStatementNode& statement) {
     } else if (auto* stmt = dynamic_cast<const VnlcWhileStatementNode*>(&statement)) {
         context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::LOOP, &context.currentScope()));
 
-        auto label = stmt->getLabel();
+        const auto& label = stmt->getLabel();
         if (label.has_value()) {
-            VnlcSymbol labelSymbol(VnlcSymbolKind::LOOP_LABEL, VnlcSymbolOrigin::LOCAL, label.value(), nullptr);
+            VnlcSymbol labelSymbol(VnlcSymbolKind::LOOP_LABEL, VnlcSymbolOrigin::LOCAL, label.value()->getIdentifierString(), nullptr);
 
             if (!context.currentScope().declare(std::move(labelSymbol))) {
-                context.reportError(*stmt, fmt::format("Redeclaration of identifier '{}'", label.value()));
+                context.reportError(*stmt, fmt::format("Redeclaration of identifier '{}'", label.value()->getIdentifierString()));
             }
         }
 
