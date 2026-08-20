@@ -9,12 +9,12 @@ class VnlcIdentifierNode : public VnlcAstNode {
 private:
     VnlcIdentifierNode() = delete;
 
-    std::string name;
+    std::string identifierString;
 
 public:
-    VnlcIdentifierNode(std::string_view name, const VnlcToken& firstToken, const VnlcToken& lastToken);
+    VnlcIdentifierNode(std::string_view identifierString, const VnlcToken& firstToken, const VnlcToken& lastToken);
 
-    [[nodiscard]] std::string_view getName() const;
+    [[nodiscard]] std::string_view getIdentifierString() const;
 };
 
 #endif // VNLC_IDENTIFIER_NODE_HPP

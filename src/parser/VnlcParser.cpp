@@ -2427,16 +2427,16 @@ VnlcListLikeLiteralParsingResult VnlcParser::parseListLikeLiteral() {
     if (check(VnlcTokenType::IDENTIFIER)) {
         auto name = constructCurrentIdentifierNode();
 
-        if ((name->getName() == "B" || name->getName() == "I" || name->getName() == "L")) {
+        if ((name->getIdentifierString() == "B" || name->getIdentifierString() == "I" || name->getIdentifierString() == "L")) {
             if (!match(VnlcTokenType::SEMICOLON)) {
                 elements.push_back(std::make_unique<VnlcIdentifierExpressionNode>(std::move(name), firstToken, peek()));
                 comma = match(VnlcTokenType::COMMA);
             } else {
-                if (name->getName() == "B") {
+                if (name->getIdentifierString() == "B") {
                     literalType = VnlcListLikeLiteralExpressionType::BYTE_SNBT_ARRAY;
-                } else if (name->getName() == "I") {
+                } else if (name->getIdentifierString() == "I") {
                     literalType = VnlcListLikeLiteralExpressionType::INT_SNBT_ARRAY;
-                } else if (name->getName() == "L") {
+                } else if (name->getIdentifierString() == "L") {
                     literalType = VnlcListLikeLiteralExpressionType::LONG_SNBT_ARRAY;
                 }
             }
