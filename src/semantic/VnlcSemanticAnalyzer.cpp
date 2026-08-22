@@ -449,6 +449,10 @@ void VnlcSemanticAnalyzer::checkType(const VnlcTypeNode& type) {
     // TODO: Implement type checking process
 }
 
+void VnlcSemanticAnalyzer::checkConstExpression(const VnlcExpressionNode& expression) {
+    // TODO: Implement const expression checking process
+}
+
 VnlcTypeInferenceResult VnlcSemanticAnalyzer::inferExpressionType(const VnlcExpressionNode& expression) {
     // TODO: Implement expression type inference
 

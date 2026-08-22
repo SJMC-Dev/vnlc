@@ -43,6 +43,7 @@ private:
     void checkStatement(const VnlcStatementNode& statement);
     void checkExpression(const VnlcExpressionNode& expression);
     void checkType(const VnlcTypeNode& type);
+    void checkConstExpression(const VnlcExpressionNode& expression);
 
     [[nodiscard]] VnlcTypeInferenceResult inferExpressionType(const VnlcExpressionNode& expression);
     [[nodiscard]] VnlcTypeInferenceResult inferFunctionReturnType(const VnlcFunctionDeclarationNode& funcDecl);
