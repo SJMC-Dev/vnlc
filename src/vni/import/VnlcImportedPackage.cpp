@@ -1,0 +1,34 @@
+#include "VnlcImportedPackage.hpp"
+
+VnlcImportedPackage::VnlcImportedPackage(
+    std::string_view name,
+    std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>>&& subPackages,
+    std::unordered_map<std::string, std::unique_ptr<VnlcImportedModule>>&& modules
+)
+    : VnlcImportedItem(name),
+      subPackages(std::move(subPackages)),
+      modules(std::move(modules)) {}
+
+const std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>>& VnlcImportedPackage::getSubPackages() const {
+    return subPackages;
+}
+
+const std::unordered_map<std::string, std::unique_ptr<VnlcImportedModule>>& VnlcImportedPackage::getModules() const {
+    return modules;
+}
+
+std::optional<const VnlcImportedPackage*> VnlcImportedPackage::getSubPackageByName(std::string_view name) const {
+    auto it = subPackages.find(std::string(name));
+    if (it != subPackages.end()) {
+        return std::make_optional<const VnlcImportedPackage*>(it->second.get());
+    }
+    return std::nullopt;
+}
+
+std::optional<const VnlcImportedModule*> VnlcImportedPackage::getModuleByName(std::string_view name) const {
+    auto it = modules.find(std::string(name));
+    if (it != modules.end()) {
+        return std::make_optional<const VnlcImportedModule*>(it->second.get());
+    }
+    return std::nullopt;
+}
