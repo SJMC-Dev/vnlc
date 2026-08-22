@@ -70,6 +70,23 @@ add_executable(
     semantic/type/VnlcVoidType.cpp
     semantic/type/typeinf/VnlcTypeInferenceResult.cpp
     semantic/metadata/VnlcMetadataInfo.cpp
+    vni/import/VnlcImportedItem.cpp
+    vni/import/VnlcImportedPackage.cpp
+    vni/import/VnlcImportedModule.cpp
+    vni/import/VnlcImportedIdentifier.cpp
+    vni/import/VnlcImportedVar.cpp
+    vni/import/VnlcImportedLet.cpp
+    vni/import/VnlcImportedConst.cpp
+    vni/import/VnlcImportedParameter.cpp
+    vni/import/VnlcImportedEnumMember.cpp
+    vni/import/VnlcImportedProperty.cpp
+    vni/import/VnlcImportedMethod.cpp
+    vni/import/VnlcImportedFunc.cpp
+    vni/import/VnlcImportedClass.cpp
+    vni/import/VnlcImportedInterface.cpp
+    vni/import/VnlcImportedEnum.cpp
+    vni/import/VnlcImportedTypeAlias.cpp
+    vni/import/VnlcImportedAlias.cpp
 )
 
 target_link_libraries(
