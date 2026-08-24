@@ -1149,6 +1149,7 @@ VnlcImportPathParsingResult VnlcParser::parseImportPath() {
                     .namePrefix = std::move(namePrefix),
                     .nameSuffices = std::nullopt,
                     .alias = std::nullopt,
+                    .self = false,
                     .wildcard = true,
                 });
 
@@ -1177,6 +1178,7 @@ VnlcImportPathParsingResult VnlcParser::parseImportPath() {
                 .namePrefix = std::move(namePrefix),
                 .nameSuffices = std::nullopt,
                 .alias = std::make_optional<std::unique_ptr<VnlcIdentifierNode>>(std::move(alias)),
+                .self = false,
                 .wildcard = false,
             });
         }
@@ -1188,6 +1190,7 @@ VnlcImportPathParsingResult VnlcParser::parseImportPath() {
             .namePrefix = std::move(namePrefix),
             .nameSuffices = std::make_optional<std::vector<std::unique_ptr<VnlcImportDeclarationItem>>>(std::move(listResult.paths)),
             .alias = std::nullopt,
+            .self = false,
             .wildcard = false,
         });
 
@@ -1199,6 +1202,7 @@ VnlcImportPathParsingResult VnlcParser::parseImportPath() {
             .namePrefix = std::move(namePrefix),
             .nameSuffices = std::nullopt,
             .alias = std::nullopt,
+            .self = false,
             .wildcard = false,
         });
     }
@@ -1409,6 +1413,7 @@ VnlcImportPathItemParsingResult VnlcParser::parseImportPathItem() {
                 .namePrefix = std::move(namePrefix),
                 .nameSuffices = std::nullopt,
                 .alias = std::move(alias),
+                .self = true,
                 .wildcard = false,
             }),
         };
@@ -1420,6 +1425,7 @@ VnlcImportPathItemParsingResult VnlcParser::parseImportPathItem() {
                 .namePrefix = std::move(namePrefix),
                 .nameSuffices = std::nullopt,
                 .alias = std::nullopt,
+                .self = false,
                 .wildcard = true,
             }),
         };
