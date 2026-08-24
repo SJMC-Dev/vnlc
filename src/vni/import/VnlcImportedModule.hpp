@@ -14,6 +14,8 @@ public:
 
     [[nodiscard]] const std::unordered_map<std::string, std::unique_ptr<VnlcImportedIdentifier>>& getIdentifiers() const;
     [[nodiscard]] std::optional<const VnlcImportedIdentifier*> getIdentifierByName(std::string_view name) const;
+
+    void addIdentifier(std::unique_ptr<VnlcImportedIdentifier>&& identifier);
 };
 
 #endif // VNLC_IMPORTED_MODULE_HPP

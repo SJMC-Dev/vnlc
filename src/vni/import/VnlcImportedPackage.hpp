@@ -25,6 +25,9 @@ public:
 
     [[nodiscard]] std::optional<const VnlcImportedPackage*> getSubPackageByName(std::string_view name) const;
     [[nodiscard]] std::optional<const VnlcImportedModule*> getModuleByName(std::string_view name) const;
+
+    void addSubPackage(std::unique_ptr<VnlcImportedPackage>&& subPackage);
+    void addModule(std::unique_ptr<VnlcImportedModule>&& module);
 };
 
 #endif // VNLC_IMPORTED_PACKAGE_HPP

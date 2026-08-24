@@ -15,3 +15,7 @@ std::optional<const VnlcImportedIdentifier*> VnlcImportedModule::getIdentifierBy
     }
     return std::nullopt;
 }
+
+void VnlcImportedModule::addIdentifier(std::unique_ptr<VnlcImportedIdentifier>&& identifier) {
+    identifiers.emplace(identifier->getName(), std::move(identifier));
+}

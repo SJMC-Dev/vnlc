@@ -32,3 +32,11 @@ std::optional<const VnlcImportedModule*> VnlcImportedPackage::getModuleByName(st
     }
     return std::nullopt;
 }
+
+void VnlcImportedPackage::addSubPackage(std::unique_ptr<VnlcImportedPackage>&& subPackage) {
+    subPackages.emplace(subPackage->getName(), std::move(subPackage));
+}
+
+void VnlcImportedPackage::addModule(std::unique_ptr<VnlcImportedModule>&& module) {
+    modules.emplace(module->getName(), std::move(module));
+}
