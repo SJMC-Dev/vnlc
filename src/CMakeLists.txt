@@ -88,6 +88,7 @@ add_executable(
     vni/import/VnlcImportedTypeAlias.cpp
     vni/import/VnlcImportedAlias.cpp
     vni/import/VnlcModuleInterfaceFileReader.cpp
+    vni/import/VnlcPackageReader.cpp
 )
 
 target_link_libraries(
