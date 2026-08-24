@@ -2,10 +2,11 @@
 #define VNLC_PACKAGE_NAME_CONFLICT_ERROR_HPP
 
 #include "VnlcError.hpp"
+#include <fmt/core.h>
 
 class VnlcPackageNameConflictError : public VnlcError {
 public:
-    VnlcPackageNameConflictError(std::string_view packageName) : VnlcError("Found two or more packages with the name: " + std::string(packageName)) {}
+    VnlcPackageNameConflictError(std::string_view packageName) : VnlcError(fmt::format("Found two or more packages with the name: {}", packageName)) {}
 };
 
 #endif // VNLC_PACKAGE_NAME_CONFLICT_ERROR_HPP
