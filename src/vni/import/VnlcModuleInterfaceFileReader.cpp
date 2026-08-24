@@ -4,7 +4,9 @@
 #include <fmt/core.h>
 #include <fstream>
 
-VnlcModuleInterfaceFileReader::VnlcModuleInterfaceFileReader(std::filesystem::path filePath) : filePath(std::filesystem::canonical(filePath)) {}
+VnlcModuleInterfaceFileReader::VnlcModuleInterfaceFileReader(std::filesystem::path filePath, const VnlcImportDeclarationItem& importItem)
+    : filePath(std::filesystem::canonical(filePath)),
+      importItem(importItem) {}
 
 std::unique_ptr<VnlcImportedModule> VnlcModuleInterfaceFileReader::read() {
     if (!std::filesystem::exists(filePath)) {
