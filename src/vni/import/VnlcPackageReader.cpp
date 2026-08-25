@@ -39,6 +39,8 @@ void VnlcPackageReader::readRecursively(const VnlcImportDeclarationItem& importI
                 break;
             }
         }
+        currentPath /= candidateName;
+
         if (!foundCandidate) {
             throw VnlcPackageReaderError(fmt::format("Could not find package or module with name: {}", namePrefix), namePrefixNode.get());
         }
@@ -48,7 +50,7 @@ void VnlcPackageReader::readRecursively(const VnlcImportDeclarationItem& importI
                 throw VnlcPackageReaderError(fmt::format("Module {} cannot be imported at the root level", namePrefix), namePrefixNode.get());
             }
 
-            VnlcModuleInterfaceFileReader moduleReader(std::filesystem::path(namePrefix + ".vni"), importItem);
+            VnlcModuleInterfaceFileReader moduleReader(currentPath, importItem);
             currentPackage->addModule(moduleReader.read());
 
             return;
@@ -83,7 +85,6 @@ void VnlcPackageReader::readRecursively(const VnlcImportDeclarationItem& importI
         }
 
         currentCandidatePaths.erase(currentCandidatePaths.begin(), currentCandidatePaths.end());
-        currentPath /= candidateName;
 
         for (const auto& entry : std::filesystem::directory_iterator(currentPath)) {
             if (entry.is_directory() || (entry.is_regular_file() && entry.path().extension() == ".vni")) {
