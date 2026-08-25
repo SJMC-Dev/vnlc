@@ -54,6 +54,10 @@ void VnlcPackageReader::readRecursively(const VnlcImportDeclarationItem& importI
             return;
         }
 
+        if (namePrefix == "*") {
+            throw VnlcPackageReaderError("Wildcard imports can only be used for modules");
+        }
+
         if (!currentPackage) {
             if (packages.find(namePrefix) == packages.end()) {
                 packages.emplace(
