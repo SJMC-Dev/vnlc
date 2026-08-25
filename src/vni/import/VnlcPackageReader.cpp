@@ -15,23 +15,27 @@ void VnlcPackageReader::readPackage(const VnlcImportDeclarationItem& importItem,
 }
 
 void VnlcPackageReader::readRecursively(const VnlcImportDeclarationItem& importItem, const std::vector<std::filesystem::path>& candidatePaths, VnlcImportedPackage* currentPackage) {
-    std::vector<std::filesystem::path> nextCandidatePaths = std::move(candidatePaths);
+    std::vector<std::filesystem::path> currentCandidatePaths = std::move(candidatePaths);
 
     for (const auto& namePrefixNode : importItem.namePrefix) {
         std::string namePrefix = std::string(namePrefixNode->getIdentifierString());
-        std::vector<std::string> nextCandidates;
-        std::transform(nextCandidatePaths.begin(), nextCandidatePaths.end(), nextCandidates.begin(), [&](const auto& path) { return path.filename().string(); });
 
         bool foundCandidate = false;
         bool isModule = false;
-        for (auto& candidate : nextCandidates) {
-            if (candidate == namePrefix) {
+        std::filesystem::path currentPath;
+        std::string candidateName;
+        for (auto& candidate : currentCandidatePaths) {
+            candidateName = candidate.filename().string();
+
+            if (candidateName == namePrefix) {
                 foundCandidate = true;
+                currentPath = candidate;
                 break;
             }
-            if (candidate == namePrefix + ".vni") {
+            if (candidateName == namePrefix + ".vni") {
                 foundCandidate = true;
                 isModule = true;
+                currentPath = candidate;
                 break;
             }
         }
@@ -74,24 +78,19 @@ void VnlcPackageReader::readRecursively(const VnlcImportDeclarationItem& importI
             currentPackage = currentPackage->getSubPackages().at(std::string(namePrefix)).get();
         }
 
-        nextCandidatePaths.erase(nextCandidatePaths.begin(), nextCandidatePaths.end());
+        currentCandidatePaths.erase(currentCandidatePaths.begin(), currentCandidatePaths.end());
+        currentPath /= candidateName;
 
-        for (auto& path : nextCandidatePaths) {
-            if (path.filename() == std::string(namePrefix)) {
-                for (const auto& entry : std::filesystem::directory_iterator(path)) {
-                    if (entry.is_directory() || (entry.is_regular_file() && entry.path().extension() == ".vni")) {
-                        nextCandidatePaths.push_back(entry.path());
-                    }
-                }
+        for (const auto& entry : std::filesystem::directory_iterator(currentPath)) {
+            if (entry.is_directory() || (entry.is_regular_file() && entry.path().extension() == ".vni")) {
+                currentCandidatePaths.push_back(entry.path());
             }
-
-            break;
         }
     }
 
     if (importItem.nameSuffices.has_value()) {
         for (const auto& suffix : importItem.nameSuffices.value()) {
-            readRecursively(*suffix, nextCandidatePaths, currentPackage);
+            readRecursively(*suffix, currentCandidatePaths, currentPackage);
         }
     }
 }
