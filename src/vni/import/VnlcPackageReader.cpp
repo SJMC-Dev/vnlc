@@ -40,12 +40,12 @@ void VnlcPackageReader::readRecursively(const VnlcImportDeclarationItem& importI
             }
         }
         if (!foundCandidate) {
-            throw VnlcPackageReaderError(fmt::format("Could not find package or module with name: {}", namePrefix));
+            throw VnlcPackageReaderError(fmt::format("Could not find package or module with name: {}", namePrefix), namePrefixNode.get());
         }
 
         if (isModule) {
             if (!currentPackage) {
-                throw VnlcPackageReaderError(fmt::format("Module {} cannot be imported at the root level", namePrefix));
+                throw VnlcPackageReaderError(fmt::format("Module {} cannot be imported at the root level", namePrefix), namePrefixNode.get());
             }
 
             VnlcModuleInterfaceFileReader moduleReader(std::filesystem::path(namePrefix + ".vni"), importItem);
@@ -55,7 +55,7 @@ void VnlcPackageReader::readRecursively(const VnlcImportDeclarationItem& importI
         }
 
         if (namePrefix == "*") {
-            throw VnlcPackageReaderError("Wildcard imports can only be used for modules");
+            throw VnlcPackageReaderError("Wildcard imports can only be used for modules", namePrefixNode.get());
         }
 
         if (!currentPackage) {
