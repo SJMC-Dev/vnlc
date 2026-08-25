@@ -13,11 +13,12 @@ class VnlcPackageReader {
 private:
     std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>>& packages;
 
+    void readRecursively(const VnlcImportDeclarationItem& importItem, const std::vector<std::filesystem::path>& candidatePaths, VnlcImportedPackage* currentPackage);
+
 public:
     VnlcPackageReader(std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>>& packages);
 
     void readPackage(const VnlcImportDeclarationItem& importItem, const VnlcConfig& config);
-    void readRecursively(const VnlcImportDeclarationItem& importItem, const std::vector<std::filesystem::path>& candidatePaths, VnlcImportedPackage* currentPackage);
 };
 
 #endif // VNLC_PACKAGE_READER_HPP
