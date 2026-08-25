@@ -1399,7 +1399,9 @@ VnlcImportPathItemParsingResult VnlcParser::parseImportPathItem() {
     std::vector<std::unique_ptr<VnlcIdentifierNode>> namePrefix;
     std::optional<std::unique_ptr<VnlcIdentifierNode>> alias = std::nullopt;
 
-    if (match(VnlcTokenType::SELF)) {
+    if (check(VnlcTokenType::SELF)) {
+        namePrefix.emplace_back(std::move(constructCurrentIdentifierNode()));
+
         if (match(VnlcTokenType::AS)) {
             if (!check(VnlcTokenType::IDENTIFIER)) {
                 throw VnlcSyntaxError("Expected identifier after 'as' keyword in import path", peek().getLine(), peek().getColumn());
@@ -1417,7 +1419,7 @@ VnlcImportPathItemParsingResult VnlcParser::parseImportPathItem() {
                 .wildcard = false,
             }),
         };
-    } else if (match(VnlcTokenType::ASTERISK)) {
+    } else if (check(VnlcTokenType::ASTERISK)) {
         namePrefix.emplace_back(std::move(constructCurrentIdentifierNode()));
 
         return VnlcImportPathItemParsingResult{
