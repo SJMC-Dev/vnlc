@@ -6,14 +6,12 @@
 class VnlcImportedEnumMember : public VnlcImportedIdentifier {
 private:
     std::string type;
-    bool readonly;
 
 public:
-    VnlcImportedEnumMember(std::string_view name, std::string_view type, bool readonly, std::unordered_map<std::string, std::optional<std::string>>&& metadata);
-    VnlcImportedEnumMember(std::string_view name, std::string_view type, bool readonly);
+    VnlcImportedEnumMember(std::string_view name, std::string_view type, std::unordered_map<std::string, std::optional<std::string>>&& metadata);
+    VnlcImportedEnumMember(std::string_view name, std::string_view type);
 
     [[nodiscard]] std::string_view getType() const;
-    [[nodiscard]] bool isReadonly() const;
 };
 
 #endif // VNLC_IMPORTED_ENUM_MEMBER_HPP

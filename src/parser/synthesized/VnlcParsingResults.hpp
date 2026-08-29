@@ -40,7 +40,6 @@
 #include "VnlcImportPathItemParsingResult.hpp"               // IWYU pragma: export
 #include "VnlcImportPathListParsingResult.hpp"               // IWYU pragma: export
 #include "VnlcImportPathParsingResult.hpp"                   // IWYU pragma: export
-#include "VnlcImportPathParsingResult.hpp"                   // IWYU pragma: export
 #include "VnlcInterfaceBodyParsingResult.hpp"                // IWYU pragma: export
 #include "VnlcInterfaceDeclarationParsingResult.hpp"         // IWYU pragma: export
 #include "VnlcInterfaceMethodDeclarationParsingResult.hpp"   // IWYU pragma: export
@@ -75,7 +74,6 @@
 #include "VnlcSwitchStatementParsingResult.hpp"              // IWYU pragma: export
 #include "VnlcTopIdentifierDeclarationParsingResult.hpp"     // IWYU pragma: export
 #include "VnlcTypeAliasDeclarationParsingResult.hpp"         // IWYU pragma: export
-#include "VnlcTypeAnnotationParsingResult.hpp"               // IWYU pragma: export
 #include "VnlcTypeDeclarationParsingResult.hpp"              // IWYU pragma: export
 #include "VnlcTypeParsingResult.hpp"                         // IWYU pragma: export
 #include "VnlcUnaryExpressionParsingResult.hpp"              // IWYU pragma: export

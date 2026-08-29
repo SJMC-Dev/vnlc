@@ -7,7 +7,7 @@ VnlcFunctionDeclarationNode::VnlcFunctionDeclarationNode(
     VnlcFunctionDeclarationType::Binding binding,
     std::unique_ptr<VnlcIdentifierNode>&& name,
     std::vector<std::unique_ptr<VnlcValueDeclarationNode>>&& parameters,
-    std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& returnType,
+    std::optional<std::unique_ptr<VnlcTypeNode>>&& returnType,
     std::optional<std::unique_ptr<VnlcBlockStatementNode>>&& body,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
@@ -29,7 +29,7 @@ VnlcFunctionDeclarationNode::VnlcFunctionDeclarationNode(
     VnlcFunctionDeclarationType::Binding binding,
     std::unique_ptr<VnlcIdentifierNode>&& name,
     std::vector<std::unique_ptr<VnlcValueDeclarationNode>>&& parameters,
-    std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& returnType,
+    std::optional<std::unique_ptr<VnlcTypeNode>>&& returnType,
     std::optional<std::unique_ptr<VnlcBlockStatementNode>>&& body,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken,
@@ -69,7 +69,7 @@ const std::vector<std::unique_ptr<VnlcValueDeclarationNode>>& VnlcFunctionDeclar
     return parameters;
 }
 
-const std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>& VnlcFunctionDeclarationNode::getReturnType() const noexcept {
+const std::optional<std::unique_ptr<VnlcTypeNode>>& VnlcFunctionDeclarationNode::getReturnType() const noexcept {
     return returnType;
 }
 

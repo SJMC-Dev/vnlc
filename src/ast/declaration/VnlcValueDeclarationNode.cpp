@@ -6,7 +6,7 @@ VnlcValueDeclarationNode::VnlcValueDeclarationNode(
     VnlcValueDeclarationType::Context context,
     VnlcValueDeclarationType::AccessModifier accessModifier,
     std::unique_ptr<VnlcIdentifierNode>&& name,
-    std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& typeAnnotation,
+    std::optional<std::unique_ptr<VnlcTypeNode>>&& type,
     std::optional<std::unique_ptr<VnlcExpressionNode>>&& initializer,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
@@ -16,7 +16,7 @@ VnlcValueDeclarationNode::VnlcValueDeclarationNode(
       context(context),
       accessModifier(accessModifier),
       name(std::move(name)),
-      typeAnnotation(std::move(typeAnnotation)),
+      type(std::move(type)),
       initializer(std::move(initializer)) {}
 
 VnlcValueDeclarationNode::VnlcValueDeclarationNode(
@@ -24,7 +24,7 @@ VnlcValueDeclarationNode::VnlcValueDeclarationNode(
     VnlcValueDeclarationType::Context context,
     VnlcValueDeclarationType::AccessModifier accessModifier,
     std::unique_ptr<VnlcIdentifierNode>&& name,
-    std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& typeAnnotation,
+    std::optional<std::unique_ptr<VnlcTypeNode>>&& type,
     std::optional<std::unique_ptr<VnlcExpressionNode>>&& initializer,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken,
@@ -35,7 +35,7 @@ VnlcValueDeclarationNode::VnlcValueDeclarationNode(
       context(context),
       accessModifier(accessModifier),
       name(std::move(name)),
-      typeAnnotation(std::move(typeAnnotation)),
+      type(std::move(type)),
       initializer(std::move(initializer)) {}
 
 const VnlcValueDeclarationType::Kind VnlcValueDeclarationNode::getKind() const noexcept {
@@ -54,8 +54,8 @@ const VnlcIdentifierNode& VnlcValueDeclarationNode::getName() const noexcept {
     return *name;
 }
 
-const std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>& VnlcValueDeclarationNode::getTypeAnnotation() const noexcept {
-    return typeAnnotation;
+const std::optional<std::unique_ptr<VnlcTypeNode>>& VnlcValueDeclarationNode::getType() const noexcept {
+    return type;
 }
 
 const std::optional<std::unique_ptr<VnlcExpressionNode>>& VnlcValueDeclarationNode::getInitializer() const noexcept {

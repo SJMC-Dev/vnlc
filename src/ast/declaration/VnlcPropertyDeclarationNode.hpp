@@ -2,7 +2,7 @@
 #define VNLC_PROPERTY_DECLARATION_NODE_HPP
 
 #include "../expression/VnlcExpressionNode.hpp"
-#include "../type/VnlcTypeAnnotationNode.hpp"
+#include "../type/VnlcTypeNode.hpp"
 #include "VnlcDeclarationNode.hpp"
 #include "VnlcPropertyDeclarationType.hpp"
 
@@ -13,7 +13,7 @@ private:
     VnlcPropertyDeclarationType::AccessModifier accessModifier;
     VnlcPropertyDeclarationType::Binding binding;
     std::unique_ptr<VnlcIdentifierNode> name;
-    std::unique_ptr<VnlcTypeAnnotationNode> typeAnnotation;
+    std::unique_ptr<VnlcTypeNode> type;
     std::optional<std::unique_ptr<VnlcExpressionNode>> initializer;
 
 public:
@@ -21,7 +21,7 @@ public:
         VnlcPropertyDeclarationType::AccessModifier accessModifier,
         VnlcPropertyDeclarationType::Binding binding,
         std::unique_ptr<VnlcIdentifierNode>&& name,
-        std::unique_ptr<VnlcTypeAnnotationNode>&& typeAnnotation,
+        std::unique_ptr<VnlcTypeNode>&& type,
         std::optional<std::unique_ptr<VnlcExpressionNode>>&& initializer,
         const VnlcToken& firstToken,
         const VnlcToken& lastToken
@@ -31,7 +31,7 @@ public:
         VnlcPropertyDeclarationType::AccessModifier accessModifier,
         VnlcPropertyDeclarationType::Binding binding,
         std::unique_ptr<VnlcIdentifierNode>&& name,
-        std::unique_ptr<VnlcTypeAnnotationNode>&& typeAnnotation,
+        std::unique_ptr<VnlcTypeNode>&& type,
         std::optional<std::unique_ptr<VnlcExpressionNode>>&& initializer,
         const VnlcToken& firstToken,
         const VnlcToken& lastToken,
@@ -41,7 +41,7 @@ public:
     [[nodiscard]] const VnlcPropertyDeclarationType::AccessModifier getAccessModifier() const noexcept;
     [[nodiscard]] const VnlcPropertyDeclarationType::Binding getBinding() const noexcept;
     [[nodiscard]] const VnlcIdentifierNode& getName() const noexcept;
-    [[nodiscard]] const VnlcTypeAnnotationNode& getTypeAnnotation() const noexcept;
+    [[nodiscard]] const VnlcTypeNode& getType() const noexcept;
     [[nodiscard]] const std::optional<std::unique_ptr<VnlcExpressionNode>>& getInitializer() const noexcept;
 };
 

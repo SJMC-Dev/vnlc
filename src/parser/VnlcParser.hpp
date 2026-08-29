@@ -51,7 +51,6 @@ private:
     [[nodiscard]] VnlcVariableDeclarationPrimaryParsingResult parseVariableDeclarationPrimary();
     [[nodiscard]] VnlcRegularFunctionDeclarationParsingResult parseRegularFunctionDeclaration(VnlcRegularFunctionDeclarationParsingContext context);
     [[nodiscard]] VnlcNativeFunctionDeclarationParsingResult parseNativeFunctionDeclaration(VnlcNativeFunctionDeclarationParsingContext context);
-    [[nodiscard]] VnlcTypeAnnotationParsingResult parseTypeAnnotation();
     [[nodiscard]] VnlcParameterListParsingResult parseParameterList();
     [[nodiscard]] VnlcClassDeclarationParsingResult parseClassDeclaration(VnlcClassDeclarationParsingContext context);
     [[nodiscard]] VnlcInterfaceDeclarationParsingResult parseInterfaceDeclaration(VnlcInterfaceDeclarationParsingContext context);

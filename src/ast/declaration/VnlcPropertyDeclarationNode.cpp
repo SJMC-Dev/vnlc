@@ -4,7 +4,7 @@ VnlcPropertyDeclarationNode::VnlcPropertyDeclarationNode(
     VnlcPropertyDeclarationType::AccessModifier accessModifier,
     VnlcPropertyDeclarationType::Binding binding,
     std::unique_ptr<VnlcIdentifierNode>&& name,
-    std::unique_ptr<VnlcTypeAnnotationNode>&& typeAnnotation,
+    std::unique_ptr<VnlcTypeNode>&& type,
     std::optional<std::unique_ptr<VnlcExpressionNode>>&& initializer,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken
@@ -13,14 +13,14 @@ VnlcPropertyDeclarationNode::VnlcPropertyDeclarationNode(
       accessModifier(accessModifier),
       binding(binding),
       name(std::move(name)),
-      typeAnnotation(std::move(typeAnnotation)),
+      type(std::move(type)),
       initializer(std::move(initializer)) {}
 
 VnlcPropertyDeclarationNode::VnlcPropertyDeclarationNode(
     VnlcPropertyDeclarationType::AccessModifier accessModifier,
     VnlcPropertyDeclarationType::Binding binding,
     std::unique_ptr<VnlcIdentifierNode>&& name,
-    std::unique_ptr<VnlcTypeAnnotationNode>&& typeAnnotation,
+    std::unique_ptr<VnlcTypeNode>&& type,
     std::optional<std::unique_ptr<VnlcExpressionNode>>&& initializer,
     const VnlcToken& firstToken,
     const VnlcToken& lastToken,
@@ -30,7 +30,7 @@ VnlcPropertyDeclarationNode::VnlcPropertyDeclarationNode(
       accessModifier(accessModifier),
       binding(binding),
       name(std::move(name)),
-      typeAnnotation(std::move(typeAnnotation)),
+      type(std::move(type)),
       initializer(std::move(initializer)) {}
 
 const VnlcPropertyDeclarationType::AccessModifier VnlcPropertyDeclarationNode::getAccessModifier() const noexcept {
@@ -45,8 +45,8 @@ const VnlcIdentifierNode& VnlcPropertyDeclarationNode::getName() const noexcept 
     return *name;
 }
 
-const VnlcTypeAnnotationNode& VnlcPropertyDeclarationNode::getTypeAnnotation() const noexcept {
-    return *typeAnnotation;
+const VnlcTypeNode& VnlcPropertyDeclarationNode::getType() const noexcept {
+    return *type;
 }
 
 const std::optional<std::unique_ptr<VnlcExpressionNode>>& VnlcPropertyDeclarationNode::getInitializer() const noexcept {

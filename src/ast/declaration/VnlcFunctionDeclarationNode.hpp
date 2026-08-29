@@ -2,7 +2,7 @@
 #define VNLC_FUNCTION_DECLARATION_NODE_HPP
 
 #include "../statement/VnlcBlockStatementNode.hpp"
-#include "../type/VnlcTypeAnnotationNode.hpp"
+#include "../type/VnlcTypeNode.hpp"
 #include "VnlcDeclarationNode.hpp"
 #include "VnlcFunctionDeclarationType.hpp"
 #include "VnlcValueDeclarationNode.hpp"
@@ -20,7 +20,7 @@ private:
 
     std::unique_ptr<VnlcIdentifierNode> name;
     std::vector<std::unique_ptr<VnlcValueDeclarationNode>> parameters;
-    std::optional<std::unique_ptr<VnlcTypeAnnotationNode>> returnType;
+    std::optional<std::unique_ptr<VnlcTypeNode>> returnType;
     std::optional<std::unique_ptr<VnlcBlockStatementNode>> body;
 
 public:
@@ -31,7 +31,7 @@ public:
         VnlcFunctionDeclarationType::Binding binding,
         std::unique_ptr<VnlcIdentifierNode>&& name,
         std::vector<std::unique_ptr<VnlcValueDeclarationNode>>&& parameters,
-        std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& returnType,
+        std::optional<std::unique_ptr<VnlcTypeNode>>&& returnType,
         std::optional<std::unique_ptr<VnlcBlockStatementNode>>&& body,
         const VnlcToken& firstToken,
         const VnlcToken& lastToken
@@ -44,7 +44,7 @@ public:
         VnlcFunctionDeclarationType::Binding binding,
         std::unique_ptr<VnlcIdentifierNode>&& name,
         std::vector<std::unique_ptr<VnlcValueDeclarationNode>>&& parameters,
-        std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>&& returnType,
+        std::optional<std::unique_ptr<VnlcTypeNode>>&& returnType,
         std::optional<std::unique_ptr<VnlcBlockStatementNode>>&& body,
         const VnlcToken& firstToken,
         const VnlcToken& lastToken,
@@ -57,7 +57,7 @@ public:
     [[nodiscard]] const VnlcFunctionDeclarationType::Binding getBinding() const noexcept;
     [[nodiscard]] const VnlcIdentifierNode& getName() const noexcept;
     [[nodiscard]] const std::vector<std::unique_ptr<VnlcValueDeclarationNode>>& getParameters() const noexcept;
-    [[nodiscard]] const std::optional<std::unique_ptr<VnlcTypeAnnotationNode>>& getReturnType() const noexcept;
+    [[nodiscard]] const std::optional<std::unique_ptr<VnlcTypeNode>>& getReturnType() const noexcept;
     [[nodiscard]] const std::optional<std::unique_ptr<VnlcBlockStatementNode>>& getBody() const noexcept;
 };
 

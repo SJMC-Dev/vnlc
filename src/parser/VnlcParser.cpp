@@ -388,7 +388,7 @@ VnlcVariableDeclarationParsingResult VnlcParser::parseVariableDeclaration(VnlcVa
             pos,
             VnlcValueDeclarationType::AccessModifier::PUBLIC,
             std::move(primaryResult.name),
-            std::move(primaryResult.typeAnnotation),
+            std::move(primaryResult.type),
             std::move(initializerResult.expression),
             firstToken,
             lastToken,
@@ -400,7 +400,7 @@ VnlcVariableDeclarationParsingResult VnlcParser::parseVariableDeclaration(VnlcVa
             pos,
             VnlcValueDeclarationType::AccessModifier::PUBLIC,
             std::move(primaryResult.name),
-            std::move(primaryResult.typeAnnotation),
+            std::move(primaryResult.type),
             std::move(initializerResult.expression),
             firstToken,
             lastToken
@@ -514,7 +514,7 @@ VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPr
         throw VnlcSyntaxError("Expected ':' after property name", peek().getLine(), peek().getColumn());
     }
 
-    auto typeAnnotationResult = parseTypeAnnotation();
+    auto typeResult = parseType();
 
     if (match(VnlcTokenType::EQUAL)) {
         auto initializerResult = parseExpression();
@@ -528,7 +528,7 @@ VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPr
                 context.accessModifier,
                 context.binding,
                 std::move(name),
-                std::move(typeAnnotationResult.typeAnnotation),
+                std::move(typeResult.type),
                 std::make_optional<std::unique_ptr<VnlcExpressionNode>>(std::move(initializerResult.expression)),
                 firstToken,
                 lastToken,
@@ -539,7 +539,7 @@ VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPr
                 context.accessModifier,
                 context.binding,
                 std::move(name),
-                std::move(typeAnnotationResult.typeAnnotation),
+                std::move(typeResult.type),
                 std::make_optional<std::unique_ptr<VnlcExpressionNode>>(std::move(initializerResult.expression)),
                 firstToken,
                 lastToken
@@ -559,15 +559,14 @@ VnlcPropertyDeclarationParsingResult VnlcParser::parsePropertyDeclaration(VnlcPr
                 context.accessModifier,
                 context.binding,
                 std::move(name),
-                std::move(typeAnnotationResult.typeAnnotation),
+                std::move(typeResult.type),
                 std::nullopt,
                 firstToken,
                 lastToken,
                 std::move(context.metadataTerms)
             );
         } else {
-            node = std::make_unique<
-                VnlcPropertyDeclarationNode>(context.accessModifier, context.binding, std::move(name), std::move(typeAnnotationResult.typeAnnotation), std::nullopt, firstToken, lastToken);
+            node = std::make_unique<VnlcPropertyDeclarationNode>(context.accessModifier, context.binding, std::move(name), std::move(typeResult.type), std::nullopt, firstToken, lastToken);
         }
 
         return VnlcPropertyDeclarationParsingResult{
@@ -658,7 +657,7 @@ VnlcMetadataParsingResult VnlcParser::parseMetadata() {
 
 VnlcVariableDeclarationPrimaryParsingResult VnlcParser::parseVariableDeclarationPrimary() {
     std::unique_ptr<VnlcIdentifierNode> name;
-    std::optional<std::unique_ptr<VnlcTypeAnnotationNode>> typeAnnotation = std::nullopt;
+    std::optional<std::unique_ptr<VnlcTypeNode>> type = std::nullopt;
 
     if (!match(VnlcTokenType::LET)) {
         throw VnlcSyntaxError("Expected 'var', 'let' or 'const' keyword", peek().getLine(), peek().getColumn());
@@ -671,14 +670,14 @@ VnlcVariableDeclarationPrimaryParsingResult VnlcParser::parseVariableDeclaration
     }
 
     if (match(VnlcTokenType::COLON)) {
-        auto typeAnnotationResult = parseTypeAnnotation();
-        typeAnnotation = std::make_optional<std::unique_ptr<VnlcTypeAnnotationNode>>(std::move(typeAnnotationResult.typeAnnotation));
+        auto typeResult = parseType();
+        type = std::make_optional<std::unique_ptr<VnlcTypeNode>>(std::move(typeResult.type));
     }
 
     return VnlcVariableDeclarationPrimaryParsingResult{
         .kind = VnlcValueDeclarationType::Kind::LET,
         .name = std::move(name),
-        .typeAnnotation = std::move(typeAnnotation),
+        .type = std::move(type),
     };
 }
 
@@ -767,24 +766,6 @@ VnlcNativeFunctionDeclarationParsingResult VnlcParser::parseNativeFunctionDeclar
             ),
         };
     }
-}
-
-VnlcTypeAnnotationParsingResult VnlcParser::parseTypeAnnotation() {
-    VnlcToken firstToken = peek();
-
-    bool readonly = false;
-
-    if (match(VnlcTokenType::READONLY)) {
-        readonly = true;
-    }
-
-    auto result = parseType();
-
-    VnlcToken lastToken = peek();
-
-    return VnlcTypeAnnotationParsingResult{
-        .typeAnnotation = std::make_unique<VnlcTypeAnnotationNode>(readonly, std::move(result.type), firstToken, lastToken),
-    };
 }
 
 VnlcParameterListParsingResult VnlcParser::parseParameterList() {
@@ -1079,7 +1060,7 @@ VnlcMetadataTermParsingResult VnlcParser::parseMetadataTerm() {
 VnlcFunctionSignatureParsingResult VnlcParser::parseFunctionSignature() {
     std::unique_ptr<VnlcIdentifierNode> name;
     std::vector<std::unique_ptr<VnlcValueDeclarationNode>> parameters;
-    std::optional<std::unique_ptr<VnlcTypeAnnotationNode>> returnType;
+    std::optional<std::unique_ptr<VnlcTypeNode>> returnType;
 
     if (!match(VnlcTokenType::FUNC)) {
         throw VnlcSyntaxError("Expected 'func' keyword", peek().getLine(), peek().getColumn());
@@ -1109,8 +1090,8 @@ VnlcFunctionSignatureParsingResult VnlcParser::parseFunctionSignature() {
 
     if (match(VnlcTokenType::ARROW)) {
         if (!match(VnlcTokenType::VOID)) {
-            auto typeAnnotationResult = parseTypeAnnotation();
-            returnType = std::make_optional<std::unique_ptr<VnlcTypeAnnotationNode>>(std::move(typeAnnotationResult.typeAnnotation));
+            auto typeResult = parseType();
+            returnType = std::make_optional<std::unique_ptr<VnlcTypeNode>>(std::move(typeResult.type));
         }
     }
 
@@ -1242,7 +1223,7 @@ VnlcTypeParsingResult VnlcParser::parseType() {
 
 VnlcParameterParsingResult VnlcParser::parseParameter() {
     std::unique_ptr<VnlcIdentifierNode> name;
-    std::unique_ptr<VnlcTypeAnnotationNode> typeAnnotation;
+    std::unique_ptr<VnlcTypeNode> type;
 
     VnlcToken firstToken = peek();
 
@@ -1256,8 +1237,8 @@ VnlcParameterParsingResult VnlcParser::parseParameter() {
         throw VnlcSyntaxError("Expected ':' after parameter name", peek().getLine(), peek().getColumn());
     }
 
-    auto typeAnnotationResult = parseTypeAnnotation();
-    typeAnnotation = std::move(typeAnnotationResult.typeAnnotation);
+    auto typeResult = parseType();
+    type = std::move(typeResult.type);
 
     VnlcToken lastToken = peek();
 
@@ -1267,7 +1248,7 @@ VnlcParameterParsingResult VnlcParser::parseParameter() {
             VnlcValueDeclarationType::Context::FUNCTION,
             VnlcValueDeclarationType::AccessModifier::PUBLIC,
             std::move(name),
-            std::move(typeAnnotation),
+            std::move(type),
             std::nullopt,
             firstToken,
             lastToken
@@ -1596,7 +1577,7 @@ VnlcEnumAssociatedValueListParsingResult VnlcParser::parseEnumAssociatedValueLis
 
 VnlcEnumAssociatedValueParsingResult VnlcParser::parseEnumAssociatedValue() {
     std::unique_ptr<VnlcIdentifierNode> name;
-    std::unique_ptr<VnlcTypeAnnotationNode> typeAnnotation;
+    std::unique_ptr<VnlcTypeNode> type;
 
     VnlcToken firstToken = peek();
 
@@ -1610,8 +1591,8 @@ VnlcEnumAssociatedValueParsingResult VnlcParser::parseEnumAssociatedValue() {
         throw VnlcSyntaxError("Expected ':' after parameter name", peek().getLine(), peek().getColumn());
     }
 
-    auto typeAnnotationResult = parseTypeAnnotation();
-    typeAnnotation = std::move(typeAnnotationResult.typeAnnotation);
+    auto typeResult = parseType();
+    type = std::move(typeResult.type);
 
     VnlcToken lastToken = peek();
 
@@ -1621,7 +1602,7 @@ VnlcEnumAssociatedValueParsingResult VnlcParser::parseEnumAssociatedValue() {
             VnlcValueDeclarationType::Context::ENUM_MEMBER,
             VnlcValueDeclarationType::AccessModifier::PUBLIC,
             std::move(name),
-            std::move(typeAnnotation),
+            std::move(type),
             std::nullopt,
             firstToken,
             lastToken
@@ -3006,7 +2987,7 @@ VnlcForStatementParsingResult VnlcParser::parseForStatement(VnlcForStatementPars
         VnlcValueDeclarationType::Context::BLOCK,
         VnlcValueDeclarationType::AccessModifier::PUBLIC,
         std::move(variableDeclarationPrimaryResult.name),
-        std::move(variableDeclarationPrimaryResult.typeAnnotation),
+        std::move(variableDeclarationPrimaryResult.type),
         std::nullopt,
         variableFirstToken,
         variableLastToken
