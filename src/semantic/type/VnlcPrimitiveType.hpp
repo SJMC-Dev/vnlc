@@ -17,7 +17,7 @@ private:
     static const VnlcPrimitiveType* BOOLEAN_TYPE;
     static const VnlcPrimitiveType* STRING_TYPE;
 
-    VnlcPrimitiveType(bool readonly, VnlcPrimitiveTypeKind primitiveKind);
+    VnlcPrimitiveType(VnlcPrimitiveTypeKind primitiveKind);
 
 public:
     [[nodiscard]] VnlcPrimitiveTypeKind getPrimitiveKind() const noexcept;

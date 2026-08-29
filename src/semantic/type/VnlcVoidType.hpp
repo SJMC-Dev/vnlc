@@ -5,7 +5,7 @@
 
 class VnlcVoidType : public VnlcSemanticType {
 public:
-    VnlcVoidType(bool readonly);
+    VnlcVoidType();
 };
 
 #endif // VNLC_VOID_TYPE_HPP

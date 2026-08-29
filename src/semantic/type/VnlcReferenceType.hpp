@@ -11,7 +11,7 @@ private:
     const VnlcTypeNode* const typeNode;
 
 public:
-    VnlcReferenceType(bool readonly, VnlcReferenceTypeKind referenceKind, const VnlcTypeNode* typeNode);
+    VnlcReferenceType(VnlcReferenceTypeKind referenceKind, const VnlcTypeNode* typeNode);
 
     [[nodiscard]] VnlcReferenceTypeKind getReferenceKind() const noexcept;
     [[nodiscard]] const VnlcTypeNode* const getTypeNode() const noexcept;

@@ -1,9 +1,6 @@
 #include "VnlcReferenceType.hpp"
 
-VnlcReferenceType::VnlcReferenceType(bool readonly, VnlcReferenceTypeKind referenceKind, const VnlcTypeNode* typeNode)
-    : VnlcSemanticType(readonly),
-      referenceKind(referenceKind),
-      typeNode(typeNode) {}
+VnlcReferenceType::VnlcReferenceType(VnlcReferenceTypeKind referenceKind, const VnlcTypeNode* typeNode) : VnlcSemanticType(), referenceKind(referenceKind), typeNode(typeNode) {}
 
 VnlcReferenceTypeKind VnlcReferenceType::getReferenceKind() const noexcept {
     return referenceKind;
