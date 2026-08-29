@@ -73,9 +73,7 @@ add_executable(
     vni/import/VnlcImportedPackage.cpp
     vni/import/VnlcImportedModule.cpp
     vni/import/VnlcImportedIdentifier.cpp
-    vni/import/VnlcImportedVar.cpp
     vni/import/VnlcImportedLet.cpp
-    vni/import/VnlcImportedConst.cpp
     vni/import/VnlcImportedParameter.cpp
     vni/import/VnlcImportedEnumMember.cpp
     vni/import/VnlcImportedProperty.cpp
