@@ -1,7 +1,5 @@
 #include "VnlcSemanticAnalyzer.hpp"
 #include "../ast/expression/VnlcIdentifierExpressionNode.hpp"
-#include "../ast/expression/VnlcSimpleLiteralExpressionNode.hpp"
-#include "../ast/expression/VnlcStringLiteralExpressionNode.hpp"
 #include "../ast/statement/VnlcBlockStatementNode.hpp"
 #include "../ast/statement/VnlcBreakStatementNode.hpp"
 #include "../ast/statement/VnlcContinueStatementNode.hpp"
@@ -103,8 +101,7 @@ void VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode, const V
         VnlcDeclarationNode* declNode = topIdentifierDecl.get();
 
         if (auto* varDecl = dynamic_cast<VnlcValueDeclarationNode*>(declNode)) {
-            if (varDecl->getKind() == VnlcValueDeclarationType::Kind::VAR || varDecl->getKind() == VnlcValueDeclarationType::Kind::LET ||
-                varDecl->getKind() == VnlcValueDeclarationType::Kind::CONST) {
+            if (varDecl->getKind() == VnlcValueDeclarationType::Kind::LET) {
                 checkValueDeclaration(*varDecl);
             } else {
                 context.reportError(*varDecl, fmt::format("Top-level value declaration must be a variable"));
@@ -153,19 +150,13 @@ void VnlcSemanticAnalyzer::checkValueDeclaration(const VnlcValueDeclarationNode&
     checkIdentifierName(varDecl.getName().getIdentifierString(), varDecl, metadataInfo);
     auto kind = varDecl.getKind();
 
-    if (kind == VnlcValueDeclarationType::Kind::CONST) {
-        if (!varDecl.getInitializer().has_value()) {
-            context.reportError(varDecl, "Const variables must be initialized");
-        } else if (const auto* stringLiteral = dynamic_cast<const VnlcStringLiteralExpressionNode*>(varDecl.getInitializer().value().get())) {
-            if (stringLiteral->getType() == VnlcStringLiteralExpressionType::FORMAT_STRING) {
-                context.reportError(varDecl, "Const variables can't be initialized with a format string");
-            }
-        } else if (!dynamic_cast<const VnlcSimpleLiteralExpressionNode*>(varDecl.getInitializer().value().get())) {
-            context.reportError(varDecl, "Const variables must be initialized with a simple literal or a non-format string literal expression");
-        }
-    } else if (kind == VnlcValueDeclarationType::Kind::STATIC_PROPERTY) {
+    if (kind == VnlcValueDeclarationType::Kind::STATIC_PROPERTY) {
         if (!varDecl.getInitializer().has_value()) {
             context.reportError(varDecl, "Static properties must be initialized");
+        }
+    } else if (kind == VnlcValueDeclarationType::Kind::INSTANCE_PROPERTY) {
+        if (varDecl.getInitializer().has_value()) {
+            context.reportError(varDecl, "Instance properties cannot have initializers");
         }
     }
 
