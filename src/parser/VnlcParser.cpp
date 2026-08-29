@@ -657,17 +657,10 @@ VnlcMetadataParsingResult VnlcParser::parseMetadata() {
 }
 
 VnlcVariableDeclarationPrimaryParsingResult VnlcParser::parseVariableDeclarationPrimary() {
-    VnlcValueDeclarationType::Kind kind;
     std::unique_ptr<VnlcIdentifierNode> name;
     std::optional<std::unique_ptr<VnlcTypeAnnotationNode>> typeAnnotation = std::nullopt;
 
-    if (match(VnlcTokenType::VAR)) {
-        kind = VnlcValueDeclarationType::Kind::VAR;
-    } else if (match(VnlcTokenType::LET)) {
-        kind = VnlcValueDeclarationType::Kind::LET;
-    } else if (match(VnlcTokenType::CONST)) {
-        kind = VnlcValueDeclarationType::Kind::CONST;
-    } else {
+    if (!match(VnlcTokenType::LET)) {
         throw VnlcSyntaxError("Expected 'var', 'let' or 'const' keyword", peek().getLine(), peek().getColumn());
     }
 
@@ -683,7 +676,7 @@ VnlcVariableDeclarationPrimaryParsingResult VnlcParser::parseVariableDeclaration
     }
 
     return VnlcVariableDeclarationPrimaryParsingResult{
-        .kind = kind,
+        .kind = VnlcValueDeclarationType::Kind::LET,
         .name = std::move(name),
         .typeAnnotation = std::move(typeAnnotation),
     };

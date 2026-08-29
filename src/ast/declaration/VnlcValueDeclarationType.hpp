@@ -3,9 +3,7 @@
 
 namespace VnlcValueDeclarationType {
     enum class Kind {
-        VAR,
         LET,
-        CONST,
         PARAMETER,
         INSTANCE_PROPERTY,
         STATIC_PROPERTY,
@@ -26,6 +24,6 @@ namespace VnlcValueDeclarationType {
         PROTECTED,
         PRIVATE,
     };
-};
+}; // namespace VnlcValueDeclarationType
 
 #endif // VNLC_VALUE_DECLARATION_TYPE_HPP
