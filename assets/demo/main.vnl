@@ -20,31 +20,31 @@ interface Movable<T> {
 # the class of player
 metadata(gameversion "1.20.4..26.1.2")
 class VnlPlayer extends Entity implements Movable<Entity> {
-    private name: readonly string
-    private health: readonly int
+    private name: string
+    private health: int
 
     func init() {
         super.init()
-        # implement the constructor
+        # implement the letructor
     }
 
-    func getName() -> readonly string {
+    func getName() -> string {
         return this.name
     }
 
-    func getHealth() -> readonly int {
+    func getHealth() -> int {
         return this.health
     }
 }
 
-const foo = 1
-var bar1 = [I; buz, qux]
-var bar2 = [a, b, c]
-var bar3 = [d]
-var bar4 = [1, 2, 3]
-var bar5 = [B;]
+let foo = 1
+let bar1 = [I; buz, qux]
+let bar2 = [a, b, c]
+let bar3 = [d]
+let bar4 = [1, 2, 3]
+let bar5 = [B;]
 
-let text: readonly Dict = {
+let text: Dict = {
     text: "test",
     color: "gold",
     bold: true
@@ -113,7 +113,7 @@ func onTick() {
     ).f2()
 }
 
-func add(a: readonly int, b: readonly int) -> int {
+func add(a: int, b: int) -> int {
     return a + b
 }
 
