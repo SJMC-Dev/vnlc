@@ -20,6 +20,8 @@ std::string_view VnlcTokenTypeUtil::toString(VnlcTokenType type) {
             return "VnlcTokenType::CONST";
         case VnlcTokenType::FUNC:
             return "VnlcTokenType::FUNC";
+        case VnlcTokenType::INIT:
+            return "VnlcTokenType::INIT";
         case VnlcTokenType::RETURN:
             return "VnlcTokenType::RETURN";
         case VnlcTokenType::IF:

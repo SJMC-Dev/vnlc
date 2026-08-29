@@ -2,6 +2,7 @@
 #define VNLC_PARSING_CONTEXTS_HPP
 
 #include "VnlcClassDeclarationParsingContext.hpp"           // IWYU pragma: export
+#include "VnlcConstructorParsingContext.hpp"                // IWYU pragma: export
 #include "VnlcEnumDeclarationParsingContext.hpp"            // IWYU pragma: export
 #include "VnlcForStatementParsingContext.hpp"               // IWYU pragma: export
 #include "VnlcFunctionDeclarationParsingContext.hpp"        // IWYU pragma: export

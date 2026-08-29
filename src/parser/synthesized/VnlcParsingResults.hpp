@@ -14,6 +14,7 @@
 #include "VnlcClassDeclarationParsingResult.hpp"             // IWYU pragma: export
 #include "VnlcClassMemberParsingResult.hpp"                  // IWYU pragma: export
 #include "VnlcConditionalExpressionParsingResult.hpp"        // IWYU pragma: export
+#include "VnlcConstructorParsingResult.hpp"                  // IWYU pragma: export
 #include "VnlcContinueStatementParsingResult.hpp"            // IWYU pragma: export
 #include "VnlcControlFlowStatementParsingResult.hpp"         // IWYU pragma: export
 #include "VnlcDictEntryParsingResult.hpp"                    // IWYU pragma: export

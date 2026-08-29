@@ -38,6 +38,8 @@ private:
 
     [[nodiscard]] std::unique_ptr<VnlcIdentifierNode> constructCurrentIdentifierNode();
 
+    [[nodiscard]] std::string generateNamespaceIdFromTypeName(const VnlcTypeNode& typeNode);
+
     [[nodiscard]] VnlcModuleParsingResult parseModule(VnlcModuleParsingContext context);
     [[nodiscard]] VnlcTopIdentifierDeclarationParsingResult parseTopIdentifierDeclaration();
     [[nodiscard]] VnlcImportDeclarationParsingResult parseImportDeclaration();
@@ -71,6 +73,7 @@ private:
     [[nodiscard]] VnlcEnumBodyParsingResult parseEnumBody();
     [[nodiscard]] VnlcImportPathItemParsingResult parseImportPathItem();
     [[nodiscard]] VnlcClassMemberParsingResult parseClassMember();
+    [[nodiscard]] VnlcConstructorParsingResult parseConstructor(VnlcConstructorParsingContext context);
     [[nodiscard]] VnlcEnumMemberDeclarationParsingResult parseEnumMemberDeclaration();
     [[nodiscard]] VnlcEnumAssociatedValueListParsingResult parseEnumAssociatedValueList();
     [[nodiscard]] VnlcEnumAssociatedValueParsingResult parseEnumAssociatedValue();

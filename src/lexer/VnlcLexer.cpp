@@ -8,6 +8,7 @@ const std::unordered_map<std::string_view, VnlcTokenType> VnlcLexer::keywords{
     { "let", VnlcTokenType::LET },
     { "const", VnlcTokenType::CONST },
     { "func", VnlcTokenType::FUNC },
+    { "init", VnlcTokenType::INIT },
     { "return", VnlcTokenType::RETURN },
     { "if", VnlcTokenType::IF },
     { "else", VnlcTokenType::ELSE },

@@ -13,6 +13,7 @@ enum class VnlcTokenType {
     CONST,
 
     FUNC,
+    INIT,
     RETURN,
     IF,
     ELSE,
