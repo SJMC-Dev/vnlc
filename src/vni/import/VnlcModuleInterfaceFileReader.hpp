@@ -4,7 +4,6 @@
 #include "../../ast/declaration/VnlcImportDeclarationItem.hpp"
 #include "VnlcImportedAlias.hpp"
 #include "VnlcImportedClass.hpp"
-#include "VnlcImportedConst.hpp"
 #include "VnlcImportedEnum.hpp"
 #include "VnlcImportedEnumMember.hpp"
 #include "VnlcImportedFunc.hpp"
@@ -15,7 +14,6 @@
 #include "VnlcImportedParameter.hpp"
 #include "VnlcImportedProperty.hpp"
 #include "VnlcImportedTypeAlias.hpp"
-#include "VnlcImportedVar.hpp"
 #include <filesystem>
 #include <memory>
 #include <nlohmann/json.hpp>
