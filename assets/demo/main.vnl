@@ -23,7 +23,7 @@ class VnlPlayer extends Entity implements Movable<Entity> {
     private name: string
     private health: int
 
-    func init() {
+    init() {
         super.init()
         # implement the letructor
     }

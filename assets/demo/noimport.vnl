@@ -1,7 +1,7 @@
 class Foo {
     private bar: string
 
-    func init(bar: readonly string) {
+    init(bar: string) {
         this.bar = bar
     }
 
