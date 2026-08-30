@@ -82,6 +82,7 @@ add_executable(
     vni/import/VnlcImportedClass.cpp
     vni/import/VnlcImportedInterface.cpp
     vni/import/VnlcImportedEnum.cpp
+    vni/import/VnlcImportedEnumValue.cpp
     vni/import/VnlcImportedTypeAlias.cpp
     vni/import/VnlcImportedAlias.cpp
     vni/import/VnlcModuleInterfaceFileReader.cpp
