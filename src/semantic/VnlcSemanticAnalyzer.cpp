@@ -18,12 +18,6 @@
 
 VnlcSemanticAnalyzer::VnlcSemanticAnalyzer(const VnlcModuleNode& module) : module(module) {}
 
-void VnlcSemanticAnalyzer::checkIdentifierName(std::string_view name, const VnlcDeclarationNode& declNode, VnlcMetadataInfo metadataInfo) {
-    if (name.starts_with("__")) {
-        context.reportWarning(declNode, fmt::format("Identifier '{}' starts with '__', which is reserved for internal use", name));
-    }
-}
-
 void VnlcSemanticAnalyzer::checkIdentifierExpressionUse(const VnlcIdentifierExpressionNode& exprNode, VnlcMetadataInfo metadataInfo) {
     auto symbol = context.currentScope().lookup(exprNode.getName().getIdentifierString());
     if (!symbol.has_value()) {
@@ -147,7 +141,6 @@ void VnlcSemanticAnalyzer::checkExport(const VnlcExportDeclarationNode& exportDe
 }
 
 void VnlcSemanticAnalyzer::checkValueDeclaration(const VnlcValueDeclarationNode& varDecl, VnlcMetadataInfo metadataInfo) {
-    checkIdentifierName(varDecl.getName().getIdentifierString(), varDecl, metadataInfo);
     auto kind = varDecl.getKind();
 
     if (kind == VnlcValueDeclarationType::Kind::STATIC_PROPERTY) {
@@ -168,8 +161,6 @@ void VnlcSemanticAnalyzer::checkValueDeclaration(const VnlcValueDeclarationNode&
 }
 
 void VnlcSemanticAnalyzer::checkFunctionDeclaration(const VnlcFunctionDeclarationNode& funcDecl, VnlcMetadataInfo metadataInfo) {
-    checkIdentifierName(funcDecl.getName().getIdentifierString(), funcDecl, metadataInfo);
-
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::FUNCTION, &context.currentScope()));
     for (const auto& param : funcDecl.getParameters()) {
         VnlcSymbol paramSymbol(VnlcSymbolKind::PARAMETER, VnlcSymbolOrigin::LOCAL, param->getName().getIdentifierString(), param.get());
@@ -196,8 +187,6 @@ void VnlcSemanticAnalyzer::checkFunctionDeclaration(const VnlcFunctionDeclaratio
 }
 
 void VnlcSemanticAnalyzer::checkClassDeclaration(const VnlcClassDeclarationNode& classDecl, VnlcMetadataInfo metadataInfo) {
-    checkIdentifierName(classDecl.getName().getIdentifierString(), classDecl, metadataInfo);
-
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::CLASS, &context.currentScope()));
 
     for (const auto& member : classDecl.getMemberDeclarations()) {
@@ -237,8 +226,6 @@ void VnlcSemanticAnalyzer::checkClassDeclaration(const VnlcClassDeclarationNode&
 }
 
 void VnlcSemanticAnalyzer::checkInterfaceDeclaration(const VnlcInterfaceDeclarationNode& interfaceDecl, VnlcMetadataInfo metadataInfo) {
-    checkIdentifierName(interfaceDecl.getName().getIdentifierString(), interfaceDecl, metadataInfo);
-
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::INTERFACE, &context.currentScope()));
 
     for (const auto& member : interfaceDecl.getMethodDeclarations()) {
@@ -267,8 +254,6 @@ void VnlcSemanticAnalyzer::checkInterfaceDeclaration(const VnlcInterfaceDeclarat
 }
 
 void VnlcSemanticAnalyzer::checkEnumDeclaration(const VnlcEnumDeclarationNode& enumDecl, VnlcMetadataInfo metadataInfo) {
-    checkIdentifierName(enumDecl.getName().getIdentifierString(), enumDecl, metadataInfo);
-
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::ENUM, &context.currentScope()));
 
     for (const auto& member : enumDecl.getMemberDeclarations()) {
@@ -306,8 +291,6 @@ void VnlcSemanticAnalyzer::checkEnumDeclaration(const VnlcEnumDeclarationNode& e
 }
 
 void VnlcSemanticAnalyzer::checkTypeAliasDeclaration(const VnlcTypeAliasDeclarationNode& typeAliasDecl, VnlcMetadataInfo metadataInfo) {
-    checkIdentifierName(typeAliasDecl.getAliasName().getIdentifierString(), typeAliasDecl, metadataInfo);
-
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::TYPE_ALIAS, &context.currentScope()));
 
     for (const auto& genericParamName : typeAliasDecl.getGenericParameterNames()) {

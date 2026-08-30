@@ -25,7 +25,6 @@ private:
     const VnlcModuleNode& module;
     VnlcSemanticContext context;
 
-    void checkIdentifierName(std::string_view name, const VnlcDeclarationNode& declNode, VnlcMetadataInfo metadataInfo = VnlcMetadataInfo::DEFAULT);
     void checkIdentifierExpressionUse(const VnlcIdentifierExpressionNode& exprNode, VnlcMetadataInfo metadataInfo = VnlcMetadataInfo::DEFAULT);
 
     [[nodiscard]] VnlcMetadataInfo checkMetadata(const std::vector<VnlcDeclarationItem::MetadataTerm>& metadataTerms, const VnlcDeclarationNode& declNode);
