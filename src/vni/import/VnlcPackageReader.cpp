@@ -51,7 +51,7 @@ void VnlcPackageReader::readRecursively(const VnlcImportDeclarationItem& importI
             }
 
             VnlcModuleInterfaceFileReader moduleReader(currentPath, importItem);
-            currentPackage->addModule(moduleReader.read());
+            currentPackage->addModule(std::move(moduleReader.read()));
 
             return;
         }
