@@ -4,6 +4,7 @@
 #include "VnlcImportedIdentifier.hpp"
 #include "VnlcImportedItem.hpp"
 #include <unordered_map>
+#include <memory>
 
 class VnlcImportedModule : public VnlcImportedItem {
 private:
