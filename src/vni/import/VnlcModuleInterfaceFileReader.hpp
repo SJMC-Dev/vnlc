@@ -6,6 +6,7 @@
 #include "VnlcImportedClass.hpp"
 #include "VnlcImportedEnum.hpp"
 #include "VnlcImportedEnumMember.hpp"
+#include "VnlcImportedEnumValue.hpp"
 #include "VnlcImportedFunc.hpp"
 #include "VnlcImportedInterface.hpp"
 #include "VnlcImportedLet.hpp"
@@ -14,6 +15,7 @@
 #include "VnlcImportedParameter.hpp"
 #include "VnlcImportedProperty.hpp"
 #include "VnlcImportedTypeAlias.hpp"
+#include <array>
 #include <filesystem>
 #include <memory>
 #include <nlohmann/json.hpp>
@@ -23,17 +25,22 @@ private:
     std::filesystem::path filePath;
     const VnlcImportDeclarationItem& importItem;
 
-    std::unique_ptr<VnlcImportedLet> parseImportedLet(const nlohmann::json& json);
-    std::unique_ptr<VnlcImportedFunc> parseImportedFunc(const nlohmann::json& json);
-    std::unique_ptr<VnlcImportedMethod> parseImportedMethod(const nlohmann::json& json);
-    std::unique_ptr<VnlcImportedClass> parseImportedClass(const nlohmann::json& json);
-    std::unique_ptr<VnlcImportedInterface> parseImportedInterface(const nlohmann::json& json);
-    std::unique_ptr<VnlcImportedEnum> parseImportedEnum(const nlohmann::json& json);
-    std::unique_ptr<VnlcImportedEnumMember> parseImportedEnumMember(const nlohmann::json& json);
-    std::unique_ptr<VnlcImportedTypeAlias> parseImportedTypeAlias(const nlohmann::json& json);
-    std::unique_ptr<VnlcImportedAlias> parseImportedAlias(const nlohmann::json& json);
-    std::unique_ptr<VnlcImportedProperty> parseImportedProperty(const nlohmann::json& json);
-    std::unique_ptr<VnlcImportedParameter> parseImportedParameter(const nlohmann::json& json);
+    static std::array<std::string, 3> validAccessModifiers;
+
+    std::unordered_map<std::string, std::optional<std::string>> parseImportedMetadata(const nlohmann::json& metadataJson);
+
+    std::unique_ptr<VnlcImportedLet> parseImportedLet(std::string_view key, const nlohmann::json& value);
+    std::unique_ptr<VnlcImportedFunc> parseImportedFunc(std::string_view key, const nlohmann::json& value);
+    std::unique_ptr<VnlcImportedMethod> parseImportedMethod(std::string_view key, const nlohmann::json& value);
+    std::unique_ptr<VnlcImportedClass> parseImportedClass(std::string_view key, const nlohmann::json& value);
+    std::unique_ptr<VnlcImportedInterface> parseImportedInterface(std::string_view key, const nlohmann::json& value);
+    std::unique_ptr<VnlcImportedEnum> parseImportedEnum(std::string_view key, const nlohmann::json& value);
+    std::unique_ptr<VnlcImportedEnumMember> parseImportedEnumMember(std::string_view key, const nlohmann::json& value);
+    std::unique_ptr<VnlcImportedEnumValue> parseImportedEnumValue(std::string_view key, const nlohmann::json& value);
+    std::unique_ptr<VnlcImportedTypeAlias> parseImportedTypeAlias(std::string_view key, const nlohmann::json& value);
+    std::unique_ptr<VnlcImportedAlias> parseImportedAlias(std::string_view key, const nlohmann::json& value);
+    std::unique_ptr<VnlcImportedProperty> parseImportedProperty(std::string_view key, const nlohmann::json& value);
+    std::unique_ptr<VnlcImportedParameter> parseImportedParameter(std::string_view key, const nlohmann::json& value);
 
 public:
     VnlcModuleInterfaceFileReader(std::filesystem::path filePath, const VnlcImportDeclarationItem& importItem);
