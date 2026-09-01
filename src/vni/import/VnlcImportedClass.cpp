@@ -3,6 +3,7 @@
 VnlcImportedClass::VnlcImportedClass(
     std::string_view name,
     std::optional<std::string>&& baseClass,
+    std::vector<std::string>&& implementedInterfaces,
     bool final,
     std::vector<std::string>&& genericParameters,
     std::unordered_map<std::string, std::unique_ptr<VnlcImportedProperty>>&& properties,
@@ -11,6 +12,7 @@ VnlcImportedClass::VnlcImportedClass(
 )
     : VnlcImportedIdentifier(name, std::move(metadata)),
       baseClass(std::move(baseClass)),
+      implementedInterfaces(std::move(implementedInterfaces)),
       final(final),
       genericParameters(std::move(genericParameters)),
       properties(std::move(properties)),
@@ -19,6 +21,7 @@ VnlcImportedClass::VnlcImportedClass(
 VnlcImportedClass::VnlcImportedClass(
     std::string_view name,
     std::optional<std::string>&& baseClass,
+    std::vector<std::string>&& implementedInterfaces,
     bool final,
     std::vector<std::string>&& genericParameters,
     std::unordered_map<std::string, std::unique_ptr<VnlcImportedProperty>>&& properties,
@@ -26,6 +29,7 @@ VnlcImportedClass::VnlcImportedClass(
 )
     : VnlcImportedIdentifier(name),
       baseClass(std::move(baseClass)),
+      implementedInterfaces(std::move(implementedInterfaces)),
       final(final),
       genericParameters(std::move(genericParameters)),
       properties(std::move(properties)),
@@ -33,6 +37,10 @@ VnlcImportedClass::VnlcImportedClass(
 
 const std::optional<std::string>& VnlcImportedClass::getBaseClass() const {
     return baseClass;
+}
+
+const std::vector<std::string>& VnlcImportedClass::getImplementedInterfaces() const {
+    return implementedInterfaces;
 }
 
 bool VnlcImportedClass::isFinal() const {

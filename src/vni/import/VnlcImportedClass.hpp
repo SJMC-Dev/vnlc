@@ -11,6 +11,7 @@
 class VnlcImportedClass : public VnlcImportedIdentifier {
 private:
     std::optional<std::string> baseClass;
+    std::vector<std::string> implementedInterfaces;
     bool final;
     std::vector<std::string> genericParameters;
     std::unordered_map<std::string, std::unique_ptr<VnlcImportedProperty>> properties;
@@ -20,6 +21,7 @@ public:
     VnlcImportedClass(
         std::string_view name,
         std::optional<std::string>&& baseClass,
+        std::vector<std::string>&& implementedInterfaces,
         bool final,
         std::vector<std::string>&& genericParameters,
         std::unordered_map<std::string, std::unique_ptr<VnlcImportedProperty>>&& properties,
@@ -30,6 +32,7 @@ public:
     VnlcImportedClass(
         std::string_view name,
         std::optional<std::string>&& baseClass,
+        std::vector<std::string>&& implementedInterfaces,
         bool final,
         std::vector<std::string>&& genericParameters,
         std::unordered_map<std::string, std::unique_ptr<VnlcImportedProperty>>&& properties,
@@ -37,6 +40,7 @@ public:
     );
 
     [[nodiscard]] const std::optional<std::string>& getBaseClass() const;
+    [[nodiscard]] const std::vector<std::string>& getImplementedInterfaces() const;
     [[nodiscard]] bool isFinal() const;
     [[nodiscard]] const std::vector<std::string>& getGenericParameters() const;
     [[nodiscard]] const std::unordered_map<std::string, std::unique_ptr<VnlcImportedProperty>>& getProperties() const;
