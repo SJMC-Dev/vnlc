@@ -13,6 +13,8 @@ protected:
 
 public:
     [[nodiscard]] std::string_view getName() const;
+
+    virtual ~VnlcImportedItem() = default;
 };
 
 #endif // VNLC_IMPORTED_ITEM_HPP
