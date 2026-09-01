@@ -18,7 +18,7 @@
 #include "VnlcSemanticAnalysisResult.hpp"
 #include "VnlcSemanticContext.hpp"
 #include "metadata/VnlcMetadataInfo.hpp"
-#include "type/typeinf/VnlcTypeInferenceResult.hpp"
+#include "../type/typeinf/VnlcTypeInferenceResult.hpp"
 
 class VnlcSemanticAnalyzer {
 private:

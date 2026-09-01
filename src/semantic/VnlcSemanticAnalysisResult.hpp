@@ -6,8 +6,8 @@
 #include "../ast/type/VnlcTypeNode.hpp"
 #include "../diagnostic/VnlcDiagnostic.hpp"
 #include "../vni/import/VnlcImportedPackage.hpp"
-#include "type/VnlcReferenceType.hpp"
-#include "type/VnlcSemanticType.hpp"
+#include "../type/VnlcReferenceType.hpp"
+#include "../type/VnlcSemanticType.hpp"
 #include <memory>
 #include <optional>
 #include <unordered_map>

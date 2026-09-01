@@ -1,8 +1,8 @@
 #ifndef VNLC_REFERENCE_TYPE_HPP
 #define VNLC_REFERENCE_TYPE_HPP
 
-#include "../../ast/declaration/VnlcTypeDeclarationNode.hpp"
-#include "../../vni/import/VnlcImportedIdentifier.hpp"
+#include "../ast/declaration/VnlcTypeDeclarationNode.hpp"
+#include "../vni/import/VnlcImportedIdentifier.hpp"
 #include "VnlcReferenceTypeKind.hpp"
 #include "VnlcReferenceTypeOrigin.hpp"
 #include "VnlcSemanticType.hpp"

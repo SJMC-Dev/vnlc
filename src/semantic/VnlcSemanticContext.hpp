@@ -7,8 +7,8 @@
 #include "../diagnostic/VnlcDiagnostic.hpp"
 #include "../vni/import/VnlcImportedPackage.hpp"
 #include "scope/VnlcScope.hpp"
-#include "type/VnlcReferenceType.hpp"
-#include "type/VnlcSemanticType.hpp"
+#include "../type/VnlcReferenceType.hpp"
+#include "../type/VnlcSemanticType.hpp"
 #include <memory>
 #include <string>
 #include <string_view>

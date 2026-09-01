@@ -12,7 +12,7 @@
 #include "../ast/statement/VnlcWhileStatementNode.hpp"
 #include "symbol/VnlcSymbolKind.hpp"
 #include "symbol/VnlcSymbolOrigin.hpp"
-#include "type/typeinf/VnlcTypeInferenceResult.hpp"
+#include "../type/typeinf/VnlcTypeInferenceResult.hpp"
 #include <fmt/core.h>
 #include <string_view>
 
