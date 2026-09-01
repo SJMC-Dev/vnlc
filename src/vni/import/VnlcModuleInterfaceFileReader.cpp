@@ -89,12 +89,16 @@ std::unique_ptr<VnlcImportedMethod> VnlcModuleInterfaceFileReader::parseImported
     std::unordered_map<std::string, std::unique_ptr<VnlcImportedParameter>> parameters;
     std::string accessModifier;
     bool native;
+    bool staticMethod;
 
     if (!value.contains("returnType") || !value["returnType"].is_string()) {
         throw VnlcModuleInterfaceFileReaderError(fmt::format("Missing or invalid 'returnType' field for method '{}'", name));
     }
     if (!value.contains("native") || !value["native"].is_boolean()) {
         throw VnlcModuleInterfaceFileReaderError(fmt::format("Missing or invalid 'native' field for method '{}'", name));
+    }
+    if (!value.contains("static") || !value["static"].is_boolean()) {
+        throw VnlcModuleInterfaceFileReaderError(fmt::format("Missing or invalid 'static' field for method '{}'", name));
     }
     if (!value.contains("parameters") || !value["parameters"].is_object()) {
         throw VnlcModuleInterfaceFileReaderError(fmt::format("Missing or invalid 'parameters' field for method '{}'", name));
@@ -106,6 +110,7 @@ std::unique_ptr<VnlcImportedMethod> VnlcModuleInterfaceFileReader::parseImported
 
     returnType = value["returnType"].get<std::string>();
     native = value["native"].get<bool>();
+    staticMethod = value["static"].get<bool>();
     accessModifier = value["accessModifier"].get<std::string>();
 
     for (auto& [key, value] : value["parameters"].items()) {
@@ -118,10 +123,10 @@ std::unique_ptr<VnlcImportedMethod> VnlcModuleInterfaceFileReader::parseImported
 
     if (value.contains("metadata")) {
         std::unordered_map<std::string, std::optional<std::string>> metadata = parseImportedMetadata(value["metadata"]);
-        return std::make_unique<VnlcImportedMethod>(std::move(name), std::move(returnType), std::move(parameters), native, accessModifier, std::move(metadata));
+        return std::make_unique<VnlcImportedMethod>(std::move(name), std::move(returnType), std::move(parameters), staticMethod, native, accessModifier, std::move(metadata));
     }
 
-    return std::make_unique<VnlcImportedMethod>(std::move(name), std::move(returnType), std::move(parameters), native, accessModifier);
+    return std::make_unique<VnlcImportedMethod>(std::move(name), std::move(returnType), std::move(parameters), staticMethod, native, accessModifier);
 }
 
 std::unique_ptr<VnlcImportedClass> VnlcModuleInterfaceFileReader::parseImportedClass(std::string_view key, const nlohmann::json& value) {
@@ -364,6 +369,7 @@ std::unique_ptr<VnlcImportedProperty> VnlcModuleInterfaceFileReader::parseImport
     std::string name = std::string(key);
     std::string type;
     std::string accessModifier;
+    bool staticProperty;
 
     if (!value.contains("type") || !value["type"].is_string()) {
         throw VnlcModuleInterfaceFileReaderError(fmt::format("Missing or invalid 'type' field for property '{}'", name));
@@ -372,16 +378,20 @@ std::unique_ptr<VnlcImportedProperty> VnlcModuleInterfaceFileReader::parseImport
         std::find(validAccessModifiers.begin(), validAccessModifiers.end(), value["accessModifier"].get<std::string>()) == validAccessModifiers.end()) {
         throw VnlcModuleInterfaceFileReaderError(fmt::format("Missing or invalid 'accessModifier' field for property '{}'", name));
     }
+    if (!value.contains("static") || !value["static"].is_boolean()) {
+        throw VnlcModuleInterfaceFileReaderError(fmt::format("Missing or invalid 'static' field for property '{}'", name));
+    }
 
     type = value["type"].get<std::string>();
     accessModifier = value["accessModifier"].get<std::string>();
+    staticProperty = value["static"].get<bool>();
 
     if (value.contains("metadata")) {
         std::unordered_map<std::string, std::optional<std::string>> metadata = parseImportedMetadata(value["metadata"]);
-        return std::make_unique<VnlcImportedProperty>(std::move(name), std::move(type), accessModifier, std::move(metadata));
+        return std::make_unique<VnlcImportedProperty>(std::move(name), std::move(type), staticProperty, accessModifier, std::move(metadata));
     }
 
-    return std::make_unique<VnlcImportedProperty>(std::move(name), std::move(type), accessModifier);
+    return std::make_unique<VnlcImportedProperty>(std::move(name), std::move(type), staticProperty, accessModifier);
 }
 
 std::unique_ptr<VnlcImportedParameter> VnlcModuleInterfaceFileReader::parseImportedParameter(std::string_view key, const nlohmann::json& value) {
