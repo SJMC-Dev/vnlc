@@ -18,6 +18,22 @@ std::string_view VnlcTokenTypeUtil::toString(VnlcTokenType type) {
             return "VnlcTokenType::LET";
         case VnlcTokenType::CONST:
             return "VnlcTokenType::CONST";
+        case VnlcTokenType::BYTE_TYPE:
+            return "VnlcTokenType::BYTE_TYPE";
+        case VnlcTokenType::SHORT_TYPE:
+            return "VnlcTokenType::SHORT_TYPE";
+        case VnlcTokenType::INT_TYPE:
+            return "VnlcTokenType::INT_TYPE";
+        case VnlcTokenType::LONG_TYPE:
+            return "VnlcTokenType::LONG_TYPE";
+        case VnlcTokenType::FLOAT_TYPE:
+            return "VnlcTokenType::FLOAT_TYPE";
+        case VnlcTokenType::DOUBLE_TYPE:
+            return "VnlcTokenType::DOUBLE_TYPE";
+        case VnlcTokenType::BOOL_TYPE:
+            return "VnlcTokenType::BOOL_TYPE";
+        case VnlcTokenType::STRING_TYPE:
+            return "VnlcTokenType::STRING_TYPE";
         case VnlcTokenType::FUNC:
             return "VnlcTokenType::FUNC";
         case VnlcTokenType::INIT:

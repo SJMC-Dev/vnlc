@@ -1223,20 +1223,29 @@ VnlcTypeParsingResult VnlcParser::parseType() {
     std::vector<std::unique_ptr<VnlcIdentifierNode>> nameParts;
     std::vector<std::unique_ptr<VnlcTypeNode>> genericArguments;
 
-    do {
-        if (!check(VnlcTokenType::IDENTIFIER)) {
-            throw VnlcSyntaxError("Expected identifier in type", peek().getLine(), peek().getColumn());
-        } else {
-            nameParts.emplace_back(constructCurrentIdentifierNode());
-        }
-    } while (match(VnlcTokenType::DOT));
+    std::unordered_set<VnlcTokenType> primitiveTypes = {
+        VnlcTokenType::BYTE_TYPE,  VnlcTokenType::SHORT_TYPE,  VnlcTokenType::INT_TYPE,  VnlcTokenType::LONG_TYPE,
+        VnlcTokenType::FLOAT_TYPE, VnlcTokenType::DOUBLE_TYPE, VnlcTokenType::BOOL_TYPE, VnlcTokenType::STRING_TYPE,
+    };
 
-    if (match(VnlcTokenType::LEFT_ANGLE)) {
-        auto genericArgumentListResult = parseGenericArgumentList();
-        genericArguments = std::move(genericArgumentListResult.arguments);
+    if (std::find(primitiveTypes.begin(), primitiveTypes.end(), peek().getType()) != primitiveTypes.end()) {
+        nameParts.emplace_back(std::move(constructCurrentIdentifierNode()));
+    } else {
+        do {
+            if (!check(VnlcTokenType::IDENTIFIER)) {
+                throw VnlcSyntaxError("Expected identifier in type", peek().getLine(), peek().getColumn());
+            } else {
+                nameParts.emplace_back(constructCurrentIdentifierNode());
+            }
+        } while (match(VnlcTokenType::DOT));
 
-        if (!consumeRightAngleInType()) {
-            throw VnlcSyntaxError("Expected '>' after generic argument list in type", peek().getLine(), peek().getColumn());
+        if (match(VnlcTokenType::LEFT_ANGLE)) {
+            auto genericArgumentListResult = parseGenericArgumentList();
+            genericArguments = std::move(genericArgumentListResult.arguments);
+
+            if (!consumeRightAngleInType()) {
+                throw VnlcSyntaxError("Expected '>' after generic argument list in type", peek().getLine(), peek().getColumn());
+            }
         }
     }
 

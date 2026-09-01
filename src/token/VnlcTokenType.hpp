@@ -12,6 +12,15 @@ enum class VnlcTokenType {
     LET,
     CONST,
 
+    BYTE_TYPE,
+    SHORT_TYPE,
+    INT_TYPE,
+    LONG_TYPE,
+    FLOAT_TYPE,
+    DOUBLE_TYPE,
+    BOOL_TYPE,
+    STRING_TYPE,
+
     FUNC,
     INIT,
     RETURN,
