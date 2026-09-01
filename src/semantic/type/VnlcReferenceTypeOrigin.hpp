@@ -1,0 +1,9 @@
+#ifndef VNLC_REFERENCE_TYPE_ORIGIN_HPP
+#define VNLC_REFERENCE_TYPE_ORIGIN_HPP
+
+enum class VnlcReferenceTypeOrigin {
+    LOCAL,
+    IMPORTED,
+};
+
+#endif // VNLC_REFERENCE_TYPE_ORIGIN_HPP
