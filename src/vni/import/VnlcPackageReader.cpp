@@ -93,9 +93,7 @@ void VnlcPackageReader::readRecursively(const VnlcImportDeclarationItem& importI
         }
     }
 
-    if (importItem.nameSuffices.has_value()) {
-        for (const auto& suffix : importItem.nameSuffices.value()) {
-            readRecursively(*suffix, currentCandidatePaths, currentPackage);
-        }
+    for (const auto& suffix : importItem.nameSuffices) {
+        readRecursively(*suffix, currentCandidatePaths, currentPackage);
     }
 }
