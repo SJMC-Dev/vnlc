@@ -1,15 +1,20 @@
 #include "VnlcModuleInterfaceFileGenerator.hpp"
+#include "../../ast/declaration/VnlcClassDeclarationNode.hpp"
 #include "../../ast/declaration/VnlcFunctionDeclarationNode.hpp"
 #include "../../ast/declaration/VnlcValueDeclarationNode.hpp"
+#include "nlohmann/json_fwd.hpp"
+#include <cassert>
 
 VnlcModuleInterfaceFileGenerator::VnlcModuleInterfaceFileGenerator(
     std::vector<const VnlcDeclarationNode*>&& declarationNodes,
-    std::vector<const VnlcImportedIdentifier*>&& importedIdentifiers,
-    const VnlcConfig& config
+    std::vector<std::string>&& importedAliases,
+    const VnlcConfig& config,
+    const VnlcSemanticAnalysisResult& semantic
 ) noexcept
     : declarationNodes(std::move(declarationNodes)),
-      importedIdentifiers(std::move(importedIdentifiers)),
-      config(config) {}
+      importedAliases(std::move(importedAliases)),
+      config(config),
+      semantic(semantic) {}
 
 nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyMetadata(const std::vector<VnlcDeclarationItem::MetadataTerm>& metadataTerms) {
     nlohmann::json metadataObj;
@@ -21,38 +26,135 @@ nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyMetadata(const std::ve
     return metadataObj;
 }
 
-std::string VnlcModuleInterfaceFileGenerator::constructFullTypename(const VnlcTypeNode& node) {
-    std::string name;
+nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyGenericParameters(const std::vector<std::unique_ptr<VnlcIdentifierNode>>& genericParameterNames) {
+    nlohmann::json genericParametersObj = nlohmann::json::array();
 
-    for (auto& namePart : node.getNameParts()) {
-        name += namePart->getIdentifierString();
-        name.push_back('.');
+    for (const auto& genericParam : genericParameterNames) {
+        genericParametersObj.push_back(genericParam->getIdentifierString());
     }
+
+    return genericParametersObj;
 }
 
-void VnlcModuleInterfaceFileGenerator::generate() {
-    nlohmann::json json;
+nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyVariable(const VnlcValueDeclarationNode* variable) {
+    nlohmann::json variableObj;
+    variableObj.emplace("category", "let");
 
-    for (const auto& declarationNode : declarationNodes) {
-        if (const auto* variable = dynamic_cast<const VnlcValueDeclarationNode*>(declarationNode)) {
-            nlohmann::json variableObj;
-            variableObj.emplace("category", "let");
+    const auto& metadata = variable->getMetadataTerms();
+    if (!metadata.empty()) {
+        variableObj.emplace("metadata", stringifyMetadata(metadata));
+    }
 
-            const auto& metadata = variable->getMetadataTerms();
-            if (!metadata.empty()) {
-                variableObj.emplace("metadata", stringifyMetadata(metadata));
-            }
-
-        } else if (const auto* function = dynamic_cast<const VnlcFunctionDeclarationNode*>(declarationNode)) {
-            nlohmann::json functionObj;
-            functionObj.emplace("category", "func");
-
-            const auto& metadata = function->getMetadataTerms();
-
-            if (!metadata.empty()) {
-            }
+    const auto& typeNode = variable->getType();
+    if (typeNode.has_value()) {
+        const auto& semanticType = semantic.getSemanticTypeByTypeNode(typeNode.value().get());
+        if (semanticType.has_value()) {
+            variableObj.emplace("type", semanticType.value()->getFullTypeName());
+        }
+    } else {
+        const auto& inferredType = semantic.getInferredValueType(variable);
+        if (inferredType.has_value()) {
+            variableObj.emplace("type", inferredType.value()->getFullTypeName());
         }
     }
 
-    // not implemented
+    return variableObj;
+}
+
+nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyFunction(const VnlcFunctionDeclarationNode* function) {
+    nlohmann::json functionObj;
+    functionObj.emplace("category", "func");
+
+    const auto& metadata = function->getMetadataTerms();
+
+    if (!metadata.empty()) {
+        functionObj.emplace("metadata", stringifyMetadata(metadata));
+    }
+
+    const auto& returnTypeNode = function->getReturnType();
+    if (returnTypeNode.has_value()) {
+        const auto& semanticType = semantic.getSemanticTypeByTypeNode(returnTypeNode.value().get());
+        if (semanticType.has_value()) {
+            functionObj.emplace("returnType", semanticType.value()->getFullTypeName());
+        }
+    } else {
+        const auto& inferredReturnType = semantic.getInferredFunctionReturnType(function);
+        if (inferredReturnType.has_value()) {
+            functionObj.emplace("returnType", inferredReturnType.value()->getFullTypeName());
+        }
+    }
+
+    nlohmann::json parametersObj = nlohmann::json::object();
+    for (const auto& parameter : function->getParameters()) {
+        nlohmann::json parameterObj;
+        const auto& paramTypeNode = parameter->getType();
+        if (paramTypeNode.has_value()) {
+            const auto& semanticType = semantic.getSemanticTypeByTypeNode(paramTypeNode.value().get());
+            if (semanticType.has_value()) {
+                parameterObj.emplace("type", semanticType.value()->getFullTypeName());
+            }
+        } else {
+            const auto& inferredParamType = semantic.getInferredValueType(parameter.get());
+            if (inferredParamType.has_value()) {
+                parameterObj.emplace("type", inferredParamType.value()->getFullTypeName());
+            }
+        }
+
+        parametersObj.emplace(parameter->getName().getIdentifierString(), parameterObj);
+    }
+
+    functionObj.emplace("parameters", parametersObj);
+    functionObj.emplace("native", function->getKind() == VnlcFunctionDeclarationType::Kind::NATIVE);
+
+    return functionObj;
+}
+
+nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyClass(const VnlcClassDeclarationNode* classNode) {
+    nlohmann::json classObj;
+    classObj.emplace("category", "class");
+
+    const auto& metadata = classNode->getMetadataTerms();
+    if (!metadata.empty()) {
+        classObj.emplace("metadata", stringifyMetadata(metadata));
+    }
+
+    std::optional<std::string> baseClassName;
+    if (classNode->getBaseClass().has_value()) {
+        const auto& baseClassTypeNode = classNode->getBaseClass().value().get();
+        const auto& semanticType = semantic.getSemanticTypeByTypeNode(baseClassTypeNode);
+        if (semanticType.has_value()) {
+            baseClassName = semanticType.value()->getFullTypeName();
+        }
+    }
+    classObj.emplace("baseClass", baseClassName);
+
+    std::vector<std::string> implementedInterfaceNames;
+    for (const auto& interfaceTypeNode : classNode->getImplementedInterfaces()) {
+        const auto& semanticType = semantic.getSemanticTypeByTypeNode(interfaceTypeNode.get());
+        if (semanticType.has_value()) {
+            implementedInterfaceNames.emplace_back(semanticType.value()->getFullTypeName());
+        }
+    }
+    classObj.emplace("implementedInterfaces", implementedInterfaceNames);
+
+    classObj.emplace("final", classNode->isFinal());
+
+    std::vector<std::string> genericParameterNames;
+    classObj.emplace("genericParameters", stringifyGenericParameters(classNode->getGenericParameterNames()));
+
+    nlohmann::json propertiesObj = nlohmann::json::object();
+    nlohmann::json methodsObj = nlohmann::json::object();
+
+    for (const auto& memberDeclaration : classNode->getMemberDeclarations()) {
+        if (const auto* property = dynamic_cast<const VnlcValueDeclarationNode*>(memberDeclaration.get())) {
+            propertiesObj.emplace(property->getName().getIdentifierString(), stringifyProperty(property));
+        } else if (const auto* method = dynamic_cast<const VnlcFunctionDeclarationNode*>(memberDeclaration.get())) {
+            methodsObj.emplace(method->getName().getIdentifierString(), stringifyMethod(method));
+        }
+    }
+
+    classObj.emplace("properties", propertiesObj);
+    classObj.emplace("methods", methodsObj);
+
+    return classObj;
 }
