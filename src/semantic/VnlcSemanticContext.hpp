@@ -5,10 +5,10 @@
 #include "../ast/declaration/VnlcValueDeclarationNode.hpp"
 #include "../ast/type/VnlcTypeNode.hpp"
 #include "../diagnostic/VnlcDiagnostic.hpp"
-#include "../vni/import/VnlcImportedPackage.hpp"
-#include "scope/VnlcScope.hpp"
 #include "../type/VnlcReferenceType.hpp"
 #include "../type/VnlcSemanticType.hpp"
+#include "../vni/import/VnlcImportedPackage.hpp"
+#include "scope/VnlcScope.hpp"
 #include <memory>
 #include <string>
 #include <string_view>
@@ -77,6 +77,10 @@ public:
     [[nodiscard]] unsigned int getSwitchDepth() const noexcept;
 
     [[nodiscard]] std::tuple<std::vector<VnlcDiagnostic>, std::vector<VnlcDiagnostic>, std::vector<VnlcDiagnostic>> takeDiagnostics();
+    [[nodiscard]] std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>> takeImportedPackages();
+    [[nodiscard]] std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*> takeSemanticTypeMap();
+    [[nodiscard]] std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*> takeInferredValueTypeMap();
+    [[nodiscard]] std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*> takeInferredFunctionReturnTypeMap();
 };
 
 #endif // VNLC_SEMANTIC_CONTEXT_HPP

@@ -181,3 +181,19 @@ unsigned int VnlcSemanticContext::getSwitchDepth() const noexcept {
 std::tuple<std::vector<VnlcDiagnostic>, std::vector<VnlcDiagnostic>, std::vector<VnlcDiagnostic>> VnlcSemanticContext::takeDiagnostics() {
     return std::make_tuple(std::move(errors), std::move(warnings), std::move(notes));
 }
+
+std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>> VnlcSemanticContext::takeImportedPackages() {
+    return std::move(importedPackages);
+}
+
+std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*> VnlcSemanticContext::takeSemanticTypeMap() {
+    return std::move(semanticTypeMap);
+}
+
+std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*> VnlcSemanticContext::takeInferredValueTypeMap() {
+    return std::move(inferredValueTypeMap);
+}
+
+std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*> VnlcSemanticContext::takeInferredFunctionReturnTypeMap() {
+    return std::move(inferredFunctionReturnTypeMap);
+}
