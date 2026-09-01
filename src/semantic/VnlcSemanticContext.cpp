@@ -186,8 +186,16 @@ std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>> VnlcSemant
     return std::move(importedPackages);
 }
 
-std::unordered_map<std::string, std::unique_ptr<VnlcReferenceType>> VnlcSemanticContext::takeReferenceTypeRegistry() {
-    return std::move(referenceTypeRegistry);
+std::unordered_set<std::unique_ptr<VnlcReferenceType>> VnlcSemanticContext::takeReferenceTypeRegistry() {
+    std::unordered_set<std::unique_ptr<VnlcReferenceType>> referenceTypes;
+
+    for (auto& [_, referenceType] : referenceTypeRegistry) {
+        referenceTypes.insert(std::move(referenceType));
+    }
+
+    referenceTypeRegistry.clear();
+
+    return referenceTypes;
 }
 
 std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*> VnlcSemanticContext::takeSemanticTypeMap() {
