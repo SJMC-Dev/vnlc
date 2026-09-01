@@ -129,6 +129,7 @@ std::unique_ptr<VnlcImportedClass> VnlcModuleInterfaceFileReader::parseImportedC
     std::vector<std::string> genericParameters;
     std::unordered_map<std::string, std::unique_ptr<VnlcImportedProperty>> properties;
     std::unordered_map<std::string, std::unique_ptr<VnlcImportedMethod>> methods;
+    std::optional<std::string> baseClass;
     bool final;
 
     if (!value.contains("genericParameters") || !value["genericParameters"].is_array()) {
@@ -140,10 +141,18 @@ std::unique_ptr<VnlcImportedClass> VnlcModuleInterfaceFileReader::parseImportedC
     if (!value.contains("methods") || !value["methods"].is_object()) {
         throw VnlcModuleInterfaceFileReaderError(fmt::format("Missing or invalid 'methods' field for class '{}'", name));
     }
+    if (!value.contains("baseClass") || !(value["baseClass"].is_string() || value["baseClass"].is_null())) {
+        throw VnlcModuleInterfaceFileReaderError(fmt::format("Missing or invalid 'baseClass' field for class '{}'", name));
+    }
     if (!value.contains("final") || !value["final"].is_boolean()) {
         throw VnlcModuleInterfaceFileReaderError(fmt::format("Missing or invalid 'final' field for class '{}'", name));
     }
 
+    if (value["baseClass"].is_null()) {
+        baseClass = std::nullopt;
+    } else {
+        baseClass = value["baseClass"].get<std::string>();
+    }
     final = value["final"].get<bool>();
 
     for (const auto& param : value["genericParameters"]) {
@@ -171,10 +180,10 @@ std::unique_ptr<VnlcImportedClass> VnlcModuleInterfaceFileReader::parseImportedC
 
     if (value.contains("metadata")) {
         std::unordered_map<std::string, std::optional<std::string>> metadata = parseImportedMetadata(value["metadata"]);
-        return std::make_unique<VnlcImportedClass>(std::move(name), final, std::move(genericParameters), std::move(properties), std::move(methods), std::move(metadata));
+        return std::make_unique<VnlcImportedClass>(std::move(name), std::move(baseClass), final, std::move(genericParameters), std::move(properties), std::move(methods), std::move(metadata));
     }
 
-    return std::make_unique<VnlcImportedClass>(std::move(name), final, std::move(genericParameters), std::move(properties), std::move(methods));
+    return std::make_unique<VnlcImportedClass>(std::move(name), std::move(baseClass), final, std::move(genericParameters), std::move(properties), std::move(methods));
 }
 
 std::unique_ptr<VnlcImportedInterface> VnlcModuleInterfaceFileReader::parseImportedInterface(std::string_view key, const nlohmann::json& value) {

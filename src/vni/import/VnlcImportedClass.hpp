@@ -10,6 +10,7 @@
 
 class VnlcImportedClass : public VnlcImportedIdentifier {
 private:
+    std::optional<std::string> baseClass;
     bool final;
     std::vector<std::string> genericParameters;
     std::unordered_map<std::string, std::unique_ptr<VnlcImportedProperty>> properties;
@@ -18,6 +19,7 @@ private:
 public:
     VnlcImportedClass(
         std::string_view name,
+        std::optional<std::string>&& baseClass,
         bool final,
         std::vector<std::string>&& genericParameters,
         std::unordered_map<std::string, std::unique_ptr<VnlcImportedProperty>>&& properties,
@@ -27,12 +29,14 @@ public:
 
     VnlcImportedClass(
         std::string_view name,
+        std::optional<std::string>&& baseClass,
         bool final,
         std::vector<std::string>&& genericParameters,
         std::unordered_map<std::string, std::unique_ptr<VnlcImportedProperty>>&& properties,
         std::unordered_map<std::string, std::unique_ptr<VnlcImportedMethod>>&& methods
     );
 
+    [[nodiscard]] const std::optional<std::string>& getBaseClass() const;
     [[nodiscard]] bool isFinal() const;
     [[nodiscard]] const std::vector<std::string>& getGenericParameters() const;
     [[nodiscard]] const std::unordered_map<std::string, std::unique_ptr<VnlcImportedProperty>>& getProperties() const;

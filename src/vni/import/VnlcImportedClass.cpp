@@ -2,6 +2,7 @@
 
 VnlcImportedClass::VnlcImportedClass(
     std::string_view name,
+    std::optional<std::string>&& baseClass,
     bool final,
     std::vector<std::string>&& genericParameters,
     std::unordered_map<std::string, std::unique_ptr<VnlcImportedProperty>>&& properties,
@@ -9,6 +10,7 @@ VnlcImportedClass::VnlcImportedClass(
     std::unordered_map<std::string, std::optional<std::string>>&& metadata
 )
     : VnlcImportedIdentifier(name, std::move(metadata)),
+      baseClass(std::move(baseClass)),
       final(final),
       genericParameters(std::move(genericParameters)),
       properties(std::move(properties)),
@@ -16,16 +18,22 @@ VnlcImportedClass::VnlcImportedClass(
 
 VnlcImportedClass::VnlcImportedClass(
     std::string_view name,
+    std::optional<std::string>&& baseClass,
     bool final,
     std::vector<std::string>&& genericParameters,
     std::unordered_map<std::string, std::unique_ptr<VnlcImportedProperty>>&& properties,
     std::unordered_map<std::string, std::unique_ptr<VnlcImportedMethod>>&& methods
 )
     : VnlcImportedIdentifier(name),
+      baseClass(std::move(baseClass)),
       final(final),
       genericParameters(std::move(genericParameters)),
       properties(std::move(properties)),
       methods(std::move(methods)) {}
+
+const std::optional<std::string>& VnlcImportedClass::getBaseClass() const {
+    return baseClass;
+}
 
 bool VnlcImportedClass::isFinal() const {
     return final;
