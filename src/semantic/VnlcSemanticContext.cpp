@@ -30,6 +30,14 @@ void VnlcSemanticContext::mapSemanticType(const VnlcTypeNode* typeNode, const Vn
     semanticTypeMap.emplace(typeNode, semanticType);
 }
 
+void VnlcSemanticContext::mapReferencedValueType(const VnlcValueDeclarationNode* valueDeclaration, const VnlcSemanticType* semanticType) {
+    referencedValueTypeMap.emplace(valueDeclaration, semanticType);
+}
+
+void VnlcSemanticContext::mapReferencedFunctionReturnType(const VnlcFunctionDeclarationNode* functionDeclaration, const VnlcSemanticType* semanticType) {
+    referencedFunctionReturnTypeMap.emplace(functionDeclaration, semanticType);
+}
+
 void VnlcSemanticContext::collectImportedPackages(std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>>&& importedPackages) {
     this->importedPackages = std::move(importedPackages);
 }

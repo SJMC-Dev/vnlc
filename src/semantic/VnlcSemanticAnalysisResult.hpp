@@ -1,6 +1,8 @@
 #ifndef VNLC_SEMANTIC_ANALYSIS_RESULT_HPP
 #define VNLC_SEMANTIC_ANALYSIS_RESULT_HPP
 
+#include "../ast/declaration/VnlcFunctionDeclarationNode.hpp"
+#include "../ast/declaration/VnlcValueDeclarationNode.hpp"
 #include "../ast/type/VnlcTypeNode.hpp"
 #include "../diagnostic/VnlcDiagnostic.hpp"
 #include "../vni/import/VnlcImportedPackage.hpp"
@@ -20,6 +22,8 @@ private:
 
     std::unordered_set<std::unique_ptr<VnlcReferenceType>> referenceTypes;
     std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*> semanticTypeMap;
+    std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*> referencedValueTypeMap;
+    std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*> referencedFunctionReturnTypeMap;
 
     std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>> importedPackages;
 
@@ -30,6 +34,8 @@ public:
         std::vector<VnlcDiagnostic>&& notes,
         std::unordered_set<std::unique_ptr<VnlcReferenceType>>&& referenceTypes,
         std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*>&& semanticTypeMap,
+        std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*>&& referencedValueTypeMap,
+        std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*>&& referencedFunctionReturnTypeMap,
         std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>>&& importedPackages
     );
     VnlcSemanticAnalysisResult(const VnlcSemanticAnalysisResult&) = default;
@@ -46,6 +52,8 @@ public:
 
     [[nodiscard]] const std::optional<const VnlcSemanticType*> getSemanticTypeByTypeNode(const VnlcTypeNode* typeNode) const;
     [[nodiscard]] const std::optional<const VnlcImportedPackage*> getImportedPackageByName(std::string_view packageName) const;
+    [[nodiscard]] const std::optional<const VnlcSemanticType*> getReferencedValueType(const VnlcValueDeclarationNode* valueDeclaration) const;
+    [[nodiscard]] const std::optional<const VnlcSemanticType*> getReferencedFunctionReturnType(const VnlcFunctionDeclarationNode* functionDeclaration) const;
 };
 
 #endif // VNLC_SEMANTIC_ANALYSIS_RESULT_HPP

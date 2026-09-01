@@ -1,6 +1,8 @@
 #ifndef VNLC_SEMANTIC_CONTEXT_HPP
 #define VNLC_SEMANTIC_CONTEXT_HPP
 
+#include "../ast/declaration/VnlcFunctionDeclarationNode.hpp"
+#include "../ast/declaration/VnlcValueDeclarationNode.hpp"
 #include "../ast/type/VnlcTypeNode.hpp"
 #include "../diagnostic/VnlcDiagnostic.hpp"
 #include "../vni/import/VnlcImportedPackage.hpp"
@@ -24,6 +26,8 @@ private:
 
     std::unordered_map<std::string, std::unique_ptr<VnlcReferenceType>> referenceTypeRegistry;
     std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*> semanticTypeMap;
+    std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*> referencedValueTypeMap;
+    std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*> referencedFunctionReturnTypeMap;
 
     std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>> importedPackages;
 
@@ -46,6 +50,8 @@ public:
 
     void registerReferenceType(std::string_view fullName, std::unique_ptr<VnlcReferenceType>&& referenceType);
     void mapSemanticType(const VnlcTypeNode* typeNode, const VnlcSemanticType* semanticType);
+    void mapReferencedValueType(const VnlcValueDeclarationNode* valueDeclaration, const VnlcSemanticType* semanticType);
+    void mapReferencedFunctionReturnType(const VnlcFunctionDeclarationNode* functionDeclaration, const VnlcSemanticType* semanticType);
 
     void collectImportedPackages(std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>>&& importedPackages);
 
