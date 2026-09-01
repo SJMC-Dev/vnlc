@@ -2,12 +2,13 @@
 #define VNLC_TYPE_INFERENCE_RESULT_HPP
 
 #include "../VnlcSemanticType.hpp"
+#include <memory>
 #include <optional>
 
 struct VnlcTypeInferenceResult {
-    std::optional<VnlcSemanticType> type; // std::nullopt if type inference failed
+    std::optional<std::unique_ptr<VnlcSemanticType>> type; // std::nullopt if type inference failed
 
-    VnlcTypeInferenceResult(std::optional<VnlcSemanticType> type);
+    VnlcTypeInferenceResult(std::optional<std::unique_ptr<VnlcSemanticType>> type);
     VnlcTypeInferenceResult(const VnlcTypeInferenceResult&) = delete;
     VnlcTypeInferenceResult& operator=(const VnlcTypeInferenceResult&) = delete;
     VnlcTypeInferenceResult(VnlcTypeInferenceResult&&) noexcept = default;

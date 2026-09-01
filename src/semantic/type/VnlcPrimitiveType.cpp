@@ -6,6 +6,27 @@ VnlcPrimitiveTypeKind VnlcPrimitiveType::getPrimitiveKind() const noexcept {
     return primitiveKind;
 }
 
+std::string_view VnlcPrimitiveType::getFullTypeName() const noexcept {
+    switch (primitiveKind) {
+        case VnlcPrimitiveTypeKind::BYTE:
+            return "byte";
+        case VnlcPrimitiveTypeKind::SHORT:
+            return "short";
+        case VnlcPrimitiveTypeKind::INT:
+            return "int";
+        case VnlcPrimitiveTypeKind::LONG:
+            return "long";
+        case VnlcPrimitiveTypeKind::FLOAT:
+            return "float";
+        case VnlcPrimitiveTypeKind::DOUBLE:
+            return "double";
+        case VnlcPrimitiveTypeKind::BOOLEAN:
+            return "bool";
+        case VnlcPrimitiveTypeKind::STRING:
+            return "string";
+    }
+}
+
 const VnlcPrimitiveType* VnlcPrimitiveType::BYTE_TYPE = nullptr;
 const VnlcPrimitiveType* VnlcPrimitiveType::SHORT_TYPE = nullptr;
 const VnlcPrimitiveType* VnlcPrimitiveType::INT_TYPE = nullptr;

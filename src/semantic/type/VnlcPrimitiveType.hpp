@@ -21,6 +21,7 @@ private:
 
 public:
     [[nodiscard]] VnlcPrimitiveTypeKind getPrimitiveKind() const noexcept;
+    [[nodiscard]] std::string_view getFullTypeName() const noexcept override;
 
     [[nodiscard]] static const VnlcPrimitiveType* byteType();
     [[nodiscard]] static const VnlcPrimitiveType* shortType();

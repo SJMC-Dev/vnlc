@@ -22,7 +22,7 @@ public:
     VnlcReferenceType(VnlcReferenceTypeKind referenceKind, std::string_view fullTypeName, const VnlcTypeDeclarationNode* localDeclarationNode);
     VnlcReferenceType(VnlcReferenceTypeKind referenceKind, std::string_view fullTypeName, const VnlcImportedIdentifier* importedDeclarationNode);
 
-    [[nodiscard]] std::string_view getFullTypeName() const noexcept;
+    [[nodiscard]] std::string_view getFullTypeName() const noexcept override;
     [[nodiscard]] VnlcReferenceTypeKind getReferenceKind() const noexcept;
     [[nodiscard]] VnlcReferenceTypeOrigin getOrigin() const noexcept;
 
