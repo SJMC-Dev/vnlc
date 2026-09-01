@@ -78,6 +78,7 @@ public:
 
     [[nodiscard]] std::tuple<std::vector<VnlcDiagnostic>, std::vector<VnlcDiagnostic>, std::vector<VnlcDiagnostic>> takeDiagnostics();
     [[nodiscard]] std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>> takeImportedPackages();
+    [[nodiscard]] std::unordered_map<std::string, std::unique_ptr<VnlcReferenceType>> takeReferenceTypeRegistry();
     [[nodiscard]] std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*> takeSemanticTypeMap();
     [[nodiscard]] std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*> takeInferredValueTypeMap();
     [[nodiscard]] std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*> takeInferredFunctionReturnTypeMap();
