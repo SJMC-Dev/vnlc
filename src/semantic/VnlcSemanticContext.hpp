@@ -3,10 +3,12 @@
 
 #include "../ast/type/VnlcTypeNode.hpp"
 #include "../diagnostic/VnlcDiagnostic.hpp"
+#include "../vni/import/VnlcImportedPackage.hpp"
 #include "scope/VnlcScope.hpp"
 #include "type/VnlcReferenceType.hpp"
 #include "type/VnlcSemanticType.hpp"
 #include <memory>
+#include <string>
 #include <string_view>
 #include <tuple>
 #include <unordered_map>
@@ -22,6 +24,8 @@ private:
 
     std::unordered_map<std::string, std::unique_ptr<VnlcReferenceType>> referenceTypeRegistry;
     std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*> semanticTypeMap;
+
+    std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>> importedPackages;
 
     unsigned int loopDepth = 0;
     unsigned int switchDepth = 0;
@@ -42,6 +46,8 @@ public:
 
     void registerReferenceType(std::string_view fullName, std::unique_ptr<VnlcReferenceType>&& referenceType);
     void mapSemanticType(const VnlcTypeNode* typeNode, const VnlcSemanticType* semanticType);
+
+    void collectImportedPackages(std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>>&& importedPackages);
 
     [[nodiscard]] const std::optional<const VnlcReferenceType*> getReferenceTypeByFullTypeName(std::string_view fullTypeName) const;
     [[nodiscard]] const std::optional<const VnlcSemanticType*> getSemanticTypeByTypeNode(const VnlcTypeNode* typeNode) const;

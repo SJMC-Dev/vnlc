@@ -1,4 +1,6 @@
 #include "VnlcSemanticContext.hpp"
+#include <memory>
+#include <unordered_map>
 
 void VnlcSemanticContext::reportError(const VnlcAstNode& node, std::string_view message) {
     errors.emplace_back(VnlcDiagnosticPhase::SEMANTIC, VnlcDiagnosticSeverity::ERROR, std::string(message), node.locate().first, node.locate().second, node.getOffset(), node.getLength());
@@ -26,6 +28,10 @@ void VnlcSemanticContext::registerReferenceType(std::string_view fullName, std::
 
 void VnlcSemanticContext::mapSemanticType(const VnlcTypeNode* typeNode, const VnlcSemanticType* semanticType) {
     semanticTypeMap.emplace(typeNode, semanticType);
+}
+
+void VnlcSemanticContext::collectImportedPackages(std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>>&& importedPackages) {
+    this->importedPackages = std::move(importedPackages);
 }
 
 const std::optional<const VnlcReferenceType*> VnlcSemanticContext::getReferenceTypeByFullTypeName(std::string_view fullTypeName) const {
