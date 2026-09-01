@@ -5,9 +5,9 @@
 #include "../ast/declaration/VnlcValueDeclarationNode.hpp"
 #include "../ast/type/VnlcTypeNode.hpp"
 #include "../diagnostic/VnlcDiagnostic.hpp"
-#include "../vni/import/VnlcImportedPackage.hpp"
 #include "../type/VnlcReferenceType.hpp"
 #include "../type/VnlcSemanticType.hpp"
+#include "../vni/import/VnlcImportedPackage.hpp"
 #include <memory>
 #include <optional>
 #include <unordered_map>
@@ -22,8 +22,8 @@ private:
 
     std::unordered_set<std::unique_ptr<VnlcReferenceType>> referenceTypes;
     std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*> semanticTypeMap;
-    std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*> referencedValueTypeMap;
-    std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*> referencedFunctionReturnTypeMap;
+    std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*> inferredValueTypeMap;
+    std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*> inferredFunctionReturnTypeMap;
 
     std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>> importedPackages;
 
@@ -34,8 +34,8 @@ public:
         std::vector<VnlcDiagnostic>&& notes,
         std::unordered_set<std::unique_ptr<VnlcReferenceType>>&& referenceTypes,
         std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*>&& semanticTypeMap,
-        std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*>&& referencedValueTypeMap,
-        std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*>&& referencedFunctionReturnTypeMap,
+        std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*>&& inferredValueTypeMap,
+        std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*>&& inferredFunctionReturnTypeMap,
         std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>>&& importedPackages
     );
     VnlcSemanticAnalysisResult(const VnlcSemanticAnalysisResult&) = default;
@@ -52,8 +52,8 @@ public:
 
     [[nodiscard]] const std::optional<const VnlcSemanticType*> getSemanticTypeByTypeNode(const VnlcTypeNode* typeNode) const;
     [[nodiscard]] const std::optional<const VnlcImportedPackage*> getImportedPackageByName(std::string_view packageName) const;
-    [[nodiscard]] const std::optional<const VnlcSemanticType*> getReferencedValueType(const VnlcValueDeclarationNode* valueDeclaration) const;
-    [[nodiscard]] const std::optional<const VnlcSemanticType*> getReferencedFunctionReturnType(const VnlcFunctionDeclarationNode* functionDeclaration) const;
+    [[nodiscard]] const std::optional<const VnlcSemanticType*> getInferredValueType(const VnlcValueDeclarationNode* valueDeclaration) const;
+    [[nodiscard]] const std::optional<const VnlcSemanticType*> getInferredFunctionReturnType(const VnlcFunctionDeclarationNode* functionDeclaration) const;
 };
 
 #endif // VNLC_SEMANTIC_ANALYSIS_RESULT_HPP

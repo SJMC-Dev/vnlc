@@ -8,8 +8,8 @@ VnlcSemanticAnalysisResult::VnlcSemanticAnalysisResult(
     std::vector<VnlcDiagnostic>&& notes,
     std::unordered_set<std::unique_ptr<VnlcReferenceType>>&& referenceTypes,
     std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*>&& semanticTypeMap,
-    std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*>&& referencedValueTypeMap,
-    std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*>&& referencedFunctionReturnTypeMap,
+    std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*>&& inferredValueTypeMap,
+    std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*>&& inferredFunctionReturnTypeMap,
     std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>>&& importedPackages
 )
     : errors(std::move(errors)),
@@ -17,8 +17,8 @@ VnlcSemanticAnalysisResult::VnlcSemanticAnalysisResult(
       notes(std::move(notes)),
       referenceTypes(std::move(referenceTypes)),
       semanticTypeMap(std::move(semanticTypeMap)),
-      referencedValueTypeMap(std::move(referencedValueTypeMap)),
-      referencedFunctionReturnTypeMap(std::move(referencedFunctionReturnTypeMap)),
+      inferredValueTypeMap(std::move(inferredValueTypeMap)),
+      inferredFunctionReturnTypeMap(std::move(inferredFunctionReturnTypeMap)),
       importedPackages(std::move(importedPackages)) {}
 
 bool VnlcSemanticAnalysisResult::hasErrors() const {
@@ -61,17 +61,17 @@ const std::optional<const VnlcImportedPackage*> VnlcSemanticAnalysisResult::getI
     return std::nullopt;
 }
 
-const std::optional<const VnlcSemanticType*> VnlcSemanticAnalysisResult::getReferencedValueType(const VnlcValueDeclarationNode* valueDeclaration) const {
-    auto it = referencedValueTypeMap.find(valueDeclaration);
-    if (it != referencedValueTypeMap.end()) {
+const std::optional<const VnlcSemanticType*> VnlcSemanticAnalysisResult::getInferredValueType(const VnlcValueDeclarationNode* valueDeclaration) const {
+    auto it = inferredValueTypeMap.find(valueDeclaration);
+    if (it != inferredValueTypeMap.end()) {
         return std::make_optional<const VnlcSemanticType*>(it->second);
     }
     return std::nullopt;
 }
 
-const std::optional<const VnlcSemanticType*> VnlcSemanticAnalysisResult::getReferencedFunctionReturnType(const VnlcFunctionDeclarationNode* functionDeclaration) const {
-    auto it = referencedFunctionReturnTypeMap.find(functionDeclaration);
-    if (it != referencedFunctionReturnTypeMap.end()) {
+const std::optional<const VnlcSemanticType*> VnlcSemanticAnalysisResult::getInferredFunctionReturnType(const VnlcFunctionDeclarationNode* functionDeclaration) const {
+    auto it = inferredFunctionReturnTypeMap.find(functionDeclaration);
+    if (it != inferredFunctionReturnTypeMap.end()) {
         return std::make_optional<const VnlcSemanticType*>(it->second);
     }
     return std::nullopt;
