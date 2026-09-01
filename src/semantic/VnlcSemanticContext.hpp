@@ -26,8 +26,8 @@ private:
 
     std::unordered_map<std::string, std::unique_ptr<VnlcReferenceType>> referenceTypeRegistry;
     std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*> semanticTypeMap;
-    std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*> referencedValueTypeMap;
-    std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*> referencedFunctionReturnTypeMap;
+    std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*> inferredValueTypeMap;
+    std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*> inferredFunctionReturnTypeMap;
 
     std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>> importedPackages;
 
@@ -50,8 +50,8 @@ public:
 
     void registerReferenceType(std::string_view fullName, std::unique_ptr<VnlcReferenceType>&& referenceType);
     void mapSemanticType(const VnlcTypeNode* typeNode, const VnlcSemanticType* semanticType);
-    void mapReferencedValueType(const VnlcValueDeclarationNode* valueDeclaration, const VnlcSemanticType* semanticType);
-    void mapReferencedFunctionReturnType(const VnlcFunctionDeclarationNode* functionDeclaration, const VnlcSemanticType* semanticType);
+    void mapInferredValueType(const VnlcValueDeclarationNode* valueDeclaration, const VnlcSemanticType* semanticType);
+    void mapInferredFunctionReturnType(const VnlcFunctionDeclarationNode* functionDeclaration, const VnlcSemanticType* semanticType);
 
     void collectImportedPackages(std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>>&& importedPackages);
 
