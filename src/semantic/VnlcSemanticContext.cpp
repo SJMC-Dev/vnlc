@@ -20,6 +20,30 @@ void VnlcSemanticContext::popScope() {
     scopeStack.pop_back();
 }
 
+void VnlcSemanticContext::registerReferenceType(std::string_view fullName, std::unique_ptr<VnlcReferenceType>&& referenceType) {
+    referenceTypeRegistry.emplace(std::string(fullName), std::move(referenceType));
+}
+
+void VnlcSemanticContext::mapSemanticType(const VnlcTypeNode* typeNode, const VnlcSemanticType* semanticType) {
+    semanticTypeMap.emplace(typeNode, semanticType);
+}
+
+const std::optional<const VnlcReferenceType*> VnlcSemanticContext::getReferenceTypeByFullTypeName(std::string_view fullTypeName) const {
+    auto it = referenceTypeRegistry.find(std::string(fullTypeName));
+    if (it != referenceTypeRegistry.end()) {
+        return std::make_optional<const VnlcReferenceType*>(it->second.get());
+    }
+    return std::nullopt;
+}
+
+const std::optional<const VnlcSemanticType*> VnlcSemanticContext::getSemanticTypeByTypeNode(const VnlcTypeNode* typeNode) const {
+    auto it = semanticTypeMap.find(typeNode);
+    if (it != semanticTypeMap.end()) {
+        return std::make_optional<const VnlcSemanticType*>(it->second);
+    }
+    return std::nullopt;
+}
+
 VnlcScope& VnlcSemanticContext::currentScope() {
     return *scopeStack.back();
 }

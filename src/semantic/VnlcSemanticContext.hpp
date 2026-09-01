@@ -1,11 +1,15 @@
 #ifndef VNLC_SEMANTIC_CONTEXT_HPP
 #define VNLC_SEMANTIC_CONTEXT_HPP
 
+#include "../ast/type/VnlcTypeNode.hpp"
 #include "../diagnostic/VnlcDiagnostic.hpp"
 #include "scope/VnlcScope.hpp"
+#include "type/VnlcReferenceType.hpp"
+#include "type/VnlcSemanticType.hpp"
 #include <memory>
 #include <string_view>
 #include <tuple>
+#include <unordered_map>
 #include <vector>
 
 class VnlcSemanticContext {
@@ -15,6 +19,9 @@ private:
     std::vector<VnlcDiagnostic> notes;
 
     std::vector<std::unique_ptr<VnlcScope>> scopeStack;
+
+    std::unordered_map<std::string, std::unique_ptr<VnlcReferenceType>> referenceTypeRegistry;
+    std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*> semanticTypeMap;
 
     unsigned int loopDepth = 0;
     unsigned int switchDepth = 0;
@@ -32,6 +39,12 @@ public:
 
     void pushScope(std::unique_ptr<VnlcScope>&& scope);
     void popScope();
+
+    void registerReferenceType(std::string_view fullName, std::unique_ptr<VnlcReferenceType>&& referenceType);
+    void mapSemanticType(const VnlcTypeNode* typeNode, const VnlcSemanticType* semanticType);
+
+    [[nodiscard]] const std::optional<const VnlcReferenceType*> getReferenceTypeByFullTypeName(std::string_view fullTypeName) const;
+    [[nodiscard]] const std::optional<const VnlcSemanticType*> getSemanticTypeByTypeNode(const VnlcTypeNode* typeNode) const;
 
     [[nodiscard]] VnlcScope& currentScope();
 

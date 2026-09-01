@@ -1,4 +1,5 @@
 #include "VnlcSemanticAnalysisResult.hpp"
+#include <optional>
 
 VnlcSemanticAnalysisResult::VnlcSemanticAnalysisResult(std::vector<VnlcDiagnostic>&& errors, std::vector<VnlcDiagnostic>&& warnings, std::vector<VnlcDiagnostic>&& notes)
     : errors(std::move(errors)),
@@ -27,4 +28,12 @@ const std::vector<VnlcDiagnostic>& VnlcSemanticAnalysisResult::getWarnings() con
 
 const std::vector<VnlcDiagnostic>& VnlcSemanticAnalysisResult::getNotes() const {
     return notes;
+}
+
+const std::optional<const VnlcSemanticType*> VnlcSemanticAnalysisResult::getSemanticTypeByTypeNode(const VnlcTypeNode* typeNode) const {
+    auto it = semanticTypeMap.find(typeNode);
+    if (it != semanticTypeMap.end()) {
+        return std::make_optional<const VnlcSemanticType*>(it->second);
+    }
+    return std::nullopt;
 }
