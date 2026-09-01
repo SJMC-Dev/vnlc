@@ -63,11 +63,11 @@ add_executable(
     semantic/VnlcSemanticAnalysisResult.cpp
     semantic/VnlcSemanticAnalyzer.cpp
     semantic/scope/VnlcScope.cpp
-    semantic/type/VnlcSemanticType.cpp
-    semantic/type/VnlcPrimitiveType.cpp
-    semantic/type/VnlcReferenceType.cpp
-    semantic/type/VnlcVoidType.cpp
-    semantic/type/typeinf/VnlcTypeInferenceResult.cpp
+    type/VnlcSemanticType.cpp
+    type/VnlcPrimitiveType.cpp
+    type/VnlcReferenceType.cpp
+    type/VnlcVoidType.cpp
+    type/typeinf/VnlcTypeInferenceResult.cpp
     semantic/metadata/VnlcMetadataInfo.cpp
     vni/import/VnlcImportedItem.cpp
     vni/import/VnlcImportedPackage.cpp
