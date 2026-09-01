@@ -10,9 +10,9 @@
 #include "../ast/statement/VnlcSwitchStatementNode.hpp"
 #include "../ast/statement/VnlcVariableDeclarationStatementNode.hpp"
 #include "../ast/statement/VnlcWhileStatementNode.hpp"
+#include "../type/typeinf/VnlcTypeInferenceResult.hpp"
 #include "symbol/VnlcSymbolKind.hpp"
 #include "symbol/VnlcSymbolOrigin.hpp"
-#include "../type/typeinf/VnlcTypeInferenceResult.hpp"
 #include <fmt/core.h>
 #include <string_view>
 
@@ -443,5 +443,19 @@ VnlcSemanticAnalysisResult VnlcSemanticAnalyzer::analyze(const VnlcConfig& confi
     checkModule(module, config);
 
     auto diagnostics = context.takeDiagnostics();
-    return VnlcSemanticAnalysisResult(std::move(std::get<0>(diagnostics)), std::move(std::get<1>(diagnostics)), std::move(std::get<2>(diagnostics)));
+    auto referenceTypes = context.takeReferenceTypeRegistry();
+    auto semanticTypes = context.takeSemanticTypeMap();
+    auto inferredValueTypes = context.takeInferredValueTypeMap();
+    auto inferredFunctionReturnTypes = context.takeInferredFunctionReturnTypeMap();
+    auto importedPackages = context.takeImportedPackages();
+    return VnlcSemanticAnalysisResult(
+        std::move(std::get<0>(diagnostics)),
+        std::move(std::get<1>(diagnostics)),
+        std::move(std::get<2>(diagnostics)),
+        std::move(referenceTypes),
+        std::move(semanticTypes),
+        std::move(inferredValueTypes),
+        std::move(inferredFunctionReturnTypes),
+        std::move(importedPackages)
+    );
 }
