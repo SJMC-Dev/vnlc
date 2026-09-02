@@ -22,6 +22,7 @@ private:
 
     [[nodiscard]] nlohmann::json stringifyMetadata(const std::vector<VnlcDeclarationItem::MetadataTerm>& metadataTerms);
     [[nodiscard]] nlohmann::json stringifyGenericParameters(const std::vector<std::unique_ptr<VnlcIdentifierNode>>& genericParameterNames);
+    [[nodiscard]] nlohmann::json stringifyParameter(const VnlcValueDeclarationNode* parameter);
     [[nodiscard]] nlohmann::json stringifyVariable(const VnlcValueDeclarationNode* variable);
     [[nodiscard]] nlohmann::json stringifyFunction(const VnlcFunctionDeclarationNode* function);
     [[nodiscard]] nlohmann::json stringifyClass(const VnlcClassDeclarationNode* classNode);

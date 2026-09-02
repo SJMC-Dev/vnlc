@@ -36,6 +36,26 @@ nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyGenericParameters(cons
     return genericParametersObj;
 }
 
+nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyParameter(const VnlcValueDeclarationNode* parameter) {
+    nlohmann::json parameterObj = nlohmann::json::object();
+    parameterObj.emplace("category", "parameter");
+
+    const auto& typeNode = parameter->getType();
+    if (typeNode.has_value()) {
+        const auto& semanticType = semantic.getSemanticTypeByTypeNode(typeNode.value().get());
+        if (semanticType.has_value()) {
+            parameterObj.emplace("type", semanticType.value()->getFullTypeName());
+        }
+    } else {
+        const auto& inferredType = semantic.getInferredValueType(parameter);
+        if (inferredType.has_value()) {
+            parameterObj.emplace("type", inferredType.value()->getFullTypeName());
+        }
+    }
+
+    return parameterObj;
+}
+
 nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyVariable(const VnlcValueDeclarationNode* variable) {
     nlohmann::json variableObj = nlohmann::json::object();
     variableObj.emplace("category", "let");
@@ -86,21 +106,7 @@ nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyFunction(const VnlcFun
 
     nlohmann::json parametersObj = nlohmann::json::object();
     for (const auto& parameter : function->getParameters()) {
-        nlohmann::json parameterObj;
-        const auto& paramTypeNode = parameter->getType();
-        if (paramTypeNode.has_value()) {
-            const auto& semanticType = semantic.getSemanticTypeByTypeNode(paramTypeNode.value().get());
-            if (semanticType.has_value()) {
-                parameterObj.emplace("type", semanticType.value()->getFullTypeName());
-            }
-        } else {
-            const auto& inferredParamType = semantic.getInferredValueType(parameter.get());
-            if (inferredParamType.has_value()) {
-                parameterObj.emplace("type", inferredParamType.value()->getFullTypeName());
-            }
-        }
-
-        parametersObj.emplace(parameter->getName().getIdentifierString(), parameterObj);
+        parametersObj.emplace(parameter->getName().getIdentifierString(), stringifyParameter(parameter.get()));
     }
 
     functionObj.emplace("parameters", parametersObj);
@@ -160,7 +166,7 @@ nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyClass(const VnlcClassD
 
 nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyInterface(const VnlcInterfaceDeclarationNode* interfaceNode) {
     nlohmann::json interfaceObj = nlohmann::json::object();
-    interfaceObj.emplace("category", "method");
+    interfaceObj.emplace("category", "interface");
 
     const auto& metadata = interfaceNode->getMetadataTerms();
     if (!metadata.empty()) {
@@ -193,4 +199,142 @@ nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyEnum(const VnlcEnumDec
     enumObj.emplace("members", membersObj);
 
     return enumObj;
+}
+
+nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyEnumMember(const VnlcEnumMemberDeclarationNode* enumMemberNode) {
+    nlohmann::json memberObj = nlohmann::json::object();
+    memberObj.emplace("category", "enummember");
+
+    nlohmann::json associatedValuesObj = nlohmann::json::object();
+    memberObj.emplace("associatedValues", associatedValuesObj);
+    for (const auto& associatedValue : enumMemberNode->getAssociatedValues()) {
+        nlohmann::json associatedValueObj = stringifyEnumValue(associatedValue.get());
+        associatedValuesObj.emplace(associatedValue->getName().getIdentifierString(), associatedValueObj);
+    }
+    memberObj.emplace("associatedValues", associatedValuesObj);
+
+    return memberObj;
+}
+
+nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyEnumValue(const VnlcValueDeclarationNode* enumValue) {
+    nlohmann::json enumValueObj = nlohmann::json::object();
+    enumValueObj.emplace("category", "enumvalue");
+
+    const auto& typeNode = enumValue->getType();
+    if (typeNode.has_value()) {
+        const auto& semanticType = semantic.getSemanticTypeByTypeNode(typeNode.value().get());
+        if (semanticType.has_value()) {
+            enumValueObj.emplace("type", semanticType.value()->getFullTypeName());
+        }
+    } else {
+        const auto& inferredType = semantic.getInferredValueType(enumValue);
+        if (inferredType.has_value()) {
+            enumValueObj.emplace("type", inferredType.value()->getFullTypeName());
+        }
+    }
+
+    return enumValueObj;
+}
+
+nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyTypeAlias(const VnlcTypeAliasDeclarationNode* typeAliasNode) {
+    nlohmann::json typeAliasObj = nlohmann::json::object();
+    typeAliasObj.emplace("category", "typealias");
+
+    typeAliasObj.emplace("genericParameters", stringifyGenericParameters(typeAliasNode->getGenericParameterNames()));
+    const auto& semanticType = semantic.getSemanticTypeByTypeNode(&typeAliasNode->getOriginalType());
+    if (semanticType.has_value()) {
+        typeAliasObj.emplace("originalType", semanticType.value()->getFullTypeName());
+    }
+
+    return typeAliasObj;
+}
+
+nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyProperty(const VnlcValueDeclarationNode* property) {
+    nlohmann::json propertyObj = nlohmann::json::object();
+    propertyObj.emplace("category", "property");
+
+    const auto& metadata = property->getMetadataTerms();
+    if (!metadata.empty()) {
+        propertyObj.emplace("metadata", stringifyMetadata(metadata));
+    }
+
+    const auto& typeNode = property->getType();
+    if (typeNode.has_value()) {
+        const auto& semanticType = semantic.getSemanticTypeByTypeNode(typeNode.value().get());
+        if (semanticType.has_value()) {
+            propertyObj.emplace("type", semanticType.value()->getFullTypeName());
+        }
+    } else {
+        const auto& inferredType = semantic.getInferredValueType(property);
+        if (inferredType.has_value()) {
+            propertyObj.emplace("type", inferredType.value()->getFullTypeName());
+        }
+    }
+
+    propertyObj.emplace("static", property->getKind() == VnlcValueDeclarationType::Kind::STATIC_PROPERTY);
+
+    std::string accessModifier;
+    switch (property->getAccessModifier()) {
+        case VnlcValueDeclarationType::AccessModifier::PUBLIC:
+            accessModifier = "public";
+            break;
+        case VnlcValueDeclarationType::AccessModifier::PROTECTED:
+            accessModifier = "protected";
+            break;
+        case VnlcValueDeclarationType::AccessModifier::PRIVATE:
+            accessModifier = "private";
+            break;
+    }
+    propertyObj.emplace("accessModifier", accessModifier);
+
+    return propertyObj;
+}
+
+nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyMethod(const VnlcFunctionDeclarationNode* method) {
+    nlohmann::json methodObj = nlohmann::json::object();
+    methodObj.emplace("category", "method");
+
+    const auto& metadata = method->getMetadataTerms();
+
+    if (!metadata.empty()) {
+        methodObj.emplace("metadata", stringifyMetadata(metadata));
+    }
+
+    const auto& returnTypeNode = method->getReturnType();
+    if (returnTypeNode.has_value()) {
+        const auto& semanticType = semantic.getSemanticTypeByTypeNode(returnTypeNode.value().get());
+        if (semanticType.has_value()) {
+            methodObj.emplace("returnType", semanticType.value()->getFullTypeName());
+        }
+    } else {
+        const auto& inferredReturnType = semantic.getInferredFunctionReturnType(method);
+        if (inferredReturnType.has_value()) {
+            methodObj.emplace("returnType", inferredReturnType.value()->getFullTypeName());
+        }
+    }
+
+    nlohmann::json parametersObj = nlohmann::json::object();
+    for (const auto& parameter : method->getParameters()) {
+        parametersObj.emplace(parameter->getName().getIdentifierString(), stringifyParameter(parameter.get()));
+    }
+
+    methodObj.emplace("parameters", parametersObj);
+    methodObj.emplace("native", method->getKind() == VnlcFunctionDeclarationType::Kind::NATIVE);
+    methodObj.emplace("static", method->getBinding() == VnlcFunctionDeclarationType::Binding::STATIC);
+
+    std::string accessModifier;
+    switch (method->getAccessModifier()) {
+        case VnlcFunctionDeclarationType::AccessModifier::PUBLIC:
+            accessModifier = "public";
+            break;
+        case VnlcFunctionDeclarationType::AccessModifier::PROTECTED:
+            accessModifier = "protected";
+            break;
+        case VnlcFunctionDeclarationType::AccessModifier::PRIVATE:
+            accessModifier = "private";
+            break;
+    }
+    methodObj.emplace("accessModifier", accessModifier);
+
+    return methodObj;
 }
