@@ -139,7 +139,6 @@ nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyClass(const VnlcClassD
 
     classObj.emplace("final", classNode->isFinal());
 
-    std::vector<std::string> genericParameterNames;
     classObj.emplace("genericParameters", stringifyGenericParameters(classNode->getGenericParameterNames()));
 
     nlohmann::json propertiesObj = nlohmann::json::object();
