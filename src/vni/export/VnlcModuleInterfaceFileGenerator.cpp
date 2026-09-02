@@ -178,3 +178,19 @@ nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyInterface(const VnlcIn
 
     return interfaceObj;
 }
+
+nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyEnum(const VnlcEnumDeclarationNode* enumNode) {
+    nlohmann::json enumObj = nlohmann::json::object();
+    enumObj.emplace("category", "enum");
+
+    enumObj.emplace("genericParameters", stringifyGenericParameters(enumNode->getGenericParameterNames()));
+
+    nlohmann::json membersObj = nlohmann::json::object();
+    for (const auto& member : enumNode->getMemberDeclarations()) {
+        nlohmann::json memberObj = stringifyEnumMember(member.get());
+        membersObj.emplace(member->getName().getIdentifierString(), memberObj);
+    }
+    enumObj.emplace("members", membersObj);
+
+    return enumObj;
+}
