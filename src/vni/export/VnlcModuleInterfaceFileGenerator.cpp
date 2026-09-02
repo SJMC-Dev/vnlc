@@ -157,3 +157,24 @@ nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyClass(const VnlcClassD
 
     return classObj;
 }
+
+nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyInterface(const VnlcInterfaceDeclarationNode* interfaceNode) {
+    nlohmann::json interfaceObj = nlohmann::json::object();
+    interfaceObj.emplace("category", "method");
+
+    const auto& metadata = interfaceNode->getMetadataTerms();
+    if (!metadata.empty()) {
+        interfaceObj.emplace("metadata", stringifyMetadata(metadata));
+    }
+
+    interfaceObj.emplace("genericParameters", stringifyGenericParameters(interfaceNode->getGenericParameterNames()));
+
+    nlohmann::json methodsObj = nlohmann::json::object();
+    for (const auto& method : interfaceNode->getMethodDeclarations()) {
+        nlohmann::json methodObj = stringifyMethod(method.get());
+        methodsObj.emplace(method->getName().getIdentifierString(), methodObj);
+    }
+    interfaceObj.emplace("methods", methodsObj);
+
+    return interfaceObj;
+}
