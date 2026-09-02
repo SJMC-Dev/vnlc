@@ -25,6 +25,8 @@ std::string_view VnlcPrimitiveType::getFullTypeName() const noexcept {
         case VnlcPrimitiveTypeKind::STRING:
             return "string";
     }
+
+    return "unknown"; // should never reach here
 }
 
 const VnlcPrimitiveType* VnlcPrimitiveType::BYTE_TYPE = nullptr;
