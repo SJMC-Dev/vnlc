@@ -17,7 +17,7 @@ VnlcModuleInterfaceFileGenerator::VnlcModuleInterfaceFileGenerator(
       semantic(semantic) {}
 
 nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyMetadata(const std::vector<VnlcDeclarationItem::MetadataTerm>& metadataTerms) {
-    nlohmann::json metadataObj;
+    nlohmann::json metadataObj = nlohmann::json::object();
 
     for (const auto& metadataTerm : metadataTerms) {
         metadataObj.emplace(metadataTerm.key->getIdentifierString(), metadataTerm.value);
@@ -37,7 +37,7 @@ nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyGenericParameters(cons
 }
 
 nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyVariable(const VnlcValueDeclarationNode* variable) {
-    nlohmann::json variableObj;
+    nlohmann::json variableObj = nlohmann::json::object();
     variableObj.emplace("category", "let");
 
     const auto& metadata = variable->getMetadataTerms();
@@ -62,7 +62,7 @@ nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyVariable(const VnlcVal
 }
 
 nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyFunction(const VnlcFunctionDeclarationNode* function) {
-    nlohmann::json functionObj;
+    nlohmann::json functionObj = nlohmann::json::object();
     functionObj.emplace("category", "func");
 
     const auto& metadata = function->getMetadataTerms();
@@ -110,7 +110,7 @@ nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyFunction(const VnlcFun
 }
 
 nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyClass(const VnlcClassDeclarationNode* classNode) {
-    nlohmann::json classObj;
+    nlohmann::json classObj = nlohmann::json::object();
     classObj.emplace("category", "class");
 
     const auto& metadata = classNode->getMetadataTerms();
