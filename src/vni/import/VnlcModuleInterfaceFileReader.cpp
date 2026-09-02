@@ -297,11 +297,6 @@ std::unique_ptr<VnlcImportedEnumMember> VnlcModuleInterfaceFileReader::parseImpo
         associatedValues.emplace(key, parseImportedEnumValue(key, value));
     }
 
-    if (value.contains("metadata")) {
-        std::unordered_map<std::string, std::optional<std::string>> metadata = parseImportedMetadata(value["metadata"]);
-        return std::make_unique<VnlcImportedEnumMember>(std::move(name), std::move(associatedValues), std::move(metadata));
-    }
-
     return std::make_unique<VnlcImportedEnumMember>(std::move(name), std::move(associatedValues));
 }
 
@@ -314,11 +309,6 @@ std::unique_ptr<VnlcImportedEnumValue> VnlcModuleInterfaceFileReader::parseImpor
     }
 
     type = value["type"].get<std::string>();
-
-    if (value.contains("metadata")) {
-        std::unordered_map<std::string, std::optional<std::string>> metadata = parseImportedMetadata(value["metadata"]);
-        return std::make_unique<VnlcImportedEnumValue>(std::move(name), std::move(type), std::move(metadata));
-    }
 
     return std::make_unique<VnlcImportedEnumValue>(std::move(name), std::move(type));
 }
@@ -403,11 +393,6 @@ std::unique_ptr<VnlcImportedParameter> VnlcModuleInterfaceFileReader::parseImpor
     }
 
     type = value["type"].get<std::string>();
-
-    if (value.contains("metadata")) {
-        std::unordered_map<std::string, std::optional<std::string>> metadata = parseImportedMetadata(value["metadata"]);
-        return std::make_unique<VnlcImportedParameter>(std::move(name), std::move(type), std::move(metadata));
-    }
 
     return std::make_unique<VnlcImportedParameter>(std::move(name), std::move(type));
 }
