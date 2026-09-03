@@ -4,6 +4,8 @@
 #include "../../ast/declaration/VnlcValueDeclarationNode.hpp"
 #include "nlohmann/json_fwd.hpp"
 #include <cassert>
+#include <filesystem>
+#include <fstream>
 
 VnlcModuleInterfaceFileGenerator::VnlcModuleInterfaceFileGenerator(
     std::vector<const VnlcDeclarationNode*>&& declarationNodes,
@@ -339,10 +341,51 @@ nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyMethod(const VnlcFunct
     return methodObj;
 }
 
-nlohmann::json stringifyImported(std::string_view importedAlias) {
+nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyImported(std::string_view importedAlias) {
     nlohmann::json importedObj = nlohmann::json::object();
     importedObj.emplace("category", "imported");
     importedObj.emplace("source", importedAlias);
 
     return importedObj;
+}
+
+void VnlcModuleInterfaceFileGenerator::generate() {
+    if (!config.moduleInterfaceOutputDirectory.has_value()) {
+        return;
+    }
+
+    nlohmann::json moduleObj = nlohmann::json::object();
+
+    for (const auto* declarationNode : declarationNodes) {
+        if (const auto* variable = dynamic_cast<const VnlcValueDeclarationNode*>(declarationNode)) {
+            moduleObj.emplace(variable->getName().getIdentifierString(), stringifyVariable(variable));
+        } else if (const auto* function = dynamic_cast<const VnlcFunctionDeclarationNode*>(declarationNode)) {
+            moduleObj.emplace(function->getName().getIdentifierString(), stringifyFunction(function));
+        } else if (const auto* classNode = dynamic_cast<const VnlcClassDeclarationNode*>(declarationNode)) {
+            moduleObj.emplace(classNode->getName().getIdentifierString(), stringifyClass(classNode));
+        } else if (const auto* interfaceNode = dynamic_cast<const VnlcInterfaceDeclarationNode*>(declarationNode)) {
+            moduleObj.emplace(interfaceNode->getName().getIdentifierString(), stringifyInterface(interfaceNode));
+        } else if (const auto* enumNode = dynamic_cast<const VnlcEnumDeclarationNode*>(declarationNode)) {
+            moduleObj.emplace(enumNode->getName().getIdentifierString(), stringifyEnum(enumNode));
+        } else if (const auto* typeAliasNode = dynamic_cast<const VnlcTypeAliasDeclarationNode*>(declarationNode)) {
+            moduleObj.emplace(typeAliasNode->getAliasName().getIdentifierString(), stringifyTypeAlias(typeAliasNode));
+        } else {
+            assert(false && "Unsupported declaration node in module interface file generator");
+        }
+    }
+
+    for (const auto& importedAlias : importedAliases) {
+        moduleObj.emplace(importedAlias, stringifyImported(importedAlias));
+    }
+
+    std::filesystem::path relativeInputPath = std::filesystem::relative(config.inputFilePath, config.packageRootPath);
+    std::filesystem::path outputPath = config.moduleInterfaceOutputDirectory.value() / config.packageRootPath.filename() / relativeInputPath;
+    outputPath.replace_extension(".vni");
+
+    std::filesystem::create_directories(outputPath.parent_path());
+
+    std::ofstream outputFile;
+    outputFile.exceptions(std::ios::failbit | std::ios::badbit);
+    outputFile.open(outputPath);
+    outputFile << moduleObj.dump(4) << '\n';
 }
