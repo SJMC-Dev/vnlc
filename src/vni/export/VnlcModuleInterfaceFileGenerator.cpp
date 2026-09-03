@@ -338,3 +338,11 @@ nlohmann::json VnlcModuleInterfaceFileGenerator::stringifyMethod(const VnlcFunct
 
     return methodObj;
 }
+
+nlohmann::json stringifyImported(std::string_view importedAlias) {
+    nlohmann::json importedObj = nlohmann::json::object();
+    importedObj.emplace("category", "imported");
+    importedObj.emplace("source", importedAlias);
+
+    return importedObj;
+}

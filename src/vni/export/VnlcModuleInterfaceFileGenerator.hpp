@@ -33,6 +33,7 @@ private:
     [[nodiscard]] nlohmann::json stringifyTypeAlias(const VnlcTypeAliasDeclarationNode* typeAliasNode);
     [[nodiscard]] nlohmann::json stringifyProperty(const VnlcValueDeclarationNode* property);
     [[nodiscard]] nlohmann::json stringifyMethod(const VnlcFunctionDeclarationNode* method);
+    [[nodiscard]] nlohmann::json stringifyImported(std::string_view importedAlias);
 
 public:
     VnlcModuleInterfaceFileGenerator(
