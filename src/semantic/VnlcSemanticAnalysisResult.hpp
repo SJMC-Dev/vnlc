@@ -50,6 +50,7 @@ public:
     [[nodiscard]] const std::vector<VnlcDiagnostic>& getWarnings() const;
     [[nodiscard]] const std::vector<VnlcDiagnostic>& getNotes() const;
 
+    [[nodiscard]] const std::optional<const VnlcReferenceType*> getReferenceTypeByFullTypeName(std::string_view fullTypeName) const;
     [[nodiscard]] const std::optional<const VnlcSemanticType*> getSemanticTypeByTypeNode(const VnlcTypeNode* typeNode) const;
     [[nodiscard]] const std::optional<const VnlcImportedPackage*> getImportedPackageByName(std::string_view packageName) const;
     [[nodiscard]] const std::optional<const VnlcSemanticType*> getInferredValueType(const VnlcValueDeclarationNode* valueDeclaration) const;

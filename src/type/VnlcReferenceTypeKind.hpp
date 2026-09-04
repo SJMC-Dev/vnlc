@@ -5,6 +5,7 @@ enum class VnlcReferenceTypeKind {
     CLASS,
     INTERFACE,
     ENUM,
+    TYPE_ALIAS,
 };
 
 #endif // VNLC_REFERENCE_TYPE_KIND_HPP

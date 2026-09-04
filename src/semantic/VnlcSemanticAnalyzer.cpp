@@ -10,10 +10,13 @@
 #include "../ast/statement/VnlcSwitchStatementNode.hpp"
 #include "../ast/statement/VnlcVariableDeclarationStatementNode.hpp"
 #include "../ast/statement/VnlcWhileStatementNode.hpp"
+#include "../type/VnlcReferenceType.hpp"
 #include "../type/typeinf/VnlcTypeInferenceResult.hpp"
 #include "symbol/VnlcSymbolKind.hpp"
 #include "symbol/VnlcSymbolOrigin.hpp"
 #include <fmt/core.h>
+#include <memory>
+#include <string>
 #include <string_view>
 
 VnlcSemanticAnalyzer::VnlcSemanticAnalyzer(const VnlcModuleNode& module) : module(module) {}
@@ -46,6 +49,20 @@ VnlcMetadataInfo VnlcSemanticAnalyzer::checkMetadata(const std::vector<VnlcDecla
         noWarnings,
         deprecated,
     };
+}
+
+std::string VnlcSemanticAnalyzer::getFullTypeName(std::string_view typeName, const VnlcConfig& config) const {
+    return fmt::format("{}.{}", module.getFullName(), typeName);
+}
+
+bool VnlcSemanticAnalyzer::isActiveTypeDeclaration(const VnlcTypeDeclarationNode& typeDecl, std::string_view typeName) {
+    const auto symbol = context.currentScope().lookupLocal(typeName);
+    return symbol.has_value() && symbol.value()->getLocalDeclarationNode() == &typeDecl;
+}
+
+void VnlcSemanticAnalyzer::registerLocalReferenceType(const VnlcTypeDeclarationNode& typeDecl, std::string_view typeName, VnlcReferenceTypeKind kind, const VnlcConfig& config) {
+    std::string fullTypeName = getFullTypeName(typeName, config);
+    context.registerReferenceType(fullTypeName, std::make_unique<VnlcReferenceType>(kind, fullTypeName, &typeDecl));
 }
 
 void VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode, const VnlcConfig& config) {
@@ -103,13 +120,13 @@ void VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode, const V
         } else if (auto* funcDecl = dynamic_cast<VnlcFunctionDeclarationNode*>(declNode)) {
             checkFunctionDeclaration(*funcDecl);
         } else if (auto* classDecl = dynamic_cast<VnlcClassDeclarationNode*>(declNode)) {
-            checkClassDeclaration(*classDecl);
+            checkClassDeclaration(*classDecl, config);
         } else if (auto* interfaceDecl = dynamic_cast<VnlcInterfaceDeclarationNode*>(declNode)) {
-            checkInterfaceDeclaration(*interfaceDecl);
+            checkInterfaceDeclaration(*interfaceDecl, config);
         } else if (auto* enumDecl = dynamic_cast<VnlcEnumDeclarationNode*>(declNode)) {
-            checkEnumDeclaration(*enumDecl);
+            checkEnumDeclaration(*enumDecl, config);
         } else if (auto* typeAliasDecl = dynamic_cast<VnlcTypeAliasDeclarationNode*>(declNode)) {
-            checkTypeAliasDeclaration(*typeAliasDecl);
+            checkTypeAliasDeclaration(*typeAliasDecl, config);
         }
     }
 
@@ -187,7 +204,8 @@ void VnlcSemanticAnalyzer::checkFunctionDeclaration(const VnlcFunctionDeclaratio
     context.popScope();
 }
 
-void VnlcSemanticAnalyzer::checkClassDeclaration(const VnlcClassDeclarationNode& classDecl, VnlcMetadataInfo metadataInfo) {
+void VnlcSemanticAnalyzer::checkClassDeclaration(const VnlcClassDeclarationNode& classDecl, const VnlcConfig& config, VnlcMetadataInfo metadataInfo) {
+    const std::size_t errorCount = context.getErrors().size();
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::CLASS, &context.currentScope()));
 
     for (const auto& member : classDecl.getMemberDeclarations()) {
@@ -224,9 +242,14 @@ void VnlcSemanticAnalyzer::checkClassDeclaration(const VnlcClassDeclarationNode&
     }
 
     context.popScope();
+
+    if (context.getErrors().size() == errorCount && isActiveTypeDeclaration(classDecl, classDecl.getName().getIdentifierString())) {
+        registerLocalReferenceType(classDecl, classDecl.getName().getIdentifierString(), VnlcReferenceTypeKind::CLASS, config);
+    }
 }
 
-void VnlcSemanticAnalyzer::checkInterfaceDeclaration(const VnlcInterfaceDeclarationNode& interfaceDecl, VnlcMetadataInfo metadataInfo) {
+void VnlcSemanticAnalyzer::checkInterfaceDeclaration(const VnlcInterfaceDeclarationNode& interfaceDecl, const VnlcConfig& config, VnlcMetadataInfo metadataInfo) {
+    const std::size_t errorCount = context.getErrors().size();
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::INTERFACE, &context.currentScope()));
 
     for (const auto& member : interfaceDecl.getMethodDeclarations()) {
@@ -252,9 +275,14 @@ void VnlcSemanticAnalyzer::checkInterfaceDeclaration(const VnlcInterfaceDeclarat
     }
 
     context.popScope();
+
+    if (context.getErrors().size() == errorCount && isActiveTypeDeclaration(interfaceDecl, interfaceDecl.getName().getIdentifierString())) {
+        registerLocalReferenceType(interfaceDecl, interfaceDecl.getName().getIdentifierString(), VnlcReferenceTypeKind::INTERFACE, config);
+    }
 }
 
-void VnlcSemanticAnalyzer::checkEnumDeclaration(const VnlcEnumDeclarationNode& enumDecl, VnlcMetadataInfo metadataInfo) {
+void VnlcSemanticAnalyzer::checkEnumDeclaration(const VnlcEnumDeclarationNode& enumDecl, const VnlcConfig& config, VnlcMetadataInfo metadataInfo) {
+    const std::size_t errorCount = context.getErrors().size();
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::ENUM, &context.currentScope()));
 
     for (const auto& member : enumDecl.getMemberDeclarations()) {
@@ -289,9 +317,14 @@ void VnlcSemanticAnalyzer::checkEnumDeclaration(const VnlcEnumDeclarationNode& e
     }
 
     context.popScope();
+
+    if (context.getErrors().size() == errorCount && isActiveTypeDeclaration(enumDecl, enumDecl.getName().getIdentifierString())) {
+        registerLocalReferenceType(enumDecl, enumDecl.getName().getIdentifierString(), VnlcReferenceTypeKind::ENUM, config);
+    }
 }
 
-void VnlcSemanticAnalyzer::checkTypeAliasDeclaration(const VnlcTypeAliasDeclarationNode& typeAliasDecl, VnlcMetadataInfo metadataInfo) {
+void VnlcSemanticAnalyzer::checkTypeAliasDeclaration(const VnlcTypeAliasDeclarationNode& typeAliasDecl, const VnlcConfig& config, VnlcMetadataInfo metadataInfo) {
+    const std::size_t errorCount = context.getErrors().size();
     context.pushScope(std::make_unique<VnlcScope>(VnlcScopeKind::TYPE_ALIAS, &context.currentScope()));
 
     for (const auto& genericParamName : typeAliasDecl.getGenericParameterNames()) {
@@ -304,6 +337,10 @@ void VnlcSemanticAnalyzer::checkTypeAliasDeclaration(const VnlcTypeAliasDeclarat
     checkType(typeAliasDecl.getOriginalType());
 
     context.popScope();
+
+    if (context.getErrors().size() == errorCount && isActiveTypeDeclaration(typeAliasDecl, typeAliasDecl.getAliasName().getIdentifierString())) {
+        registerLocalReferenceType(typeAliasDecl, typeAliasDecl.getAliasName().getIdentifierString(), VnlcReferenceTypeKind::TYPE_ALIAS, config);
+    }
 }
 
 void VnlcSemanticAnalyzer::checkStatement(const VnlcStatementNode& statement) {

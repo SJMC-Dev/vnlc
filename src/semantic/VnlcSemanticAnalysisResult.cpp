@@ -45,6 +45,15 @@ const std::vector<VnlcDiagnostic>& VnlcSemanticAnalysisResult::getNotes() const 
     return notes;
 }
 
+const std::optional<const VnlcReferenceType*> VnlcSemanticAnalysisResult::getReferenceTypeByFullTypeName(std::string_view fullTypeName) const {
+    for (const auto& referenceType : referenceTypes) {
+        if (referenceType->getFullTypeName() == fullTypeName) {
+            return std::make_optional<const VnlcReferenceType*>(referenceType.get());
+        }
+    }
+    return std::nullopt;
+}
+
 const std::optional<const VnlcSemanticType*> VnlcSemanticAnalysisResult::getSemanticTypeByTypeNode(const VnlcTypeNode* typeNode) const {
     auto it = semanticTypeMap.find(typeNode);
     if (it != semanticTypeMap.end()) {

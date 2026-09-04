@@ -4,6 +4,7 @@
 VnlcReferenceType::VnlcReferenceType(VnlcReferenceTypeKind referenceKind, std::string_view fullTypeName, const VnlcTypeDeclarationNode* localDeclarationNode)
     : VnlcSemanticType(),
       referenceKind(referenceKind),
+      origin(VnlcReferenceTypeOrigin::LOCAL),
       fullTypeName(fullTypeName),
       localDeclarationNode(localDeclarationNode),
       importedDeclarationNode(nullptr) {}
@@ -11,6 +12,7 @@ VnlcReferenceType::VnlcReferenceType(VnlcReferenceTypeKind referenceKind, std::s
 VnlcReferenceType::VnlcReferenceType(VnlcReferenceTypeKind referenceKind, std::string_view fullTypeName, const VnlcImportedIdentifier* importedDeclarationNode)
     : VnlcSemanticType(),
       referenceKind(referenceKind),
+      origin(VnlcReferenceTypeOrigin::IMPORTED),
       fullTypeName(fullTypeName),
       localDeclarationNode(nullptr),
       importedDeclarationNode(importedDeclarationNode) {}
@@ -25,4 +27,12 @@ VnlcReferenceTypeOrigin VnlcReferenceType::getOrigin() const noexcept {
 
 std::string_view VnlcReferenceType::getFullTypeName() const noexcept {
     return fullTypeName;
+}
+
+const VnlcTypeDeclarationNode* VnlcReferenceType::getLocalDeclaration() const noexcept {
+    return localDeclarationNode;
+}
+
+const VnlcImportedIdentifier* VnlcReferenceType::getImportedDeclaration() const noexcept {
+    return importedDeclarationNode;
 }

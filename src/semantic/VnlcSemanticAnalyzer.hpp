@@ -19,6 +19,8 @@
 #include "VnlcSemanticAnalysisResult.hpp"
 #include "VnlcSemanticContext.hpp"
 #include "metadata/VnlcMetadataInfo.hpp"
+#include <string>
+#include <string_view>
 
 class VnlcSemanticAnalyzer {
 private:
@@ -28,16 +30,19 @@ private:
     void checkIdentifierExpressionUse(const VnlcIdentifierExpressionNode& exprNode, VnlcMetadataInfo metadataInfo = VnlcMetadataInfo::DEFAULT);
 
     [[nodiscard]] VnlcMetadataInfo checkMetadata(const std::vector<VnlcDeclarationItem::MetadataTerm>& metadataTerms, const VnlcDeclarationNode& declNode);
+    [[nodiscard]] std::string getFullTypeName(std::string_view typeName, const VnlcConfig& config) const;
+    [[nodiscard]] bool isActiveTypeDeclaration(const VnlcTypeDeclarationNode& typeDecl, std::string_view typeName);
+    void registerLocalReferenceType(const VnlcTypeDeclarationNode& typeDecl, std::string_view typeName, VnlcReferenceTypeKind kind, const VnlcConfig& config);
 
     void checkModule(const VnlcModuleNode& moduleNode, const VnlcConfig& config);
     void checkImport(const VnlcImportDeclarationNode& importDecl, const VnlcConfig& config);
     void checkExport(const VnlcExportDeclarationNode& exportDecl);
     void checkValueDeclaration(const VnlcValueDeclarationNode& varDecl, VnlcMetadataInfo metadataInfo = VnlcMetadataInfo::DEFAULT);
     void checkFunctionDeclaration(const VnlcFunctionDeclarationNode& funcDecl, VnlcMetadataInfo metadataInfo = VnlcMetadataInfo::DEFAULT);
-    void checkClassDeclaration(const VnlcClassDeclarationNode& classDecl, VnlcMetadataInfo metadataInfo = VnlcMetadataInfo::DEFAULT);
-    void checkInterfaceDeclaration(const VnlcInterfaceDeclarationNode& interfaceDecl, VnlcMetadataInfo metadataInfo = VnlcMetadataInfo::DEFAULT);
-    void checkEnumDeclaration(const VnlcEnumDeclarationNode& enumDecl, VnlcMetadataInfo metadataInfo = VnlcMetadataInfo::DEFAULT);
-    void checkTypeAliasDeclaration(const VnlcTypeAliasDeclarationNode& typeAliasDecl, VnlcMetadataInfo metadataInfo = VnlcMetadataInfo::DEFAULT);
+    void checkClassDeclaration(const VnlcClassDeclarationNode& classDecl, const VnlcConfig& config, VnlcMetadataInfo metadataInfo = VnlcMetadataInfo::DEFAULT);
+    void checkInterfaceDeclaration(const VnlcInterfaceDeclarationNode& interfaceDecl, const VnlcConfig& config, VnlcMetadataInfo metadataInfo = VnlcMetadataInfo::DEFAULT);
+    void checkEnumDeclaration(const VnlcEnumDeclarationNode& enumDecl, const VnlcConfig& config, VnlcMetadataInfo metadataInfo = VnlcMetadataInfo::DEFAULT);
+    void checkTypeAliasDeclaration(const VnlcTypeAliasDeclarationNode& typeAliasDecl, const VnlcConfig& config, VnlcMetadataInfo metadataInfo = VnlcMetadataInfo::DEFAULT);
 
     void checkStatement(const VnlcStatementNode& statement);
     void checkExpression(const VnlcExpressionNode& expression);
