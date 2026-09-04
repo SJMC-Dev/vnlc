@@ -29,7 +29,6 @@
 #include "../ast/statement/VnlcSwitchStatementNode.hpp"
 #include "../ast/statement/VnlcSwitchStatementType.hpp"
 #include "../error/VnlcIllegalModuleOrPackageNameError.hpp"
-#include "../error/VnlcInternalError.hpp"
 #include "../error/VnlcOutOfRangeError.hpp"
 #include "../error/VnlcSyntaxError.hpp"
 #include "../util/VnlcTokenTypeUtil.hpp"
