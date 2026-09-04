@@ -19,6 +19,14 @@ file(GLOB_RECURSE AST_FILES CONFIGURE_DEPENDS
     ${PROJECT_SOURCE_DIR}/src/ast/*.cpp
 )
 
+file(GLOB_RECURSE SEMANTIC_FILES CONFIGURE_DEPENDS
+    ${PROJECT_SOURCE_DIR}/src/semantic/*.cpp
+)
+
+file(GLOB_RECURSE TYPE_FILES CONFIGURE_DEPENDS
+    ${PROJECT_SOURCE_DIR}/src/type/*.cpp
+)
+
 add_executable(
     vnlctest_parser
     ${PROJECT_SOURCE_DIR}/src/lexer/VnlcLexer.cpp
@@ -27,6 +35,19 @@ add_executable(
     ${PROJECT_SOURCE_DIR}/src/util/VnlcTokenTypeUtil.cpp
     ${AST_FILES}
     VnlcParserTest.cpp
+)
+
+add_executable(
+    vnlctest_semantic
+    ${PROJECT_SOURCE_DIR}/src/diagnostic/VnlcDiagnostic.cpp
+    ${PROJECT_SOURCE_DIR}/src/lexer/VnlcLexer.cpp
+    ${PROJECT_SOURCE_DIR}/src/token/VnlcToken.cpp
+    ${PROJECT_SOURCE_DIR}/src/parser/VnlcParser.cpp
+    ${PROJECT_SOURCE_DIR}/src/util/VnlcTokenTypeUtil.cpp
+    ${AST_FILES}
+    ${SEMANTIC_FILES}
+    ${TYPE_FILES}
+    VnlcSemanticAnalyzerTest.cpp
 )
 
 target_link_libraries(
@@ -47,9 +68,24 @@ target_link_libraries(
     CLI11::CLI11
 )
 
-add_test(NAME vnlctest_lexer COMMAND vnlctest_lexer WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
-add_test(NAME vnlctest_parser COMMAND vnlctest_parser WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+target_link_libraries(
+    vnlctest_semantic
+    PRIVATE
+    GTest::gtest_main
+    fmt::fmt
+    nlohmann_json::nlohmann_json
+    CLI11::CLI11
+)
+
+add_test(NAME vnlctest_lexer COMMAND vnlctest_lexer)
+add_test(NAME vnlctest_parser COMMAND vnlctest_parser)
+add_test(NAME vnlctest_semantic COMMAND vnlctest_parser)
+
+set_tests_properties(vnlctest_lexer PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+set_tests_properties(vnlctest_parser PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+set_tests_properties(vnlctest_semantic PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(GoogleTest)
 gtest_discover_tests(vnlctest_lexer)
 gtest_discover_tests(vnlctest_parser)
+gtest_discover_tests(vnlctest_semantic)
