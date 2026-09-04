@@ -142,18 +142,19 @@ void VnlcSemanticAnalyzer::checkExport(const VnlcExportDeclarationNode& exportDe
 
 void VnlcSemanticAnalyzer::checkValueDeclaration(const VnlcValueDeclarationNode& varDecl, VnlcMetadataInfo metadataInfo) {
     auto kind = varDecl.getKind();
+    const bool hasInitializer = varDecl.getInitializer().has_value();
+    const bool requiresInitializer = kind == VnlcValueDeclarationType::Kind::LET || kind == VnlcValueDeclarationType::Kind::STATIC_PROPERTY;
 
-    if (kind == VnlcValueDeclarationType::Kind::STATIC_PROPERTY) {
-        if (!varDecl.getInitializer().has_value()) {
-            context.reportError(varDecl, "Static properties must be initialized");
-        }
-    } else if (kind == VnlcValueDeclarationType::Kind::INSTANCE_PROPERTY) {
-        if (varDecl.getInitializer().has_value()) {
-            context.reportError(varDecl, "Instance properties cannot have initializers");
-        }
+    if (requiresInitializer && !hasInitializer) {
+        context.reportError(varDecl, kind == VnlcValueDeclarationType::Kind::STATIC_PROPERTY ? "Static properties must be initialized" : "Variables must be initialized");
+    } else if (!requiresInitializer && hasInitializer) {
+        context.reportError(
+            varDecl,
+            kind == VnlcValueDeclarationType::Kind::INSTANCE_PROPERTY ? "Instance properties cannot have initializers" : "Value declarations of this kind cannot have initializers"
+        );
     }
 
-    if (varDecl.getInitializer().has_value()) {
+    if (hasInitializer) {
         checkExpression(*varDecl.getInitializer().value());
     }
 
