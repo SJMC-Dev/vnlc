@@ -206,7 +206,7 @@ VnlcModuleParsingResult VnlcParser::parseModule(VnlcModuleParsingContext context
     std::string name;
     std::string fullName;
 
-    std::string prefix = context.config.packageRootPath.string();
+    std::string prefix = context.config.packageRootPath.parent_path().string();
     std::string fullPath = context.config.inputFilePath.string();
 
     if (!fullPath.starts_with(prefix)) {
