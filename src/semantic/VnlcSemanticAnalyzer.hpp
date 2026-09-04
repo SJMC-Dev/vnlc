@@ -15,10 +15,10 @@
 #include "../ast/statement/VnlcStatementNode.hpp"
 #include "../ast/type/VnlcTypeNode.hpp"
 #include "../config/VnlcConfig.hpp"
+#include "../type/typeinf/VnlcTypeInferenceResult.hpp"
 #include "VnlcSemanticAnalysisResult.hpp"
 #include "VnlcSemanticContext.hpp"
 #include "metadata/VnlcMetadataInfo.hpp"
-#include "../type/typeinf/VnlcTypeInferenceResult.hpp"
 
 class VnlcSemanticAnalyzer {
 private:
@@ -42,7 +42,6 @@ private:
     void checkStatement(const VnlcStatementNode& statement);
     void checkExpression(const VnlcExpressionNode& expression);
     void checkType(const VnlcTypeNode& type);
-    void checkConstExpression(const VnlcExpressionNode& expression);
 
     [[nodiscard]] VnlcTypeInferenceResult inferExpressionType(const VnlcExpressionNode& expression);
     [[nodiscard]] VnlcTypeInferenceResult inferFunctionReturnType(const VnlcFunctionDeclarationNode& funcDecl);
