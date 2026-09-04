@@ -18,4 +18,5 @@ Be sure that your working directory is the root directory of this project before
 - Use PascalCase for customized type names and all type names defined in this project should start with `Vnlc`.
 - Use camelCase for customized variable and function names.
 - Follow `.clang-format` to format source code.
+- Aways format code after editing.
 - Refer to existing code for other coding standards.
