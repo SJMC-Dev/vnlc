@@ -5,7 +5,7 @@
 #include "../ast/declaration/VnlcValueDeclarationNode.hpp"
 #include "../ast/type/VnlcTypeNode.hpp"
 #include "../diagnostic/VnlcDiagnostic.hpp"
-#include "../type/VnlcReferenceType.hpp"
+#include "../type/VnlcCustomizedType.hpp"
 #include "../type/VnlcSemanticType.hpp"
 #include "../vni/import/VnlcImportedPackage.hpp"
 #include <memory>
@@ -20,7 +20,7 @@ private:
     std::vector<VnlcDiagnostic> warnings;
     std::vector<VnlcDiagnostic> notes;
 
-    std::unordered_set<std::unique_ptr<VnlcReferenceType>> referenceTypes;
+    std::unordered_set<std::unique_ptr<VnlcCustomizedType>> customizedTypes;
     std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*> semanticTypeMap;
     std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*> inferredValueTypeMap;
     std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*> inferredFunctionReturnTypeMap;
@@ -32,7 +32,7 @@ public:
         std::vector<VnlcDiagnostic>&& errors,
         std::vector<VnlcDiagnostic>&& warnings,
         std::vector<VnlcDiagnostic>&& notes,
-        std::unordered_set<std::unique_ptr<VnlcReferenceType>>&& referenceTypes,
+        std::unordered_set<std::unique_ptr<VnlcCustomizedType>>&& customizedTypes,
         std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*>&& semanticTypeMap,
         std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*>&& inferredValueTypeMap,
         std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*>&& inferredFunctionReturnTypeMap,
@@ -50,7 +50,7 @@ public:
     [[nodiscard]] const std::vector<VnlcDiagnostic>& getWarnings() const;
     [[nodiscard]] const std::vector<VnlcDiagnostic>& getNotes() const;
 
-    [[nodiscard]] const std::optional<const VnlcReferenceType*> getReferenceTypeByFullTypeName(std::string_view fullTypeName) const;
+    [[nodiscard]] const std::optional<const VnlcCustomizedType*> getCustomizedTypeByFullTypeName(std::string_view fullTypeName) const;
     [[nodiscard]] const std::optional<const VnlcSemanticType*> getSemanticTypeByTypeNode(const VnlcTypeNode* typeNode) const;
     [[nodiscard]] const std::optional<const VnlcImportedPackage*> getImportedPackageByName(std::string_view packageName) const;
     [[nodiscard]] const std::optional<const VnlcSemanticType*> getInferredValueType(const VnlcValueDeclarationNode* valueDeclaration) const;

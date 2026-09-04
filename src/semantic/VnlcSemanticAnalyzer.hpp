@@ -32,7 +32,7 @@ private:
     [[nodiscard]] VnlcMetadataInfo checkMetadata(const std::vector<VnlcDeclarationItem::MetadataTerm>& metadataTerms, const VnlcDeclarationNode& declNode);
     [[nodiscard]] std::string getFullTypeName(std::string_view typeName, const VnlcConfig& config) const;
     [[nodiscard]] bool isActiveTypeDeclaration(const VnlcTypeDeclarationNode& typeDecl, std::string_view typeName);
-    void registerLocalReferenceType(const VnlcTypeDeclarationNode& typeDecl, std::string_view typeName, VnlcReferenceTypeKind kind, const VnlcConfig& config);
+    void registerLocalCustomizedType(const VnlcTypeDeclarationNode& typeDecl, std::string_view typeName, VnlcCustomizedTypeKind kind, const VnlcConfig& config);
 
     void checkModule(const VnlcModuleNode& moduleNode, const VnlcConfig& config);
     void checkImport(const VnlcImportDeclarationNode& importDecl, const VnlcConfig& config);

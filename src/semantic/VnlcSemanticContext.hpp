@@ -5,7 +5,7 @@
 #include "../ast/declaration/VnlcValueDeclarationNode.hpp"
 #include "../ast/type/VnlcTypeNode.hpp"
 #include "../diagnostic/VnlcDiagnostic.hpp"
-#include "../type/VnlcReferenceType.hpp"
+#include "../type/VnlcCustomizedType.hpp"
 #include "../type/VnlcSemanticType.hpp"
 #include "../vni/import/VnlcImportedPackage.hpp"
 #include "scope/VnlcScope.hpp"
@@ -25,7 +25,7 @@ private:
 
     std::vector<std::unique_ptr<VnlcScope>> scopeStack;
 
-    std::unordered_map<std::string, std::unique_ptr<VnlcReferenceType>> referenceTypeRegistry;
+    std::unordered_map<std::string, std::unique_ptr<VnlcCustomizedType>> customizedTypeRegistry;
     std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*> semanticTypeMap;
     std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*> inferredValueTypeMap;
     std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*> inferredFunctionReturnTypeMap;
@@ -49,14 +49,14 @@ public:
     void pushScope(std::unique_ptr<VnlcScope>&& scope);
     void popScope();
 
-    void registerReferenceType(std::string_view fullName, std::unique_ptr<VnlcReferenceType>&& referenceType);
+    void registerCustomizedType(std::string_view fullName, std::unique_ptr<VnlcCustomizedType>&& customizedType);
     void mapSemanticType(const VnlcTypeNode* typeNode, const VnlcSemanticType* semanticType);
     void mapInferredValueType(const VnlcValueDeclarationNode* valueDeclaration, const VnlcSemanticType* semanticType);
     void mapInferredFunctionReturnType(const VnlcFunctionDeclarationNode* functionDeclaration, const VnlcSemanticType* semanticType);
 
     void collectImportedPackages(std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>>&& importedPackages);
 
-    [[nodiscard]] const std::optional<const VnlcReferenceType*> getReferenceTypeByFullTypeName(std::string_view fullTypeName) const;
+    [[nodiscard]] const std::optional<const VnlcCustomizedType*> getCustomizedTypeByFullTypeName(std::string_view fullTypeName) const;
     [[nodiscard]] const std::optional<const VnlcSemanticType*> getSemanticTypeByTypeNode(const VnlcTypeNode* typeNode) const;
 
     [[nodiscard]] VnlcScope& currentScope();
@@ -79,7 +79,7 @@ public:
 
     [[nodiscard]] std::tuple<std::vector<VnlcDiagnostic>, std::vector<VnlcDiagnostic>, std::vector<VnlcDiagnostic>> takeDiagnostics();
     [[nodiscard]] std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>> takeImportedPackages();
-    [[nodiscard]] std::unordered_set<std::unique_ptr<VnlcReferenceType>> takeReferenceTypeRegistry();
+    [[nodiscard]] std::unordered_set<std::unique_ptr<VnlcCustomizedType>> takeCustomizedTypeRegistry();
     [[nodiscard]] std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*> takeSemanticTypeMap();
     [[nodiscard]] std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*> takeInferredValueTypeMap();
     [[nodiscard]] std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*> takeInferredFunctionReturnTypeMap();

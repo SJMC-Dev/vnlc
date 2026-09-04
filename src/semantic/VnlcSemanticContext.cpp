@@ -22,8 +22,8 @@ void VnlcSemanticContext::popScope() {
     scopeStack.pop_back();
 }
 
-void VnlcSemanticContext::registerReferenceType(std::string_view fullName, std::unique_ptr<VnlcReferenceType>&& referenceType) {
-    referenceTypeRegistry.emplace(std::string(fullName), std::move(referenceType));
+void VnlcSemanticContext::registerCustomizedType(std::string_view fullName, std::unique_ptr<VnlcCustomizedType>&& customizedType) {
+    customizedTypeRegistry.emplace(std::string(fullName), std::move(customizedType));
 }
 
 void VnlcSemanticContext::mapSemanticType(const VnlcTypeNode* typeNode, const VnlcSemanticType* semanticType) {
@@ -42,10 +42,10 @@ void VnlcSemanticContext::collectImportedPackages(std::unordered_map<std::string
     this->importedPackages = std::move(importedPackages);
 }
 
-const std::optional<const VnlcReferenceType*> VnlcSemanticContext::getReferenceTypeByFullTypeName(std::string_view fullTypeName) const {
-    auto it = referenceTypeRegistry.find(std::string(fullTypeName));
-    if (it != referenceTypeRegistry.end()) {
-        return std::make_optional<const VnlcReferenceType*>(it->second.get());
+const std::optional<const VnlcCustomizedType*> VnlcSemanticContext::getCustomizedTypeByFullTypeName(std::string_view fullTypeName) const {
+    auto it = customizedTypeRegistry.find(std::string(fullTypeName));
+    if (it != customizedTypeRegistry.end()) {
+        return std::make_optional<const VnlcCustomizedType*>(it->second.get());
     }
     return std::nullopt;
 }
@@ -186,16 +186,16 @@ std::unordered_map<std::string, std::unique_ptr<VnlcImportedPackage>> VnlcSemant
     return std::move(importedPackages);
 }
 
-std::unordered_set<std::unique_ptr<VnlcReferenceType>> VnlcSemanticContext::takeReferenceTypeRegistry() {
-    std::unordered_set<std::unique_ptr<VnlcReferenceType>> referenceTypes;
+std::unordered_set<std::unique_ptr<VnlcCustomizedType>> VnlcSemanticContext::takeCustomizedTypeRegistry() {
+    std::unordered_set<std::unique_ptr<VnlcCustomizedType>> customizedTypes;
 
-    for (auto& [_, referenceType] : referenceTypeRegistry) {
-        referenceTypes.insert(std::move(referenceType));
+    for (auto& [_, customizedType] : customizedTypeRegistry) {
+        customizedTypes.insert(std::move(customizedType));
     }
 
-    referenceTypeRegistry.clear();
+    customizedTypeRegistry.clear();
 
-    return referenceTypes;
+    return customizedTypes;
 }
 
 std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*> VnlcSemanticContext::takeSemanticTypeMap() {

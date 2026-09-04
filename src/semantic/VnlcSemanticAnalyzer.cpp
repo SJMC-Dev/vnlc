@@ -10,7 +10,7 @@
 #include "../ast/statement/VnlcSwitchStatementNode.hpp"
 #include "../ast/statement/VnlcVariableDeclarationStatementNode.hpp"
 #include "../ast/statement/VnlcWhileStatementNode.hpp"
-#include "../type/VnlcReferenceType.hpp"
+#include "../type/VnlcCustomizedType.hpp"
 #include "../type/typeinf/VnlcTypeInferenceResult.hpp"
 #include "symbol/VnlcSymbolKind.hpp"
 #include "symbol/VnlcSymbolOrigin.hpp"
@@ -60,9 +60,9 @@ bool VnlcSemanticAnalyzer::isActiveTypeDeclaration(const VnlcTypeDeclarationNode
     return symbol.has_value() && symbol.value()->getLocalDeclarationNode() == &typeDecl;
 }
 
-void VnlcSemanticAnalyzer::registerLocalReferenceType(const VnlcTypeDeclarationNode& typeDecl, std::string_view typeName, VnlcReferenceTypeKind kind, const VnlcConfig& config) {
+void VnlcSemanticAnalyzer::registerLocalCustomizedType(const VnlcTypeDeclarationNode& typeDecl, std::string_view typeName, VnlcCustomizedTypeKind kind, const VnlcConfig& config) {
     std::string fullTypeName = getFullTypeName(typeName, config);
-    context.registerReferenceType(fullTypeName, std::make_unique<VnlcReferenceType>(kind, fullTypeName, &typeDecl));
+    context.registerCustomizedType(fullTypeName, std::make_unique<VnlcCustomizedType>(kind, fullTypeName, &typeDecl));
 }
 
 void VnlcSemanticAnalyzer::checkModule(const VnlcModuleNode& moduleNode, const VnlcConfig& config) {
@@ -244,7 +244,7 @@ void VnlcSemanticAnalyzer::checkClassDeclaration(const VnlcClassDeclarationNode&
     context.popScope();
 
     if (context.getErrors().size() == errorCount && isActiveTypeDeclaration(classDecl, classDecl.getName().getIdentifierString())) {
-        registerLocalReferenceType(classDecl, classDecl.getName().getIdentifierString(), VnlcReferenceTypeKind::CLASS, config);
+        registerLocalCustomizedType(classDecl, classDecl.getName().getIdentifierString(), VnlcCustomizedTypeKind::CLASS, config);
     }
 }
 
@@ -277,7 +277,7 @@ void VnlcSemanticAnalyzer::checkInterfaceDeclaration(const VnlcInterfaceDeclarat
     context.popScope();
 
     if (context.getErrors().size() == errorCount && isActiveTypeDeclaration(interfaceDecl, interfaceDecl.getName().getIdentifierString())) {
-        registerLocalReferenceType(interfaceDecl, interfaceDecl.getName().getIdentifierString(), VnlcReferenceTypeKind::INTERFACE, config);
+        registerLocalCustomizedType(interfaceDecl, interfaceDecl.getName().getIdentifierString(), VnlcCustomizedTypeKind::INTERFACE, config);
     }
 }
 
@@ -319,7 +319,7 @@ void VnlcSemanticAnalyzer::checkEnumDeclaration(const VnlcEnumDeclarationNode& e
     context.popScope();
 
     if (context.getErrors().size() == errorCount && isActiveTypeDeclaration(enumDecl, enumDecl.getName().getIdentifierString())) {
-        registerLocalReferenceType(enumDecl, enumDecl.getName().getIdentifierString(), VnlcReferenceTypeKind::ENUM, config);
+        registerLocalCustomizedType(enumDecl, enumDecl.getName().getIdentifierString(), VnlcCustomizedTypeKind::ENUM, config);
     }
 }
 
@@ -339,7 +339,7 @@ void VnlcSemanticAnalyzer::checkTypeAliasDeclaration(const VnlcTypeAliasDeclarat
     context.popScope();
 
     if (context.getErrors().size() == errorCount && isActiveTypeDeclaration(typeAliasDecl, typeAliasDecl.getAliasName().getIdentifierString())) {
-        registerLocalReferenceType(typeAliasDecl, typeAliasDecl.getAliasName().getIdentifierString(), VnlcReferenceTypeKind::TYPE_ALIAS, config);
+        registerLocalCustomizedType(typeAliasDecl, typeAliasDecl.getAliasName().getIdentifierString(), VnlcCustomizedTypeKind::TYPE_ALIAS, config);
     }
 }
 
@@ -477,7 +477,7 @@ VnlcSemanticAnalysisResult VnlcSemanticAnalyzer::analyze(const VnlcConfig& confi
     checkModule(module, config);
 
     auto diagnostics = context.takeDiagnostics();
-    auto referenceTypes = context.takeReferenceTypeRegistry();
+    auto customizedTypes = context.takeCustomizedTypeRegistry();
     auto semanticTypes = context.takeSemanticTypeMap();
     auto inferredValueTypes = context.takeInferredValueTypeMap();
     auto inferredFunctionReturnTypes = context.takeInferredFunctionReturnTypeMap();
@@ -486,7 +486,7 @@ VnlcSemanticAnalysisResult VnlcSemanticAnalyzer::analyze(const VnlcConfig& confi
         std::move(std::get<0>(diagnostics)),
         std::move(std::get<1>(diagnostics)),
         std::move(std::get<2>(diagnostics)),
-        std::move(referenceTypes),
+        std::move(customizedTypes),
         std::move(semanticTypes),
         std::move(inferredValueTypes),
         std::move(inferredFunctionReturnTypes),

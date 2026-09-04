@@ -65,7 +65,7 @@ add_executable(
     semantic/scope/VnlcScope.cpp
     type/VnlcSemanticType.cpp
     type/VnlcPrimitiveType.cpp
-    type/VnlcReferenceType.cpp
+    type/VnlcCustomizedType.cpp
     type/VnlcVoidType.cpp
     type/typeinf/VnlcTypeInferenceResult.cpp
     semantic/metadata/VnlcMetadataInfo.cpp

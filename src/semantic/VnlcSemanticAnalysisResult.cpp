@@ -6,7 +6,7 @@ VnlcSemanticAnalysisResult::VnlcSemanticAnalysisResult(
     std::vector<VnlcDiagnostic>&& errors,
     std::vector<VnlcDiagnostic>&& warnings,
     std::vector<VnlcDiagnostic>&& notes,
-    std::unordered_set<std::unique_ptr<VnlcReferenceType>>&& referenceTypes,
+    std::unordered_set<std::unique_ptr<VnlcCustomizedType>>&& customizedTypes,
     std::unordered_map<const VnlcTypeNode*, const VnlcSemanticType*>&& semanticTypeMap,
     std::unordered_map<const VnlcValueDeclarationNode*, const VnlcSemanticType*>&& inferredValueTypeMap,
     std::unordered_map<const VnlcFunctionDeclarationNode*, const VnlcSemanticType*>&& inferredFunctionReturnTypeMap,
@@ -15,7 +15,7 @@ VnlcSemanticAnalysisResult::VnlcSemanticAnalysisResult(
     : errors(std::move(errors)),
       warnings(std::move(warnings)),
       notes(std::move(notes)),
-      referenceTypes(std::move(referenceTypes)),
+      customizedTypes(std::move(customizedTypes)),
       semanticTypeMap(std::move(semanticTypeMap)),
       inferredValueTypeMap(std::move(inferredValueTypeMap)),
       inferredFunctionReturnTypeMap(std::move(inferredFunctionReturnTypeMap)),
@@ -45,10 +45,10 @@ const std::vector<VnlcDiagnostic>& VnlcSemanticAnalysisResult::getNotes() const 
     return notes;
 }
 
-const std::optional<const VnlcReferenceType*> VnlcSemanticAnalysisResult::getReferenceTypeByFullTypeName(std::string_view fullTypeName) const {
-    for (const auto& referenceType : referenceTypes) {
-        if (referenceType->getFullTypeName() == fullTypeName) {
-            return std::make_optional<const VnlcReferenceType*>(referenceType.get());
+const std::optional<const VnlcCustomizedType*> VnlcSemanticAnalysisResult::getCustomizedTypeByFullTypeName(std::string_view fullTypeName) const {
+    for (const auto& customizedType : customizedTypes) {
+        if (customizedType->getFullTypeName() == fullTypeName) {
+            return std::make_optional<const VnlcCustomizedType*>(customizedType.get());
         }
     }
     return std::nullopt;
