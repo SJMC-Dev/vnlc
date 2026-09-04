@@ -1,24 +1,24 @@
+#include "../src/parser/VnlcParser.hpp"
 #include "../src/ast/declaration/VnlcFunctionDeclarationNode.hpp"
 #include "../src/ast/statement/VnlcForStatementNode.hpp"
 #include "../src/ast/statement/VnlcVariableDeclarationStatementNode.hpp"
 #include "../src/config/VnlcConfig.hpp"
-#include "../src/parser/VnlcParser.hpp"
 #include <filesystem>
 #include <fstream>
 #include <gtest/gtest.h>
 #include <sstream>
 
 TEST(VnlcParserTest, SimpleModule) {
-    std::ifstream input("assets/demo/main.vnl");
+    std::ifstream input("inputs/main.vnl");
     VnlcLexer lexer(input);
     VnlcParser parser(std::move(lexer));
-    
+
     VnlcConfig config{
         .mode = VnlcRunningMode::COMPILE,
         .vanillangVersion = "1.0",
         .minecraftVersion = "26.1.2",
-        .packageRootPath = std::filesystem::canonical("assets/demo"),
-        .inputFilePath = std::filesystem::canonical("assets/demo/main.vnl"),
+        .packageRootPath = std::filesystem::canonical("inputs"),
+        .inputFilePath = std::filesystem::canonical("inputs/main.vnl"),
         .outputDirectory = std::nullopt,
         .dependencyPackageRootPaths = {},
         .optimizationLevel = std::nullopt,
