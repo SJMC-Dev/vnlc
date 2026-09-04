@@ -4,6 +4,7 @@
 namespace VnlcValueDeclarationType {
     enum class Kind {
         LET,
+        LOOP_VARIABLE,
         PARAMETER,
         INSTANCE_PROPERTY,
         STATIC_PROPERTY,

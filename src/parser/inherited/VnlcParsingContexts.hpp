@@ -14,6 +14,7 @@
 #include "VnlcTypeAliasDeclarationParsingContext.hpp"       // IWYU pragma: export
 #include "VnlcTypeDeclarationParsingContext.hpp"            // IWYU pragma: export
 #include "VnlcVariableDeclarationParsingContext.hpp"        // IWYU pragma: export
+#include "VnlcVariableDeclarationPrimaryParsingContext.hpp" // IWYU pragma: export
 #include "VnlcWhileStatementParsingContext.hpp"             // IWYU pragma: export
 
 #endif // VNLC_PARSING_CONTEXTS_HPP

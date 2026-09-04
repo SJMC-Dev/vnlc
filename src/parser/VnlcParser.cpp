@@ -401,7 +401,10 @@ VnlcVariableDeclarationParsingResult VnlcParser::parseVariableDeclaration(VnlcVa
 
     auto pos = context.position == VnlcVariableDeclarationParsingContext::Position::TOP_LEVEL ? VnlcValueDeclarationType::Context::TOP_LEVEL : VnlcValueDeclarationType::Context::BLOCK;
 
-    auto primaryResult = parseVariableDeclarationPrimary();
+    VnlcVariableDeclarationPrimaryParsingContext primaryContext{
+        .kind = VnlcValueDeclarationType::Kind::LET,
+    };
+    auto primaryResult = parseVariableDeclarationPrimary(std::move(primaryContext));
 
     if (!match(VnlcTokenType::EQUAL)) {
         throw VnlcSyntaxError("Expected '=' after variable declaration", peek().getLine(), peek().getColumn());
@@ -685,7 +688,7 @@ VnlcMetadataParsingResult VnlcParser::parseMetadata() {
     };
 }
 
-VnlcVariableDeclarationPrimaryParsingResult VnlcParser::parseVariableDeclarationPrimary() {
+VnlcVariableDeclarationPrimaryParsingResult VnlcParser::parseVariableDeclarationPrimary(VnlcVariableDeclarationPrimaryParsingContext context) {
     std::unique_ptr<VnlcIdentifierNode> name;
     std::optional<std::unique_ptr<VnlcTypeNode>> type = std::nullopt;
 
@@ -705,7 +708,7 @@ VnlcVariableDeclarationPrimaryParsingResult VnlcParser::parseVariableDeclaration
     }
 
     return VnlcVariableDeclarationPrimaryParsingResult{
-        .kind = VnlcValueDeclarationType::Kind::LET,
+        .kind = context.kind,
         .name = std::move(name),
         .type = std::move(type),
     };
@@ -3114,7 +3117,10 @@ VnlcForStatementParsingResult VnlcParser::parseForStatement(VnlcForStatementPars
     }
 
     VnlcToken variableFirstToken = peek();
-    auto variableDeclarationPrimaryResult = parseVariableDeclarationPrimary();
+    VnlcVariableDeclarationPrimaryParsingContext variableContext{
+        .kind = VnlcValueDeclarationType::Kind::LOOP_VARIABLE,
+    };
+    auto variableDeclarationPrimaryResult = parseVariableDeclarationPrimary(std::move(variableContext));
     VnlcToken variableLastToken = peek();
     loopVariable = std::make_unique<VnlcValueDeclarationNode>(
         variableDeclarationPrimaryResult.kind,
