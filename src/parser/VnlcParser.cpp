@@ -209,9 +209,6 @@ VnlcModuleParsingResult VnlcParser::parseModule(VnlcModuleParsingContext context
     std::string prefix = context.config.packageRootPath.parent_path().string();
     std::string fullPath = context.config.inputFilePath.string();
 
-    if (!fullPath.starts_with(prefix)) {
-        throw VnlcInternalError("Module file path is outside the package root");
-    }
     fullPath.erase(0, prefix.length());
     if (fullPath.starts_with(std::filesystem::path::preferred_separator)) {
         fullPath.erase(0, 1);
@@ -219,8 +216,6 @@ VnlcModuleParsingResult VnlcParser::parseModule(VnlcModuleParsingContext context
 
     if (fullPath.ends_with(".vnl")) {
         fullPath.erase(fullPath.length() - 4);
-    } else {
-        throw VnlcIllegalModuleOrPackageNameError("Module file name must end with .vnl");
     }
 
     std::stringstream ss(fullPath);
