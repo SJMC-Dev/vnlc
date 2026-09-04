@@ -95,12 +95,17 @@ void VnlcApp::run() {
     std::filesystem::path inputFilePath = std::filesystem::canonical(inputFilePathString);
     std::filesystem::path outputDirectory = std::filesystem::canonical(outputDirectoryString);
     std::filesystem::path packageRootPath = std::filesystem::canonical(packageRootPathString);
+
     std::vector<std::filesystem::path> dependencyPackageRootPaths;
     for (auto& dependencyPackageRootPathString : dependencyPackageRootPathStrings) {
         dependencyPackageRootPaths.emplace_back(std::filesystem::canonical(dependencyPackageRootPathString));
     }
 
-    if (!std::filesystem::canonical(inputFilePath).string().starts_with(std::filesystem::canonical(packageRootPath).string())) {
+    if (!packageRootPath.has_parent_path()) {
+        throw VnlcIllegalInputError("Package root path cannot be the root path of the file system.");
+    }
+
+    if (!inputFilePath.string().starts_with(packageRootPath.string())) {
         throw VnlcIllegalInputError("Input file must be within the package root directory.");
     }
 
