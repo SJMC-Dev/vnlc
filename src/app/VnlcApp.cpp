@@ -6,6 +6,7 @@
 #include "../session/VnlcSession.hpp"
 #include "../util/VnlcRunningModeUtil.hpp"
 #include <CLI/CLI.hpp>
+#include <cctype>
 #include <filesystem>
 #include <fmt/core.h>
 #include <string>
@@ -107,6 +108,12 @@ void VnlcApp::run() {
 
     if (!inputFilePath.string().starts_with(packageRootPath.string())) {
         throw VnlcIllegalInputError("Input file must be within the package root directory.");
+    }
+
+    std::string extension = inputFilePath.extension().string();
+    std::transform(extension.begin(), extension.end(), extension.begin(), [](unsigned char c) { return std::tolower(c); });
+    if (extension == ".vnl") {
+        throw VnlcIllegalInputError("Input file must end with '.vnl'.");
     }
 
     VnlcConfig config{
