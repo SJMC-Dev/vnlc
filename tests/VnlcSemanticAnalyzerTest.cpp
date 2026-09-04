@@ -7,8 +7,8 @@
 #include "../src/lexer/VnlcLexer.hpp"
 #include "../src/parser/VnlcParser.hpp"
 #include "../src/semantic/VnlcSemanticAnalysisResult.hpp"
-#include "../src/type/VnlcReferenceTypeKind.hpp"
-#include "../src/type/VnlcReferenceTypeOrigin.hpp"
+#include "../src/type/VnlcCustomizedTypeKind.hpp"
+#include "../src/type/VnlcCustomizedTypeOrigin.hpp"
 #include <filesystem>
 #include <gtest/gtest.h>
 #include <memory>
@@ -41,27 +41,27 @@ namespace {
         return parser.parse(config);
     }
 
-    void expectRegisteredReferenceType(
+    void expectRegisteredCustomizedType(
         const VnlcSemanticAnalysisResult& result,
         std::string_view fullTypeName,
-        VnlcReferenceTypeKind expectedKind,
+        VnlcCustomizedTypeKind expectedKind,
         const VnlcTypeDeclarationNode* expectedDeclaration
     ) {
         SCOPED_TRACE(fullTypeName);
 
-        const auto referenceType = result.getReferenceTypeByFullTypeName(fullTypeName);
-        ASSERT_TRUE(referenceType.has_value());
-        ASSERT_NE(referenceType.value(), nullptr);
-        EXPECT_EQ(referenceType.value()->getFullTypeName(), fullTypeName);
-        EXPECT_EQ(referenceType.value()->getReferenceKind(), expectedKind);
-        EXPECT_EQ(referenceType.value()->getOrigin(), VnlcReferenceTypeOrigin::LOCAL);
-        EXPECT_EQ(referenceType.value()->getLocalDeclaration(), expectedDeclaration);
-        EXPECT_EQ(referenceType.value()->getImportedDeclaration(), nullptr);
+        const auto customizedType = result.getCustomizedTypeByFullTypeName(fullTypeName);
+        ASSERT_TRUE(customizedType.has_value());
+        ASSERT_NE(customizedType.value(), nullptr);
+        EXPECT_EQ(customizedType.value()->getFullTypeName(), fullTypeName);
+        EXPECT_EQ(customizedType.value()->getCustomizedKind(), expectedKind);
+        EXPECT_EQ(customizedType.value()->getOrigin(), VnlcCustomizedTypeOrigin::LOCAL);
+        EXPECT_EQ(customizedType.value()->getLocalDeclaration(), expectedDeclaration);
+        EXPECT_EQ(customizedType.value()->getImportedDeclaration(), nullptr);
     }
 
 } // namespace
 
-TEST(VnlcSemanticAnalyzerTest, RegistersLocalReferenceTypes) {
+TEST(VnlcSemanticAnalyzerTest, RegistersLocalCustomizedTypes) {
     constexpr std::string_view source = R"(
 class SampleClass {}
 interface SampleInterface {}
@@ -87,10 +87,10 @@ type SampleAlias = int
     ASSERT_NE(enumDeclaration, nullptr);
     ASSERT_NE(typeAliasDeclaration, nullptr);
 
-    expectRegisteredReferenceType(result, "semantic_test_package.models.types.SampleClass", VnlcReferenceTypeKind::CLASS, classDeclaration);
-    expectRegisteredReferenceType(result, "semantic_test_package.models.types.SampleInterface", VnlcReferenceTypeKind::INTERFACE, interfaceDeclaration);
-    expectRegisteredReferenceType(result, "semantic_test_package.models.types.SampleEnum", VnlcReferenceTypeKind::ENUM, enumDeclaration);
-    expectRegisteredReferenceType(result, "semantic_test_package.models.types.SampleAlias", VnlcReferenceTypeKind::TYPE_ALIAS, typeAliasDeclaration);
+    expectRegisteredCustomizedType(result, "semantic_test_package.models.types.SampleClass", VnlcCustomizedTypeKind::CLASS, classDeclaration);
+    expectRegisteredCustomizedType(result, "semantic_test_package.models.types.SampleInterface", VnlcCustomizedTypeKind::INTERFACE, interfaceDeclaration);
+    expectRegisteredCustomizedType(result, "semantic_test_package.models.types.SampleEnum", VnlcCustomizedTypeKind::ENUM, enumDeclaration);
+    expectRegisteredCustomizedType(result, "semantic_test_package.models.types.SampleAlias", VnlcCustomizedTypeKind::TYPE_ALIAS, typeAliasDeclaration);
 }
 
 TEST(VnlcSemanticAnalyzerTest, DoesNotRegisterInvalidDeclarationAndContinuesRegisteringValidDeclarations) {
@@ -110,11 +110,11 @@ interface ValidInterface {}
     ASSERT_TRUE(result.hasErrors());
     ASSERT_EQ(result.getErrors().size(), 1);
     EXPECT_EQ(result.getErrors().front().getMessage(), "Redeclaration of class member 'duplicated'");
-    EXPECT_FALSE(result.getReferenceTypeByFullTypeName("semantic_test_package.models.registration_errors.InvalidClass").has_value());
+    EXPECT_FALSE(result.getCustomizedTypeByFullTypeName("semantic_test_package.models.registration_errors.InvalidClass").has_value());
 
     const auto& declarations = module->getTopIdentifierDeclarations();
     ASSERT_EQ(declarations.size(), 2);
     const auto* validInterfaceDeclaration = dynamic_cast<const VnlcInterfaceDeclarationNode*>(declarations[1].get());
     ASSERT_NE(validInterfaceDeclaration, nullptr);
-    expectRegisteredReferenceType(result, "semantic_test_package.models.registration_errors.ValidInterface", VnlcReferenceTypeKind::INTERFACE, validInterfaceDeclaration);
+    expectRegisteredCustomizedType(result, "semantic_test_package.models.registration_errors.ValidInterface", VnlcCustomizedTypeKind::INTERFACE, validInterfaceDeclaration);
 }
