@@ -77,13 +77,11 @@ target_link_libraries(
     CLI11::CLI11
 )
 
-add_test(NAME vnlctest_lexer COMMAND vnlctest_lexer)
-add_test(NAME vnlctest_parser COMMAND vnlctest_parser)
-add_test(NAME vnlctest_semantic COMMAND vnlctest_parser)
-
-set_tests_properties(vnlctest_lexer PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-set_tests_properties(vnlctest_parser PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-set_tests_properties(vnlctest_semantic PROPERTIES WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_definitions(
+    vnlctest_parser
+    PRIVATE
+    VNLC_TEST_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
+)
 
 include(GoogleTest)
 gtest_discover_tests(vnlctest_lexer)

@@ -9,7 +9,9 @@
 #include <sstream>
 
 TEST(VnlcParserTest, SimpleModule) {
-    std::ifstream input("inputs/main.vnl");
+    const auto inputDir = std::filesystem::path(VNLC_TEST_SOURCE_DIR) / "inputs";
+
+    std::ifstream input(inputDir / "main.vnl");
     VnlcLexer lexer(input);
     VnlcParser parser(std::move(lexer));
 
@@ -17,8 +19,8 @@ TEST(VnlcParserTest, SimpleModule) {
         .mode = VnlcRunningMode::COMPILE,
         .vanillangVersion = "1.0",
         .minecraftVersion = "26.1.2",
-        .packageRootPath = std::filesystem::canonical("inputs"),
-        .inputFilePath = std::filesystem::canonical("inputs/main.vnl"),
+        .packageRootPath = std::filesystem::canonical(inputDir),
+        .inputFilePath = std::filesystem::canonical(inputDir / "main.vnl"),
         .outputDirectory = std::nullopt,
         .dependencyPackageRootPaths = {},
         .optimizationLevel = std::nullopt,
